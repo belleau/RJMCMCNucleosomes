@@ -11,6 +11,7 @@
 namespace space_process{
 
 class SpaceState {
+	std::list<&Nucleosome> d_currentMu
 public:
 	SpaceState();
 	virtual ~SpaceState();
