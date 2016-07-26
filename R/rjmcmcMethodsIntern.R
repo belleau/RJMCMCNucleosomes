@@ -1,3 +1,71 @@
+#' @title rjmcmc cpp
+#'
+#' @description todo
+#'
+#' @param k a positive \code{integer}, the number of nucleosomes.
+#'
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
+#'
+#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
+#' start position of all the forward reads.
+#'
+#' @param startPosReverseReads a \code{vector} of \code{numeric}, the
+#' start position of all the reverse reads. Beware that the start position of
+#' a reverse read is always higher that the end positition.
+#'
+#' @param nbrIterations a positive \code{integer} or \code{numeric}, the
+#' number of iterations. Non-integer values of
+#' \code{nbrIterations} will be casted to \code{integer} and truncated towards
+#' zero.
+#'
+#' @param kMax a positive \code{integer} or \code{numeric}, the maximum number
+#' of nucleosomes per region. Non-integer values
+#' of \code{kMax} will be casted to \code{integer} and truncated towards zero.
+#'
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution. Default: 3.
+#'
+#' @param minInterval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
+#'
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
+#'
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{minReads} will be casted to \code{integer} and truncated towards
+#' zero. Default: 5.
+#'
+#' @param adaptIterationsToReads a \code{logical} indicating if the number
+#' of iterations must be modified in function of the number of reads.
+#' Default: \code{TRUE}.#'
+#' @return todo
+#'
+#' @examples
+#'
+#' ## todo
+#'
+#' @author Pascal Belleau
+#' @importFrom Rcpp evalCpp
+#' @useDynLib RJMCMCNucleosomes
+#' @exportPattern "^[[:alpha:]]+"
+#' @keywords internal
+#'
+rjmcmcNucleo <- function(startPosForwardReads,
+                              startPosReverseReads,
+                              nbrIterations, kMax, lambda,
+                              minInterval, maxInterval,
+                              minReads = 5L,
+                              adaptIterationsToReads = TRUE) {
+    .Call('RJMCMCNucleosomes_rjmcmcNucleo',
+          PACKAGE = 'RJMCMCNucleosomes',
+          startPosForwardReads, startPosReverseReads,
+          nbrIterations, kMax, lambda, minInterval,
+          maxInterval, minReads, adaptIterationsToReads)
+}
+
+
 #' @title Death Submove Probability
 #'
 #' @description Calculation of the death submove probability of a randomly

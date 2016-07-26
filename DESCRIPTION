@@ -27,6 +27,7 @@ Depends:
     IRanges,
     GenomicRanges
 Imports:
+    Rcpp (>= 0.12.5),
     MCMCpack,
     consensusSeekeR,
     GenomeInfoDb,
@@ -39,6 +40,7 @@ Suggests:
     PING,
     nucleoSim,
     RUnit
+LinkingTo: Rcpp
 Encoding: UTF-8
 License: Artistic-2.0
 VignetteBuilder: knitr
