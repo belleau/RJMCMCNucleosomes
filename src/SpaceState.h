@@ -15,13 +15,20 @@
 namespace space_process{
 
 	class SpaceState {
-		int p;
-		//Rcpp::IntegerVector startFReads, startRReads;
+	protected:
+		long minPos, maxPos;
+		Rcpp::IntegerVector const d_startFReads;
+		Rcpp::IntegerVector const d_startRReads; /* vector of
+																 reads start
+																 position
+																 ( foward and
+																 reverse) */
+		const int d_zeta;
 
 	public:
-		SpaceState();//{ p = 1; }
-		virtual ~SpaceState(); //{}
-		int getP(); // {return(p);}
+		SpaceState(Rcpp::IntegerVector const  &fReads, Rcpp::IntegerVector const &rReads, int zeta);
+		virtual ~SpaceState();
+
 	};
 
 }; /* namespace space_process */
