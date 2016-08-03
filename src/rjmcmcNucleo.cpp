@@ -3,6 +3,7 @@
 //#include "SpaceState.h"
 //#include "SpaceNucleosome.h"
 #include "PartitionAll.h"
+#include "SpaceDirichlet.h"
 
 //typedef space_process::SpaceState regionState;
 
@@ -23,15 +24,20 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
     int nf=1, nr;
     long tot;
-    startFReads[1] = 1;
+    //startFReads[1] = 1;
     //space_process::SpaceState currentState(startFReads, startRReads, 147);
     //space_process::SpaceNucleosome currentState(startFReads, startRReads, 147);
-    space_process::PartitionAll currentState(startFReads, startRReads, 147);
-    cout << "Aye " << startFReads[1] << "\n";
+    space_process::PartitionAll bla(startFReads, startRReads, 147);
+
+    space_process::SpaceDirichlet currentState(startFReads, startRReads, 147, bla);
+    //cout << "Aye " << startFReads[1] << "\n";
+    bla.initMu(currentState.newMu(), 3);
+    double mu = currentState.newMu();
+    //cout << " Mu " << mu << "\n";
     //currentState.insert(nf);
-    //nf = startFReads.size();
+    nf = startFReads.size();
     //nf = currentState.getP();
-    //nr = startRReads->size();
+    nr = startRReads.size();
     tot = nbrIterations + kMax;
     List nbSeq = List::create(Rcpp::Named("nf") = nf, Rcpp::Named("nr") = nr, Rcpp::Named("tot") = tot);
     return nbSeq;
