@@ -14,11 +14,11 @@ namespace space_process {
 
 class NucleoDirichlet: public Nucleosome {
 	int d_df;
-	double d_bF, d_bR; /* Kbr divided by w */
+	std::vector<double> d_bF, d_bR; /* Kbr divided by w */
 	double d_avg;
 	double d_delta;
 public:
-	NucleoDirichlet(double mu, int df);
+	NucleoDirichlet(double mu, int df, std::vector<double> const fReads, std::vector<double> const rReads, long  sizeFReads, long sizeRReads);
 	virtual ~NucleoDirichlet();
 	double testT();
 
@@ -30,14 +30,17 @@ public:
 
 	void setDf(int df);
 	int df();
-
+	/*
 	void setBF(double bF);
 	double bF();
 	void setBR(double bR);
 	double bR();
-
+*/
 	void evalSigmaF();
 	void evalSigmaR();
+
+	void evalBF(std::vector<double> const &fReads);
+	void evalBR();
 //	void setBf();
 };
 

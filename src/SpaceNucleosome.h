@@ -1,0 +1,66 @@
+/*
+ * SpaceNucleosome.h
+ *
+ *  Created on: Aug 5, 2016
+ *      Author: belleau
+ */
+
+#ifndef SPACENUCLEOSOME_H_
+#define SPACENUCLEOSOME_H_
+
+#include "Nucleosome.h"
+
+namespace space_process {
+
+template<typename NucleoClass>    /***** BEWARE NucleoClass Must inherit from Nucleosome *****/
+class SpaceNucleosome {
+protected:
+	std::list<NucleoClass> d_nucleosomes;
+	std::vector<double> const &d_startFReads;
+	std::vector<double> const &d_startRReads; /* vector of
+												 reads start
+												 position
+												 ( foward and
+												 reverse) */
+	const long d_sizeFReads, d_sizeRReads;
+	const int d_zeta;
+public:
+	SpaceNucleosome(std::vector<double> const  &fReads, std::vector<double> const &rReads, int zeta)
+		:d_startFReads(fReads), d_startRReads(rReads), d_zeta(zeta), d_sizeFReads(fReads.size()), d_sizeRReads(rReads.size()){
+	};
+
+	SpaceNucleosome(std::vector<double> const  &fReads, std::vector<double> const &rReads, int zeta, long sizeFReads, long sizeRReads)
+		:d_startFReads(fReads), d_startRReads(rReads), d_zeta(zeta), d_sizeFReads(sizeFReads), d_sizeRReads(sizeRReads){
+	};
+	virtual ~SpaceNucleosome(){};
+	int size(){
+		return(d_nucleosomes.size());
+	};
+
+	bool empty(){
+		return(d_nucleosomes.empty());
+	};
+
+	void insert(NucleoClass &u){
+		d_nucleosomes.push_back(u);
+	};
+
+	long sizeFReads(){
+		return(d_sizeFReads);
+	};
+	long sizeRReads(){
+		return(d_sizeRReads);
+	};
+
+	std::vector<double> const  startFReads(){
+		return(d_startFReads);
+	};
+
+	std::vector<double> const  startRReads(){
+		return(d_startRReads);
+	};
+};
+
+} /* namespace space_process */
+
+#endif /* SPACENUCLEOSOME_H_ */

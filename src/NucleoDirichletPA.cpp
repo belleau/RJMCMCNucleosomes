@@ -13,8 +13,8 @@ using namespace std;
 
 namespace space_process {
 
-NucleoDirichletPA::NucleoDirichletPA(double mu, int df):
-	NucleoDirichlet(mu, df){
+NucleoDirichletPA::NucleoDirichletPA(double mu, int df, std::vector<double> const fReads, std::vector<double> const rReads, long  sizeFReads, long sizeRReads):
+	NucleoDirichlet(mu, df, fReads, rReads, sizeFReads, sizeRReads){
 	setSizeF(-1);
 	setSizeR(-1);
 

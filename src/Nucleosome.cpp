@@ -11,7 +11,8 @@ using namespace std;
 namespace space_process {
 
 
-Nucleosome::Nucleosome(double pos) {
+Nucleosome::Nucleosome(double pos, std::vector<double> const &fReads, std::vector<double> const &rReads, long  sizeFReads, long sizeRReads)
+	:d_startFReads(fReads), d_startRReads(rReads), d_sizeFReads(sizeFReads), d_sizeRReads(sizeRReads){
 	// TODO Auto-generated constructor stub
 	d_mu = pos;
 }
@@ -78,6 +79,10 @@ void Nucleosome::setSizeR(int sizeR){
 
 int Nucleosome::sizeR(){
 	return(d_sizeR);
+}
+
+double Nucleosome::mu(){
+	return(d_mu);
 }
 
 void Nucleosome::setSigmaF(double sigmaF){

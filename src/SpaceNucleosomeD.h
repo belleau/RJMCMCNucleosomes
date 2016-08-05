@@ -12,21 +12,26 @@
 #define SPACENUCLEOSOMED_H_
 
 #include <Rcpp.h>
+#include "SpaceNucleosome.h"
 #include "NucleoDirichlet.h"
 
 namespace space_process{
 
-	class SpaceNucleosomeD{
-	protected:
-		std::list<NucleoDirichlet> d_nucleosomes;
+	template<typename NucleoD>    /***** BEWARE NucleoD Must inherit from SpaceNucleosomeD *****/
+	class SpaceNucleosomeD: public SpaceNucleosome<NucleoD>{
 
 	public:
-		SpaceNucleosomeD(Rcpp::IntegerVector const  &fReads,
-				Rcpp::IntegerVector const &rReads, int zeta);
-		virtual ~SpaceNucleosomeD();
-		int size();
-		bool empty();
-		void insert(NucleoDirichlet &u);
+
+		SpaceNucleosomeD(std::vector<double> const  &fReads, std::vector<double> const &rReads, int zeta)
+			:SpaceNucleosome<NucleoD>(fReads, rReads, zeta){
+		};
+
+		SpaceNucleosomeD(std::vector<double> const  &fReads, std::vector<double> const &rReads, int zeta, long sizeFReads, long sizeRReads)
+			:SpaceNucleosome<NucleoD>(fReads, rReads, zeta, sizeFReads, sizeRReads){
+		};
+
+		virtual ~SpaceNucleosomeD(){};
+
 
 	};
 }

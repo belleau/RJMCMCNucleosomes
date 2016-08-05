@@ -8,20 +8,27 @@
 #ifndef SPACEDIRICHLET_H_
 #define SPACEDIRICHLET_H_
 
+#include <gsl/gsl_randist.h>
 #include "SpaceState.h"
 #include "SpaceNucleosomeD.h"
 
 namespace space_process {
 
-class SpaceDirichlet: public SpaceState {
-	SpaceNucleosomeD d_nucleosomes;
-public:
-	SpaceDirichlet(Rcpp::IntegerVector const  &fReads,
-			Rcpp::IntegerVector const &rReads, int zeta, SpaceNucleosomeD nucleosomes);
-	virtual ~SpaceDirichlet();
+template<typename SpaceModif>  /***** BEWARE SpaceModif Must inherit from SpaceNucleosomeD *****/
+class SpaceDirichlet: public SpaceState<SpaceModif> {
 
-	double newMu(double minPos, double maxPos);
-	double newMu();
+public:
+	SpaceDirichlet(std::vector<double> const &fReads,
+			std::vector<double> const &rReads, int zeta):SpaceState<SpaceModif>(fReads, rReads, zeta){
+	};
+	virtual ~SpaceDirichlet(){};
+
+	double newMu(double minPos, double maxPos){
+		return(gsl_ran_flat(this->rng(), minPos, maxPos));
+	};
+	double newMu(){
+		return(gsl_ran_flat(this->rng(), this->minPos(), this->maxPos()));
+	};
 };
 
 } /* namespace space_process */

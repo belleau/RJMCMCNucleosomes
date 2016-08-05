@@ -11,8 +11,8 @@ using namespace std;
 
 namespace space_process {
 
-NucleoDirichlet::NucleoDirichlet(double mu, int df):
-	Nucleosome(mu){
+NucleoDirichlet::NucleoDirichlet(double mu, int df, std::vector<double> const fReads, std::vector<double> const rReads, long  sizeFReads, long sizeRReads):
+	Nucleosome(mu, fReads, rReads, sizeFReads, sizeRReads){
 	d_df = df;
 }
 
@@ -43,7 +43,7 @@ void NucleoDirichlet::setDf(int df){
 int NucleoDirichlet::df(){
 	return(d_df);
 }
-
+/*
 void NucleoDirichlet::setBF(double bF){
 	d_bF = bF;
 }
@@ -59,7 +59,7 @@ void NucleoDirichlet::setBR(double bR){
 double NucleoDirichlet::bR(){
 	return(d_bR);
 }
-
+*/
 void NucleoDirichlet::evalSigmaF(){
 	setSigmaF(-1.0);
 	if(d_df > 0){
@@ -72,6 +72,31 @@ void NucleoDirichlet::evalSigmaR(){
 	if(d_df > 0){
 		setSigmaR(varRead(startR(), endR(), sizeR()) * (d_df - 2) / d_df);
 	}
+}
+
+void NucleoDirichlet::evalBF(std::vector<double> const &fReads){
+	// dt((paramValues$startPSF - muValue[m] + deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]) / sqrt(sigmafValue[m]
+
+	// std::transform(myv1.begin(), myv1.end(), myv1.begin(),
+    //std::bind1st(std::multiplies<T>(),3));
+
+
+	//d_bF
+	double tmp = mu() + delta();
+
+	for(vector<double>::const_iterator it = fReads.begin(); it != fReads.end(); it++){
+
+	}
+	//double bF = gsl_ran_tdist_pdf(x, df());
+
+}
+
+void NucleoDirichlet::evalBR(){
+	 // dt((paramValues$startPSF - muValue[m] + deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]) / sqrt(sigmafValue[m]
+
+	//double x =
+	//double bF = gsl_ran_tdist_pdf(x, df());
+
 }
 
 
