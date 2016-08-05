@@ -11,8 +11,8 @@ using namespace std;
 
 namespace space_process {
 
-NucleoDirichlet::NucleoDirichlet(double mu, int df, std::vector<double> const fReads, std::vector<double> const rReads, long  sizeFReads, long sizeRReads):
-	Nucleosome(mu, fReads, rReads, sizeFReads, sizeRReads){
+NucleoDirichlet::NucleoDirichlet(double mu, int df, SegmentSeq &segSeq):
+	Nucleosome(mu, segSeq){
 	d_df = df;
 }
 

@@ -11,8 +11,8 @@ using namespace std;
 namespace space_process {
 
 
-Nucleosome::Nucleosome(double pos, std::vector<double> const &fReads, std::vector<double> const &rReads, long  sizeFReads, long sizeRReads)
-	:d_startFReads(fReads), d_startRReads(rReads), d_sizeFReads(sizeFReads), d_sizeRReads(sizeRReads){
+Nucleosome::Nucleosome(double pos, SegmentSeq &segSeq)
+	:d_segSeq(segSeq){
 	// TODO Auto-generated constructor stub
 	d_mu = pos;
 }

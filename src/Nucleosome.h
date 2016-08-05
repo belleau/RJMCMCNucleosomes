@@ -9,17 +9,13 @@
 #define NUCLEOSOME_H_
 
 #include <Rcpp.h>
+#include "SegmentSeq.h"
 
 namespace space_process {
 
 class Nucleosome {
-	std::vector<double> const &d_startFReads;
-	std::vector<double> const &d_startRReads; /* vector of
-												 reads start
-												 position
-												 ( foward and
-												 reverse) */
-	const long d_sizeFReads, d_sizeRReads;
+
+	SegmentSeq const &d_segSeq;
 
 	std::vector<double>::iterator d_startF, d_endF;
 	std::vector<double>::iterator d_startR, d_endR;
@@ -28,9 +24,8 @@ class Nucleosome {
 	double d_mu;
 	double d_sigmaF, d_sigmaR;
 
-
 public:
-	Nucleosome(double pos, std::vector<double> const &fReads, std::vector<double> const &rReads, long  sizeFReads, long sizeRReads);
+	Nucleosome(double pos, SegmentSeq &segSeq);
 	virtual ~Nucleosome();
 	void setStartF(std::vector<double>::iterator startF);
 	void setEndF(std::vector<double>::iterator endF);

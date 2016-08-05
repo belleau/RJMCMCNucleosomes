@@ -18,7 +18,7 @@ class NucleoDirichlet: public Nucleosome {
 	double d_avg;
 	double d_delta;
 public:
-	NucleoDirichlet(double mu, int df, std::vector<double> const fReads, std::vector<double> const rReads, long  sizeFReads, long sizeRReads);
+	NucleoDirichlet(double mu, int df, SegmentSeq &segSeq);
 	virtual ~NucleoDirichlet();
 	double testT();
 

@@ -14,13 +14,17 @@
 
 namespace space_process {
 
-template<typename SpaceModif>  /***** BEWARE SpaceModif Must inherit from SpaceNucleosomeD *****/
+template<typename SpaceModif>  /***** BEWARE SpaceModif
+									Must inherit
+									from SpaceNucleosomeD *****/
 class SpaceDirichlet: public SpaceState<SpaceModif> {
 
 public:
 	SpaceDirichlet(std::vector<double> const &fReads,
-			std::vector<double> const &rReads, int zeta):SpaceState<SpaceModif>(fReads, rReads, zeta){
+			std::vector<double> const &rReads, int zeta)
+	:SpaceState<SpaceModif>(fReads, rReads, zeta){
 	};
+
 	virtual ~SpaceDirichlet(){};
 
 	double newMu(double minPos, double maxPos){

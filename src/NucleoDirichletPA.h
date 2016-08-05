@@ -15,7 +15,7 @@ namespace space_process {
 
 class NucleoDirichletPA: public NucleoDirichlet {
 	public:
-		NucleoDirichletPA(double mu, int df, std::vector<double> const fReads, std::vector<double> const rReads, long  sizeFReads, long sizeRReads);
+		NucleoDirichletPA(double mu, int df, SegmentSeq &segSeq);
 		virtual ~NucleoDirichletPA();
 		double testT();
 		void testFRStart();

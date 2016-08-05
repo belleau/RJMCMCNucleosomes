@@ -44,8 +44,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     cout << "Bla " << fReads[0] << "\n";
     space_process::SpaceDirichlet<space_process::PartitionAll<space_process::NucleoDirichletPA> > currentState(fReads, rReads, 147);
     cout << "Bla " << fReads[0] << "\n";
-    space_process::bla1<int> oups(fReads);
-    cout << "Bla " << fReads[0] << "\n";
+
     //cout << "Aye " << startFReads[1] << "\n";
     //bla.initMu(currentState.newMu(), 3);
     //double mu = currentState.newMu();
