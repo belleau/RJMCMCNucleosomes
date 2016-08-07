@@ -8,6 +8,10 @@
 #ifndef SPACENUCLEOSOME_H_
 #define SPACENUCLEOSOME_H_
 
+#include <Rcpp.h>
+#include <gsl/gsl_randist.h>
+#include <unistd.h>
+
 #include "Nucleosome.h"
 #include "SegmentSeq.h"
 
@@ -18,15 +22,21 @@ class SpaceNucleosome {
 
 	SegmentSeq const d_segSeq;
 
+	std::list<NucleoClass> d_nucleosomes; /* List of nucleosomes */
+	gsl_rng *d_rng;  // random number generator
 
-	std::list<NucleoClass> d_nucleosomes;
 public:
-	SpaceNucleosome(std::vector<double> const  &fReads, std::vector<double> const &rReads, int zeta)
+	SpaceNucleosome(std::vector<double> const  &fReads,
+			std::vector<double> const &rReads, int zeta)
 		:d_segSeq(fReads, rReads, zeta){
+		setDefault();
 	};
 
-	SpaceNucleosome(std::vector<double> const  &fReads, std::vector<double> const &rReads, int zeta, long sizeFReads, long sizeRReads)
+	SpaceNucleosome(std::vector<double> const  &fReads,
+			std::vector<double> const &rReads, int zeta,
+			long sizeFReads, long sizeRReads)
 		:d_segSeq(fReads, rReads, zeta, sizeFReads, sizeRReads){
+		setDefault();
 	};
 	virtual ~SpaceNucleosome(){};
 
@@ -40,6 +50,44 @@ public:
 
 	void insert(NucleoClass &u){
 		d_nucleosomes.push_back(u);
+	};
+
+	void setDeltaMin(int deltaMin){
+		d_segSeq.setDeltaMin(deltaMin);
+	};
+	void setDeltaMax(int deltaMax){
+		d_segSeq.setDeltaMax(deltaMax);
+	};
+
+	void setRng(gsl_rng *rng){
+		d_rng = rng;
+	};
+
+	double minPos(){
+		return(d_segSeq.minPos());
+	};
+	double maxPos(){
+		return(d_segSeq.maxPos());
+	}
+
+protected:
+	gsl_rng * rng(){
+		return(d_rng);
+	};
+	SegmentSeq const &segSeq(){
+		return(d_segSeq);
+	}
+private:
+
+	void setDefault(){
+		const gsl_rng_type * T;
+		long seed;
+
+		T = gsl_rng_default;
+
+		d_rng = gsl_rng_alloc (T);     // pick random number generator
+		seed = time (NULL) * getpid();
+		gsl_rng_set (d_rng, seed);                  // set seed
 	};
 
 /*	long sizeFReads(){

@@ -3,7 +3,7 @@
 //#include "SpaceState.h"
 #include "SpaceNucleosomeD.h"
 #include "PartitionAll.h"
-#include "SpaceDirichlet.h"
+
 #include "NucleoDirichletPA.h"
 #include "Factory.h"
 #include "bla1.h"
@@ -42,9 +42,10 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
     //space_process::PartitionAll<space_process::NucleoDirichletPA> bla(fReads, rReads, 147);
     cout << "Bla " << fReads[0] << "\n";
-    space_process::SpaceDirichlet<space_process::PartitionAll<space_process::NucleoDirichletPA> > currentState(fReads, rReads, 147);
+    space_process::PartitionAll<space_process::NucleoDirichletPA> currentState(fReads, rReads, 147);
+    //space_process::SpaceDirichlet<space_process::PartitionAll<space_process::NucleoDirichletPA> > currentState(fReads, rReads, 147);
     cout << "Bla " << fReads[0] << "\n";
-
+    currentState.initMu( 3);
     //cout << "Aye " << startFReads[1] << "\n";
     //bla.initMu(currentState.newMu(), 3);
     //double mu = currentState.newMu();

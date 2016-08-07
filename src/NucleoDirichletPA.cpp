@@ -7,14 +7,14 @@
 
 #include "NucleoDirichletPA.h"
 #include <iostream>
-#include <gsl/gsl_randist.h>
+
 
 using namespace std;
 
 namespace space_process {
 
-NucleoDirichletPA::NucleoDirichletPA(double mu, int df, SegmentSeq &segSeq):
-	NucleoDirichlet(mu, df, segSeq){
+NucleoDirichletPA::NucleoDirichletPA(double mu, int df, SegmentSeq const &segSeq, gsl_rng *rng):
+	NucleoDirichlet(mu, df, segSeq, rng){
 	setSizeF(-1);
 	setSizeR(-1);
 

@@ -8,14 +8,13 @@
 #ifndef NUCLEODIRICHLETPA_H_
 #define NUCLEODIRICHLETPA_H_
 
-#include "Nucleosome.h"
 #include "NucleoDirichlet.h"
 
 namespace space_process {
 
 class NucleoDirichletPA: public NucleoDirichlet {
 	public:
-		NucleoDirichletPA(double mu, int df, SegmentSeq &segSeq);
+		NucleoDirichletPA(double mu, int df, SegmentSeq const &segSeq, gsl_rng *rng);
 		virtual ~NucleoDirichletPA();
 		double testT();
 		void testFRStart();

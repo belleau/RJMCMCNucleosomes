@@ -9,6 +9,9 @@
 #define NUCLEOSOME_H_
 
 #include <Rcpp.h>
+#include <math.h>
+#include <gsl/gsl_randist.h>
+
 #include "SegmentSeq.h"
 
 namespace space_process {
@@ -24,8 +27,9 @@ class Nucleosome {
 	double d_mu;
 	double d_sigmaF, d_sigmaR;
 
+	gsl_rng *d_rng;
 public:
-	Nucleosome(double pos, SegmentSeq &segSeq);
+	Nucleosome(double pos, SegmentSeq const &segSeq, gsl_rng *rng);
 	virtual ~Nucleosome();
 	void setStartF(std::vector<double>::iterator startF);
 	void setEndF(std::vector<double>::iterator endF);
@@ -47,12 +51,18 @@ public:
 	double sigmaF();
 	void setSigmaR(double sigmaR);
 	double sigmaR();
+	double zeta();
+	double deltaMin();
+	double deltaMax();
 protected:
 	std::vector<double>::iterator startF() ;
 	std::vector<double>::iterator endF();
 	std::vector<double>::iterator startR();
 	std::vector<double>::iterator endR();
 
+	gsl_rng * rng(){
+		return(d_rng);
+	};
 };
 
 }/* namespace space_process */

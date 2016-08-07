@@ -7,7 +7,7 @@
 
 #ifndef PARTITIONALL_H_
 #define PARTITIONALL_H_
-
+#include <iostream>
 #include "SpaceNucleosomeD.h"
 #include "NucleoDirichletPA.h"
 
@@ -43,11 +43,12 @@ public:
 	};
 	virtual ~PartitionAll(){};
 
-	void initMu(double Mu, int df){
+	void initMu(int df){
 		if(this->empty()){
 			if(!(y.empty()))
 			{
-				NucleoD u(Mu, df, this->startFReads(), this->startRReads(), this->sizeFReads(), this->sizeRReads());
+				double mu= gsl_ran_flat(this->rng(), this->minPos(), this->maxPos());
+				NucleoD u(mu, df, this->segSeq(), this->rng());
 
 				u.setAvg(accumulate( y.begin(), y.end(), 0.0)/y.size());
 
@@ -56,6 +57,8 @@ public:
 				setReverse(u.avg(), *(--last), u);
 				u.evalSigmaF();
 				u.evalSigmaR();
+				u.evalDelta();
+				std::cout << "Aye " << u.delta() << "\n";
 			}
 			else{
 				std::cerr << "No reads \n";

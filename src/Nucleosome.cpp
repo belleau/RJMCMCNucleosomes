@@ -11,10 +11,11 @@ using namespace std;
 namespace space_process {
 
 
-Nucleosome::Nucleosome(double pos, SegmentSeq &segSeq)
+Nucleosome::Nucleosome(double pos, SegmentSeq const &segSeq, gsl_rng *rng)
 	:d_segSeq(segSeq){
 	// TODO Auto-generated constructor stub
 	d_mu = pos;
+	d_rng = rng;
 }
 
 Nucleosome::~Nucleosome() {
@@ -99,6 +100,17 @@ void Nucleosome::setSigmaR(double sigmaR){
 
 double Nucleosome::sigmaR(){
 	return(d_sigmaR);
+}
+
+double Nucleosome::deltaMin(){
+	return(double(d_segSeq.deltaMin()));
+}
+double Nucleosome::deltaMax(){
+	return(double(d_segSeq.deltaMax()));
+}
+
+double Nucleosome::zeta(){
+	return(double(d_segSeq.zeta()));
 }
 
 double Nucleosome::varRead(std::vector<double>::iterator start, std::vector<double>::iterator end, int n){

@@ -11,8 +11,8 @@ using namespace std;
 
 namespace space_process {
 
-NucleoDirichlet::NucleoDirichlet(double mu, int df, SegmentSeq &segSeq):
-	Nucleosome(mu, segSeq){
+NucleoDirichlet::NucleoDirichlet(double mu, int df, SegmentSeq const &segSeq, gsl_rng *rng):
+	Nucleosome(mu, segSeq, rng){
 	d_df = df;
 }
 
@@ -72,6 +72,24 @@ void NucleoDirichlet::evalSigmaR(){
 	if(d_df > 0){
 		setSigmaR(varRead(startR(), endR(), sizeR()) * (d_df - 2) / d_df);
 	}
+}
+
+void NucleoDirichlet::evalDelta(){
+	/* compute truncated normal */
+	if(sigmaF() > 0 && sigmaR() > 0){
+		double sigma = sqrt( 1 /(1/sigmaF() + 1/sigmaR()));
+		double tmpDelta = 147;
+		do{
+
+			tmpDelta = zeta() + gsl_ran_gaussian(rng(), sigma);
+
+		}while(tmpDelta > deltaMin() &&  tmpDelta < deltaMax());
+		setDelta(tmpDelta);
+	}
+	else{
+		exit(1);
+	}
+
 }
 
 void NucleoDirichlet::evalBF(std::vector<double> const &fReads){

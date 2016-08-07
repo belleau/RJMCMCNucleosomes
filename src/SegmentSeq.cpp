@@ -15,7 +15,7 @@ SegmentSeq::SegmentSeq(std::vector<double> const &fReads,
 	:d_startFReads(fReads), d_startRReads(rReads), d_zeta(zeta),
 	 d_sizeFReads(fReads.size()), d_sizeRReads(rReads.size()){
 
-	setMinMax();
+	setDefault();
 }
 
 SegmentSeq::SegmentSeq(std::vector<double> const &fReads,
@@ -24,7 +24,7 @@ SegmentSeq::SegmentSeq(std::vector<double> const &fReads,
 	:d_startFReads(fReads), d_startRReads(rReads), d_zeta(zeta),
 	 d_sizeFReads(sizeFReads), d_sizeRReads(sizeRReads){
 
-	setMinMax();
+	setDefault();
 }
 
 SegmentSeq::~SegmentSeq() {
@@ -43,24 +43,43 @@ void SegmentSeq::setMinMax(){
 					d_startRReads.end())));
 }
 
-long SegmentSeq::sizeFReads(){
+void SegmentSeq::setDefault(){
+	setMinMax();
+	d_deltaMin = d_zeta - 5;
+	d_deltaMax = d_zeta + 5;
+}
+
+long SegmentSeq::sizeFReads() const{
 	return(d_sizeFReads);
 };
 
-long SegmentSeq::sizeRReads(){
+long SegmentSeq::sizeRReads() const{
 	return(d_sizeFReads);
 };
 
-double SegmentSeq::minPos(){
+double SegmentSeq::minPos() const{
 	return(d_minPos);
 }
 
-double SegmentSeq::maxPos(){
+double SegmentSeq::maxPos() const{
 	return(d_maxPos);
 }
 
-int SegmentSeq::zeta(){
+int SegmentSeq::zeta() const{
 	return(d_zeta);
+}
+
+void SegmentSeq::setDeltaMin(int deltaMin){
+	d_deltaMin = deltaMin;
+}
+void SegmentSeq:: setDeltaMax(int deltaMax){
+	d_deltaMax = deltaMax;
+}
+int SegmentSeq::deltaMin() const{
+	return(d_deltaMax);
+}
+int SegmentSeq::deltaMax() const{
+	return(d_deltaMin);
 }
 
 } /* namespace space_process */

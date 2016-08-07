@@ -16,7 +16,7 @@ class SegmentSeq {
 
 	double d_minPos, d_maxPos;
 	const int d_zeta;
-
+	int d_deltaMin, d_deltaMax;
 	std::vector<double> const &d_startFReads;
 	std::vector<double> const &d_startRReads; /* vector of
 												 reads start
@@ -31,13 +31,18 @@ public:
 				long sizeFReads, long sizeRReads);
 	virtual ~SegmentSeq();
 
-	long sizeFReads();
-	long sizeRReads();
-	double minPos();
-	double maxPos();
-	int zeta();
+	long sizeFReads() const;
+	long sizeRReads() const;
+	double minPos() const;
+	double maxPos() const;
+	int zeta() const;
+	void setDeltaMin(int deltaMin);
+	void setDeltaMax(int deltaMax);
+	int deltaMin() const;
+	int deltaMax() const;
 private:
 	void setMinMax();
+	void setDefault();
 };
 
 } /* namespace space_process */

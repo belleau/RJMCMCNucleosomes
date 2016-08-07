@@ -8,6 +8,7 @@
 #ifndef NUCLEODIRICHLET_H_
 #define NUCLEODIRICHLET_H_
 
+
 #include "Nucleosome.h"
 
 namespace space_process {
@@ -18,7 +19,7 @@ class NucleoDirichlet: public Nucleosome {
 	double d_avg;
 	double d_delta;
 public:
-	NucleoDirichlet(double mu, int df, SegmentSeq &segSeq);
+	NucleoDirichlet(double mu, int df, SegmentSeq const &segSeq, gsl_rng *rng);
 	virtual ~NucleoDirichlet();
 	double testT();
 
@@ -39,6 +40,7 @@ public:
 	void evalSigmaF();
 	void evalSigmaR();
 
+	void evalDelta();
 	void evalBF(std::vector<double> const &fReads);
 	void evalBR();
 //	void setBf();
