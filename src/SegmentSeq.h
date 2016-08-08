@@ -40,6 +40,11 @@ public:
 	void setDeltaMax(int deltaMax);
 	int deltaMin() const;
 	int deltaMax() const;
+	std::vector<double>::const_iterator beginFR() const;
+	std::vector<double>::const_iterator endFR() const;
+	std::vector<double>::const_iterator beginRR() const;
+	std::vector<double>::const_iterator endRR() const;
+
 private:
 	void setMinMax();
 	void setDefault();

@@ -81,5 +81,21 @@ int SegmentSeq::deltaMin() const{
 int SegmentSeq::deltaMax() const{
 	return(d_deltaMin);
 }
+std::vector<double>::const_iterator SegmentSeq::beginFR() const{
+	return(d_startFReads.begin());
+}
+
+std::vector<double>::const_iterator SegmentSeq::endFR() const{
+	return(d_startFReads.end());
+}
+
+std::vector<double>::const_iterator SegmentSeq::beginRR() const{
+	return(d_startRReads.begin());
+}
+
+std::vector<double>::const_iterator SegmentSeq::endRR() const{
+	return(d_startRReads.end());
+}
+
 
 } /* namespace space_process */

@@ -92,30 +92,36 @@ void NucleoDirichlet::evalDelta(){
 
 }
 
-void NucleoDirichlet::evalBF(std::vector<double> const &fReads){
-	// dt((paramValues$startPSF - muValue[m] + deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]) / sqrt(sigmafValue[m]
+void NucleoDirichlet::evalBF(){
 
-	// std::transform(myv1.begin(), myv1.end(), myv1.begin(),
-    //std::bind1st(std::multiplies<T>(),3));
+	/* reinit d_bF */
+	d_bF.clear();
+	d_bF.resize(sizeFR());
 
-
-	//d_bF
-	double tmp = mu() + delta();
-
-	for(vector<double>::const_iterator it = fReads.begin(); it != fReads.end(); it++){
-
+	double tmp = mu() + delta()/2;
+	double sdF = sqrt(sigmaF());
+	long i = 0;
+	for(vector<double>::const_iterator it = beginFR(); it != endFR(); it++){
+		//d_bF.push_back(gsl_ran_tdist_pdf(((*it - tmp ) / sdF), df()));
+		d_bF[i++] = gsl_ran_tdist_pdf(((*it - tmp ) / sdF), df());
 	}
-	//double bF = gsl_ran_tdist_pdf(x, df());
-
 }
 
 void NucleoDirichlet::evalBR(){
-	 // dt((paramValues$startPSF - muValue[m] + deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]) / sqrt(sigmafValue[m]
 
-	//double x =
-	//double bF = gsl_ran_tdist_pdf(x, df());
+	/* reinit d_bF */
+	d_bR.clear();
+	d_bR.resize(sizeRR());
 
+	double tmp = mu() + delta()/2;
+	double sdR = sqrt(sigmaR());
+	long i = 0;
+	for(vector<double>::const_iterator it = beginRR(); it != endRR(); it++){
+		//d_bF.push_back(gsl_ran_tdist_pdf(((*it - tmp ) / sdF), df()));
+		d_bR[i++] = gsl_ran_tdist_pdf(((*it - tmp ) / sdR), df());
+	}
 }
+
 
 
 } /* namespace space_process */

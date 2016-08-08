@@ -24,13 +24,6 @@ public:
 		y = fReads;
 	    y.insert(y.end(),rReads.begin(),rReads.end());
 	    sort(y.begin(),y.end());
-	/*	int cpt = 0;
-		for(vector<double>::iterator it=y.begin(); it!=y.end(); ++it){
-		    cpt++;
-			cout << "Val " << *it << " cpt " << cpt << "\n";
-		}
-		cout <<"\n\n";
-	*/
 	};
 	PartitionAll(std::vector<double> const  &fReads,
 			std::vector<double> const &rReads,
@@ -47,18 +40,34 @@ public:
 		if(this->empty()){
 			if(!(y.empty()))
 			{
-				double mu= gsl_ran_flat(this->rng(), this->minPos(), this->maxPos());
-				NucleoD u(mu, df, this->segSeq(), this->rng());
+				int cpt = 0;
+				bool flag = true;
+				do{
+					double mu= gsl_ran_flat(this->rng(), this->minPos(), this->maxPos());
+					NucleoD u(mu, df, this->segSeq(), this->rng());
+					cpt++;
+					u.setAvg(accumulate( y.begin(), y.end(), 0.0)/y.size());
 
-				u.setAvg(accumulate( y.begin(), y.end(), 0.0)/y.size());
+					long t = setFoward(y[0], u.avg(), u);
+					if(setFoward(y[0], u.avg(), u) > 1)
+					{
+						std::vector<double>::iterator last = y.end();
+						if(setReverse(u.avg(), *(--last), u) > 1)
+						{
+							flag = false;
+							u.evalSigmaF();
+							u.evalSigmaR();
+							u.evalDelta();
+							u.evalBF();
+							u.evalBR();
+						}
+					}
 
-				setFoward(y[0], u.avg(), u);
-				std::vector<double>::iterator last = y.end();
-				setReverse(u.avg(), *(--last), u);
-				u.evalSigmaF();
-				u.evalSigmaR();
-				u.evalDelta();
-				std::cout << "Aye " << u.delta() << "\n";
+				}while(flag && cpt == 1000);
+				if(flag){
+					cerr << "Problem with the number of reads to initialise mu\n";
+					exit(1);
+				}
 			}
 			else{
 				std::cerr << "No reads \n";
@@ -66,40 +75,53 @@ public:
 			}
 		}
 	};
-	void setFoward(double start, double end, NucleoD &u){
 
+	long setFoward(double start, double end, NucleoD &u){
+		long l = 0;
 		std::vector<double>::iterator fStart = y.begin();
 		std::vector<double>::iterator fEnd =  y.end();
-		int cpt = getLimit(start,end, fStart, fEnd);
+		int cpt = getLimit(start,end, fStart, fEnd, l);
 		u.setFStartPos(fStart, fEnd, cpt);
+		return(l);
 	};
-	void setFoward(std::vector<double>::iterator fStart, std::vector<double>::iterator fEnd, double start, double end, NucleoD &u){
 
-		int cpt = getLimit(start,end, fStart, fEnd);
+	long setFoward(std::vector<double>::iterator fStart, std::vector<double>::iterator fEnd, double start, double end, NucleoD &u){
+		long l = 0;
+		int cpt = getLimit(start,end, fStart, fEnd, l);
 		u.setFStartPos(fStart, fEnd, cpt);
+		return(l);
 	};
-	void setReverse(double start, double end, NucleoD &u){
-
+	long setReverse(double start, double end, NucleoD &u){
+		long l = 0;
 		std::vector<double>::iterator rStart = y.begin();
 		std::vector<double>::iterator rEnd =  y.end();
-		int cpt = getLimit(start,end, rStart, rEnd);
+		int cpt = getLimit(start,end, rStart, rEnd, l);
 		u.setRStartPos(rStart, rEnd, cpt);
+		return(l);
 	};
-	void setReverse(std::vector<double>::iterator rStart, std::vector<double>::iterator rEnd, double start, double end, NucleoD &u){
-
-		int cpt = getLimit(start,end, rStart, rEnd);
+	long setReverse(std::vector<double>::iterator rStart, std::vector<double>::iterator rEnd, double start, double end, NucleoD &u){
+		long l = 0;
+		int cpt = getLimit(start,end, rStart, rEnd, l);
 		u.setRStartPos(rStart, rEnd, cpt);
+		return(l);
 	};
 
 private:
-	int getLimit(double start, double end, std::vector<double>::iterator &startIt, std::vector<double>::iterator &endIt){
+	int getLimit(double start, double end, std::vector<double>::iterator &startIt, std::vector<double>::iterator &endIt, long &l){
 		std::vector<double>::iterator it=y.begin();
 		bool flag=1;
 		int cpt = 0;
+		double pr = -1.0;
+		l = 0;
 		while(flag && it!=y.end()){
 			if(*it >= start){
 				startIt = it;
+
 				while(*it <= end  && it != y.end()){
+					if(pr < (*it + 0.0001)){
+						l++;
+					}
+					pr = *it;
 					it++;
 					cpt++;
 				}

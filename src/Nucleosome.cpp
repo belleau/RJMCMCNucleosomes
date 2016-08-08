@@ -113,6 +113,30 @@ double Nucleosome::zeta(){
 	return(double(d_segSeq.zeta()));
 }
 
+vector<double>::const_iterator Nucleosome::beginFR(){
+	return(d_segSeq.beginFR());
+}
+
+vector<double>::const_iterator Nucleosome::endFR(){
+	return(d_segSeq.endFR());
+}
+
+long Nucleosome::sizeFR(){
+	return(d_segSeq.sizeFReads());
+}
+
+vector<double>::const_iterator Nucleosome::beginRR(){
+	return(d_segSeq.beginRR());
+}
+
+vector<double>::const_iterator Nucleosome::endRR(){
+	return(d_segSeq.endRR());
+}
+
+long Nucleosome::sizeRR(){
+	return(d_segSeq.sizeRReads());
+}
+
 double Nucleosome::varRead(std::vector<double>::iterator start, std::vector<double>::iterator end, int n){
 	double var = -1.0;
 	if(n>0){

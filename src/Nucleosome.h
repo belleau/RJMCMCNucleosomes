@@ -54,6 +54,7 @@ public:
 	double zeta();
 	double deltaMin();
 	double deltaMax();
+
 protected:
 	std::vector<double>::iterator startF() ;
 	std::vector<double>::iterator endF();
@@ -63,6 +64,13 @@ protected:
 	gsl_rng * rng(){
 		return(d_rng);
 	};
+	std::vector<double>::const_iterator beginFR();
+	std::vector<double>::const_iterator endFR();
+	long sizeFR();
+
+	std::vector<double>::const_iterator beginRR();
+	std::vector<double>::const_iterator endRR();
+	long sizeRR();
 };
 
 }/* namespace space_process */
