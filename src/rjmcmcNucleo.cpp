@@ -41,11 +41,20 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     // space_process::NucleoDirichletPA
 
     //space_process::PartitionAll<space_process::NucleoDirichletPA> bla(fReads, rReads, 147);
-    cout << "Bla " << fReads[0] << "\n";
+    //cout << "Bla " << fReads[0] << "\n";
     space_process::PartitionAll<space_process::NucleoDirichletPA> currentState(fReads, rReads, 147);
+
+    currentState.insertD(10010,3);
+    currentState.insertD(10020,3);
+    currentState.insertD(10030,3);
+    currentState.insertD(10040,3);
+    currentState.insertD(10050,3);
+    currentState.insertD(10060,3);
+    currentState.evalPriorMuDensity();
+
     //space_process::SpaceDirichlet<space_process::PartitionAll<space_process::NucleoDirichletPA> > currentState(fReads, rReads, 147);
-    cout << "Bla " << fReads[0] << "\n";
-    currentState.initMu( 3);
+    //cout << "Bla " << fReads[0] << "\n";
+    //currentState.initMu( 3);
     //cout << "Aye " << startFReads[1] << "\n";
     //bla.initMu(currentState.newMu(), 3);
     //double mu = currentState.newMu();

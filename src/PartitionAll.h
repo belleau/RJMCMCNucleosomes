@@ -52,7 +52,8 @@ public:
 					if(setFoward(y[0], u.avg(), u) > 1)
 					{
 						std::vector<double>::iterator last = y.end();
-						if(setReverse(u.avg(), *(--last), u) > 1)
+						/* end = (*(--last) + 1) to include the last read in sigmaR */
+						if(setReverse(u.avg(), (*(--last) + 1), u) > 1)
 						{
 							flag = false;
 							u.evalSigmaF();
@@ -60,12 +61,13 @@ public:
 							u.evalDelta();
 							u.evalBF();
 							u.evalBR();
+							//w.push_back(1);
 						}
 					}
 
 				}while(flag && cpt == 1000);
 				if(flag){
-					cerr << "Problem with the number of reads to initialise mu\n";
+					std::cerr << "Problem with the number of reads to initialise mu\n";
 					exit(1);
 				}
 			}
@@ -117,7 +119,7 @@ private:
 			if(*it >= start){
 				startIt = it;
 
-				while(*it <= end  && it != y.end()){
+				while(*it < end  && it != y.end()){
 					if(pr < (*it + 0.0001)){
 						l++;
 					}

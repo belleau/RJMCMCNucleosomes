@@ -19,23 +19,28 @@ namespace space_process {
 
 template<typename NucleoClass>    /***** BEWARE NucleoClass Must inherit from Nucleosome *****/
 class SpaceNucleosome {
+    typedef std::list<NucleoClass> containerNucleo;
+    typedef typename containerNucleo::iterator itNucleo;
 
 	SegmentSeq const d_segSeq;
 
-	std::list<NucleoClass> d_nucleosomes; /* List of nucleosomes */
+	containerNucleo d_nucleosomes; /* List of nucleosomes */
+	int d_valK;
 	gsl_rng *d_rng;  // random number generator
 
 public:
 	SpaceNucleosome(std::vector<double> const  &fReads,
 			std::vector<double> const &rReads, int zeta)
-		:d_segSeq(fReads, rReads, zeta){
+		:d_segSeq(fReads, rReads, zeta), d_valK(0){
 		setDefault();
 	};
 
 	SpaceNucleosome(std::vector<double> const  &fReads,
 			std::vector<double> const &rReads, int zeta,
 			long sizeFReads, long sizeRReads)
-		:d_segSeq(fReads, rReads, zeta, sizeFReads, sizeRReads){
+		:d_segSeq(fReads, rReads, zeta, sizeFReads, sizeRReads)
+		, d_valK(0){
+
 		setDefault();
 	};
 	virtual ~SpaceNucleosome(){};
@@ -48,8 +53,10 @@ public:
 		return(d_nucleosomes.empty());
 	};
 
+
 	void insert(NucleoClass &u){
 		d_nucleosomes.push_back(u);
+		d_valK++;
 	};
 
 	void setDeltaMin(int deltaMin){
@@ -63,20 +70,34 @@ public:
 		d_rng = rng;
 	};
 
+	int valK(){
+		return(d_valK);
+	};
+
 	double minPos(){
 		return(d_segSeq.minPos());
 	};
+
 	double maxPos(){
 		return(d_segSeq.maxPos());
-	}
+	};
 
 protected:
 	gsl_rng * rng(){
 		return(d_rng);
 	};
+
 	SegmentSeq const &segSeq(){
 		return(d_segSeq);
-	}
+	};
+
+	itNucleo nucleoBegin(){
+		return(d_nucleosomes.begin());
+	};
+
+	itNucleo nucleoEnd(){
+		return(d_nucleosomes.end());
+	};
 private:
 
 	void setDefault(){

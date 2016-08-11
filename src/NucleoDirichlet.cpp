@@ -5,8 +5,6 @@
  *      Author: belleau
  */
 #include "NucleoDirichlet.h"
-#include <iostream>
-#include <gsl/gsl_randist.h>
 using namespace std;
 
 namespace space_process {
