@@ -21,8 +21,8 @@ namespace space_process{
 
 	template<typename NucleoD>    /***** BEWARE NucleoD Must inherit from SpaceNucleosomeD *****/
 	class SpaceNucleosomeD: public SpaceNucleosome<NucleoD>{
-		typedef std::list<NucleoD> containerNucleo;
-		typedef typename containerNucleo::iterator itNucleo;
+		typedef std::list<NucleoD*> containerNucleo;
+		typedef typename containerNucleo::const_iterator itNucleo;
 		std::vector<double> d_w;
 		double d_kD;
 		double d_priorMuDensity;
@@ -31,7 +31,21 @@ namespace space_process{
 
 
 	public:
+		SpaceNucleosomeD(SegmentSeq const &segSeq)
+			:SpaceNucleosome<NucleoD>(segSeq){
+			setDefault();
+		};
 
+		SpaceNucleosomeD(SegmentSeq const &segSeq, int seed)
+			:SpaceNucleosome<NucleoD>(segSeq, seed){
+		};
+
+		SpaceNucleosomeD(SegmentSeq const &segSeq, gsl_rng * rng)
+			:SpaceNucleosome<NucleoD>(segSeq, rng){
+
+		};
+
+/*
 		SpaceNucleosomeD(std::vector<double> const  &fReads, std::vector<double> const &rReads, int zeta)
 			:SpaceNucleosome<NucleoD>(fReads, rReads, zeta){
 			setDefault();
@@ -41,7 +55,7 @@ namespace space_process{
 			:SpaceNucleosome<NucleoD>(fReads, rReads, zeta, sizeFReads, sizeRReads){
 			setDefault();
 		};
-
+*/
 		virtual ~SpaceNucleosomeD(){};
 
 		double meanRead(){
@@ -62,7 +76,7 @@ namespace space_process{
 		}
 
 		void insertD(double mu, int df){
-			NucleoD u(mu, df, this->segSeq(), this->rng());
+			NucleoD *u = new NucleoD(mu, df, this->segSeq(), this->rng());
 			this->insert(u);
 		};
 
@@ -91,23 +105,24 @@ namespace space_process{
 			itNucleo nucleoIt = this->nucleoBegin();
 			result = 0;
 			if(this->valK() == 1){
-				result = 2 * pow((*nucleoIt).mu()  - m, 2);
+				result = 2 * pow((**nucleoIt).mu()  - m, 2);
 			}
 			else{
 				if(this->valK() == 2){
-					double v [2]= {(*nucleoIt++).mu()  - m, (*nucleoIt).mu() - m};
+					double v [2]= {(**nucleoIt++).mu()  - m, (**nucleoIt).mu() - m};
 					result = (2 * v[0] -  v[1]) * v[0] + (v[1] - v[0]) *v[1];
 				}
 				if(this->valK() > 2)
 				{
-					double v [3] = {(*nucleoIt++).mu() - m, (*nucleoIt++).mu()  - m, 0};
+					/* matrix multiplication t(mu) Omega mu */
+					double v [3] = {(**nucleoIt++).mu() - m, (**nucleoIt++).mu()  - m, 0};
 					result = (2 * v[0] -  v[1]) * v[0];
 
 					int i = 2;
 					do{
-						v[i%3] =  (*nucleoIt++).mu() - m;
+						v[i%3] =  (**nucleoIt++).mu() - m;
 
-						result += (2 * v[(i-1)%3] - v[(i)%3] - v[(i-2)%3]) * v[(i-1)%3];// verifier le modulo
+						result += (2 * v[(i-1)%3] - v[(i)%3] - v[(i-2)%3]) * v[(i-1)%3];
 						i++;
 					}while(nucleoIt != this->nucleoEnd());
 					// result du dernier
@@ -203,7 +218,18 @@ namespace space_process{
 			//tmpC * exp(- result/ (2 * r2()) )
 			return(result);
 		};
+	protected:
+		void setMeanRead(double meanRead){
+			d_meanRead = meanRead;
+		};
 
+		void setR2(double r2){
+			d_r2 = r2;
+		};
+
+		void setCMuDensity(double cMuDensity){
+			d_cMuDensity = cMuDensity;
+		};
 	private:
 		void setDefault(){
 			d_r2 = pow((this->maxPos() - this->minPos()),2);

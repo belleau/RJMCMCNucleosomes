@@ -6,13 +6,14 @@
 
 #include "NucleoDirichletPA.h"
 #include "Factory.h"
-#include "bla1.h"
+#include "bla2.h"
+#include "SegmentSeq.h"
 
 //typedef space_process::SpaceState regionState;
 
 using namespace Rcpp;
 using namespace std;
-//using namespace space_process;
+using namespace space_process;
 
 // Below is a simple example of exporting a C++ function to R. You can
 //
@@ -32,6 +33,26 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     //startFReads[1] = 1;
 
 
+    /*space_process::bla2<int> a;
+    a.insert(1);
+    a.insert(2);
+    a.insert(3);
+    cout << "Size a " << a.size() << "\n";
+
+    space_process::bla2<int> b(a);
+    b.insert(5);
+
+    cout << "Size a " << a.size() << "\n";
+    cout << "Size b " << b.size() << "\n";
+    space_process::bla2<int> *c = a.clone();
+
+    (*c).insert(6);
+    (*c).insert(6);
+    (*c).insert(6);
+
+    cout << "Size a " << a.size() << "\n";
+    cout << "Size b " << b.size() << "\n";
+    cout << "Size c " << (*c).size() << "\n";*/
 
     //space_process::SpaceState currentState(startFReads, startRReads, 147);
     //space_process::SpaceNucleosome currentState(startFReads, startRReads, 147);
@@ -42,7 +63,8 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
     //space_process::PartitionAll<space_process::NucleoDirichletPA> bla(fReads, rReads, 147);
     //cout << "Bla " << fReads[0] << "\n";
-    space_process::PartitionAll<space_process::NucleoDirichletPA> currentState(fReads, rReads, 147);
+
+    /*space_process::PartitionAll<space_process::NucleoDirichletPA> currentState(fReads, rReads, 147);
 
     currentState.insertD(10010,3);
     currentState.insertD(10020,3);
@@ -50,8 +72,27 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     currentState.insertD(10040,3);
     currentState.insertD(10050,3);
     currentState.insertD(10060,3);
-    currentState.evalPriorMuDensity();
+    currentState.evalPriorMuDensity();*/
+    SegmentSeq seg(fReads, rReads, 147);
+    PartitionAll<NucleoDirichletPA> currentState(seg);
+    currentState.insertD(10010,3);
+	currentState.insertD(10020,3);
+	currentState.insertD(10030,3);
+	currentState.insertD(10040,3);
+	currentState.insertD(10050,3);
+	currentState.insertD(10060,3);
+	currentState.evalPriorMuDensity();
 
+	PartitionAll<NucleoDirichletPA> *mod = currentState.clone();
+
+	cout << "valKc " << currentState.valK() << "\n";
+	cout << "valKm " << mod->valK() << "\n";
+	cout << "sizem " << mod->size() << "\n";
+	mod->insertD(10070,3);
+	mod->insertD(10080,3);
+	cout << "valKc " << currentState.valK() << "\n";
+	cout << "valKm " << mod->valK() << "\n";
+	cout << "sizem " << mod->size() << "\n";
     //space_process::SpaceDirichlet<space_process::PartitionAll<space_process::NucleoDirichletPA> > currentState(fReads, rReads, 147);
     //cout << "Bla " << fReads[0] << "\n";
     //currentState.initMu( 3);

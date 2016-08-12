@@ -19,17 +19,34 @@ namespace space_process {
 
 template<typename NucleoClass>    /***** BEWARE NucleoClass Must inherit from Nucleosome *****/
 class SpaceNucleosome {
-    typedef std::list<NucleoClass> containerNucleo;
-    typedef typename containerNucleo::iterator itNucleo;
+    typedef std::list<NucleoClass*> containerNucleo;
+    typedef typename containerNucleo::const_iterator itNucleo;
 
-	SegmentSeq const d_segSeq;
-
+	//SegmentSeq const d_segSeq; /* sera bientot une reference quand plusieurs SpaceNucleosome */
+    SegmentSeq const &d_segSeq;
 	containerNucleo d_nucleosomes; /* List of nucleosomes */
 	int d_valK;
 	gsl_rng *d_rng;  // random number generator
 
 public:
-	SpaceNucleosome(std::vector<double> const  &fReads,
+
+
+	SpaceNucleosome(SegmentSeq const &segSeq):
+		d_segSeq(segSeq){
+		setRNG();
+	};// Finir la cascade
+
+	SpaceNucleosome(SegmentSeq const &segSeq, int seed):
+			d_segSeq(segSeq){
+			setRNG(seed);
+		};// Finir la cascade
+
+	SpaceNucleosome(SegmentSeq const &segSeq, gsl_rng * rng):
+		d_segSeq(segSeq), d_rng(rng){
+
+	}
+	//const gsl_rng_type * T
+/*	SpaceNucleosome(std::vector<double> const  &fReads,
 			std::vector<double> const &rReads, int zeta)
 		:d_segSeq(fReads, rReads, zeta), d_valK(0){
 		setDefault();
@@ -42,7 +59,9 @@ public:
 		, d_valK(0){
 
 		setDefault();
-	};
+	};*/
+
+
 	virtual ~SpaceNucleosome(){};
 
 	int size(){
@@ -54,17 +73,17 @@ public:
 	};
 
 
-	void insert(NucleoClass &u){
+	void insert(NucleoClass *u){
 		d_nucleosomes.push_back(u);
 		d_valK++;
 	};
 
-	void setDeltaMin(int deltaMin){
+/*	void setDeltaMin(int deltaMin){
 		d_segSeq.setDeltaMin(deltaMin);
 	};
 	void setDeltaMax(int deltaMax){
 		d_segSeq.setDeltaMax(deltaMax);
-	};
+	};*/
 
 	void setRng(gsl_rng *rng){
 		d_rng = rng;
@@ -98,9 +117,22 @@ protected:
 	itNucleo nucleoEnd(){
 		return(d_nucleosomes.end());
 	};
+
+	containerNucleo &nucleosomes(){
+		return(d_nucleosomes);
+	};
+
+	void setNucleosomes(containerNucleo &nucleosomes){
+
+		d_nucleosomes = nucleosomes;
+	};
+
+	void setValK(int k){
+		d_valK= k;
+	}
 private:
 
-	void setDefault(){
+	void setRNG(){
 		const gsl_rng_type * T;
 		long seed;
 
@@ -110,6 +142,17 @@ private:
 		seed = time (NULL) * getpid();
 		gsl_rng_set (d_rng, seed);                  // set seed
 	};
+
+	void setRNG(int seed){
+		const gsl_rng_type * T;
+
+		T = gsl_rng_default;
+
+		d_rng = gsl_rng_alloc (T);     // pick random number generator
+
+		gsl_rng_set (d_rng, seed);                  // set seed
+	};
+
 
 /*	long sizeFReads(){
 		return(d_sizeFReads);
