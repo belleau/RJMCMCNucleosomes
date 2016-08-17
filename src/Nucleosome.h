@@ -20,8 +20,8 @@ class Nucleosome {
 
 	SegmentSeq const &d_segSeq;
 
-	std::vector<double>::iterator d_startF, d_endF;
-	std::vector<double>::iterator d_startR, d_endR;
+	std::vector<double>::const_iterator d_startF, d_endF;
+	std::vector<double>::const_iterator d_startR, d_endR;
 	long d_sizeF, d_sizeR;
 
 	double d_mu;
@@ -31,19 +31,19 @@ class Nucleosome {
 public:
 	Nucleosome(double pos, SegmentSeq const &segSeq, gsl_rng *rng);
 	virtual ~Nucleosome();
-	void setStartF(std::vector<double>::iterator startF);
-	void setEndF(std::vector<double>::iterator endF);
-	void setStartR(std::vector<double>::iterator startR);
-	void setEndR(std::vector<double>::iterator endR);
+	void setStartF(std::vector<double>::const_iterator startF);
+	void setEndF(std::vector<double>::const_iterator endF);
+	void setStartR(std::vector<double>::const_iterator startR);
+	void setEndR(std::vector<double>::const_iterator endR);
 	void setSizeF(int);
 	void setSizeR(int);
 	int sizeF();
 	int sizeR();
-	void setFStartPos(std::vector<double>::iterator fStart, std::vector<double>::iterator fEnd, int n);
-	void setRStartPos(std::vector<double>::iterator fStart, std::vector<double>::iterator fEnd, int n);
+	void setFStartPos(std::vector<double>::const_iterator fStart, std::vector<double>::const_iterator fEnd, int n);
+	void setRStartPos(std::vector<double>::const_iterator fStart, std::vector<double>::const_iterator fEnd, int n);
 	double mu();
 
-	double varRead(std::vector<double>::iterator start, std::vector<double>::iterator end, int n);
+	double varRead(std::vector<double>::const_iterator start, std::vector<double>::const_iterator end, int n);
 
 	void evalSigmaF();
 	void evalSigmaR();
@@ -56,10 +56,10 @@ public:
 	double deltaMax();
 
 protected:
-	std::vector<double>::iterator startF() ;
-	std::vector<double>::iterator endF();
-	std::vector<double>::iterator startR();
-	std::vector<double>::iterator endR();
+	std::vector<double>::const_iterator startF() ;
+	std::vector<double>::const_iterator endF();
+	std::vector<double>::const_iterator startR();
+	std::vector<double>::const_iterator endR();
 
 	gsl_rng * rng(){
 		return(d_rng);

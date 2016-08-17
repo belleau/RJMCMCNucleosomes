@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <gsl/gsl_randist.h>
 #include <iostream>
 //#include "SpaceState.h"
 #include "SpaceNucleosomeD.h"
@@ -74,8 +75,43 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     currentState.insertD(10060,3);
     currentState.evalPriorMuDensity();*/
     SegmentSeq seg(fReads, rReads, 147);
-    PartitionAll<NucleoDirichletPA> currentState(seg);
-    currentState.insertD(10010,3);
+    PartitionAll<NucleoDirichletPA> *currentState = new PartitionAll<NucleoDirichletPA>(seg);
+    for(long i = 0; i< nbrIterations;i++){
+    	if(i%10000 == 0)
+    	{
+    		cout << i << "\n";
+    	}
+    	PartitionAll<NucleoDirichletPA> *mod = (*currentState).clone();
+    	/*
+    	PartitionAll<NucleoDirichletPA> currentState(seg);
+    	//cout << "initMu " << currentState.initMu( 3) << "\n";
+    	currentState.initMu( 3);
+		PartitionAll<NucleoDirichletPA> *mod = currentState.clone();
+		(*mod).birth();
+		(*mod).accept();
+		(*mod).birth();
+		(*mod).accept();
+		(*mod).birth();
+		(*mod).accept();
+		(*mod).birth();
+		(*mod).accept();
+		(*mod).birth();
+		(*mod).accept();
+		(*mod).birth();
+		(*mod).accept();
+		(*mod).birth();
+		(*mod).accept();
+		cout << "New\n";
+		(*mod). displayMu();
+		(*mod).birth();
+		(*mod).reject();
+		(*mod).reset();
+		delete mod;*/
+    }
+    //(*mod). displayMu();
+    //(*mod).reset();
+    //delete mod;
+    /*currentState.insertD(10010,3);
 	currentState.insertD(10020,3);
 	currentState.insertD(10030,3);
 	currentState.insertD(10040,3);
@@ -93,9 +129,13 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	cout << "valKc " << currentState.valK() << "\n";
 	cout << "valKm " << mod->valK() << "\n";
 	cout << "sizem " << mod->size() << "\n";
+	mod->evalW();
+	mod->evalKdDim();
+	mod->birth();*/
+	//mod->w();
     //space_process::SpaceDirichlet<space_process::PartitionAll<space_process::NucleoDirichletPA> > currentState(fReads, rReads, 147);
     //cout << "Bla " << fReads[0] << "\n";
-    //currentState.initMu( 3);
+    //cout << "initMu " << currentState.initMu( 3) << "\n";
     //cout << "Aye " << startFReads[1] << "\n";
     //bla.initMu(currentState.newMu(), 3);
     //double mu = currentState.newMu();

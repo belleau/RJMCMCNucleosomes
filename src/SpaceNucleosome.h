@@ -11,6 +11,7 @@
 #include <Rcpp.h>
 #include <gsl/gsl_randist.h>
 #include <unistd.h>
+#include <list>
 
 #include "Nucleosome.h"
 #include "SegmentSeq.h"
@@ -20,29 +21,38 @@ namespace space_process {
 template<typename NucleoClass>    /***** BEWARE NucleoClass Must inherit from Nucleosome *****/
 class SpaceNucleosome {
     typedef std::list<NucleoClass*> containerNucleo;
-    typedef typename containerNucleo::const_iterator itNucleo;
+    typedef typename containerNucleo::iterator itNucleo;
+    typedef std::vector<NucleoClass*> vecNucleo;
+	typedef typename vecNucleo::iterator itVNucleo;
+	typedef std::vector<itNucleo> vecItNucleo;
+	typedef typename vecItNucleo::iterator itItVNucleo;
 
-	//SegmentSeq const d_segSeq; /* sera bientot une reference quand plusieurs SpaceNucleosome */
     SegmentSeq const &d_segSeq;
 	containerNucleo d_nucleosomes; /* List of nucleosomes */
+
+	vecNucleo d_modNucleo;
+	vecItNucleo d_addNucleo;
+
 	int d_valK;
+
 	gsl_rng *d_rng;  // random number generator
+
 
 public:
 
 
 	SpaceNucleosome(SegmentSeq const &segSeq):
-		d_segSeq(segSeq){
+		d_segSeq(segSeq), d_valK(0){
 		setRNG();
 	};// Finir la cascade
 
 	SpaceNucleosome(SegmentSeq const &segSeq, int seed):
-			d_segSeq(segSeq){
+			d_segSeq(segSeq), d_valK(0){
 			setRNG(seed);
 		};// Finir la cascade
 
 	SpaceNucleosome(SegmentSeq const &segSeq, gsl_rng * rng):
-		d_segSeq(segSeq), d_rng(rng){
+		d_segSeq(segSeq), d_rng(rng), d_valK(0){
 
 	}
 	//const gsl_rng_type * T
@@ -72,12 +82,15 @@ public:
 		return(d_nucleosomes.empty());
 	};
 
-
-	void insert(NucleoClass *u){
+	void pushNucleo(NucleoClass *u){
 		d_nucleosomes.push_back(u);
 		d_valK++;
 	};
 
+	void insertNucleo(itNucleo it, NucleoClass *u){
+		d_nucleosomes.insert(it, u);
+		d_valK++;
+	};
 /*	void setDeltaMin(int deltaMin){
 		d_segSeq.setDeltaMin(deltaMin);
 	};
@@ -101,6 +114,19 @@ public:
 		return(d_segSeq.maxPos());
 	};
 
+	long sizeFReads(){
+		return(d_segSeq.sizeFReads());
+	}
+
+	long sizeRReads(){
+		return(d_segSeq.sizeRReads());
+	}
+
+	void displayMu(){
+		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
+			std::cout << "Mu " << (*it)->mu() << "\n";
+		}
+	}
 protected:
 	gsl_rng * rng(){
 		return(d_rng);
@@ -117,6 +143,55 @@ protected:
 	itNucleo nucleoEnd(){
 		return(d_nucleosomes.end());
 	};
+	itNucleo nucleosomes(itNucleo itPos, int start, int pos){
+		int i = start;
+		do{
+			itPos++;
+		}while(pos > i++ && itPos != d_nucleosomes.end());
+		if(pos < i)
+		{
+			itPos--;
+		}
+		return(itPos);
+	};
+
+	void pushModNucleo(NucleoClass *u){
+		d_modNucleo.push_back(u);
+	};
+
+	void pushAddNucleo(itNucleo &u){
+		d_addNucleo.push_back(u);
+	};
+
+	void resetNucleo(){
+		for(itNucleo it = d_nucleosomes.begin(); it != d_nucleosomes.end();it++){
+			delete *it;
+			*it = NULL;
+		}
+		d_nucleosomes.clear();
+	};
+
+	void resetMod(){
+
+		for(itVNucleo it = d_modNucleo.begin(); it != d_modNucleo.end();it++){
+			delete *it;
+			*it = NULL;
+		}
+		d_modNucleo.clear();
+	};
+
+	void resetAdd(){
+
+		for(itItVNucleo it = d_addNucleo.begin(); it != d_addNucleo.end();it++){
+			delete **it;
+			**it = NULL;
+		}
+		d_addNucleo.clear();
+	};
+
+	void clearAdd(){
+		d_addNucleo.clear();
+	}
 
 	containerNucleo &nucleosomes(){
 		return(d_nucleosomes);

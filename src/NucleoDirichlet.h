@@ -16,17 +16,17 @@
 namespace space_process {
 
 class NucleoDirichlet: public Nucleosome {
+	typedef typename std::vector<double> containerD;
+	typedef typename containerD::const_iterator iteratorD;
 	int d_df;
-	std::vector<double> d_bF, d_bR; /* Kbr divided by w / sqrt(sigmaf) */
-	double d_avg;
+	containerD d_bF, d_bR; /* Kbr divided by w */
 	double d_delta;
 public:
 	NucleoDirichlet(double mu, int df, SegmentSeq const &segSeq, gsl_rng *rng);
+	NucleoDirichlet(double mu, SegmentSeq const &segSeq, gsl_rng *rng);
 	virtual ~NucleoDirichlet();
 	double testT();
 
-	void setAvg(double avg);
-	double avg();
 
 	void setDelta(double delta);
 	double delta();
@@ -39,12 +39,19 @@ public:
 	void setBR(double bR);
 	double bR();
 */
+
 	void evalSigmaF();
 	void evalSigmaR();
 
 	void evalDelta();
 	void evalBF();
+	iteratorD bFBegin() const;
+	iteratorD bFEnd() const;
+
 	void evalBR();
+	iteratorD bRBegin() const;
+	iteratorD bREnd() const;
+
 //	void setBf();
 };
 

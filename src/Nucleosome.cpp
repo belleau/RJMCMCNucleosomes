@@ -22,47 +22,47 @@ Nucleosome::~Nucleosome() {
 	// TODO Auto-generated destructor stub
 }
 
-void Nucleosome::setFStartPos(std::vector<double>::iterator fStart, std::vector<double>::iterator fEnd, int n){
+void Nucleosome::setFStartPos(std::vector<double>::const_iterator fStart, std::vector<double>::const_iterator fEnd, int n){
 	d_startF = fStart;
 	d_endF = fEnd;
 	d_sizeF = n;
 }
 
-void Nucleosome::setRStartPos(std::vector<double>::iterator rStart, std::vector<double>::iterator rEnd, int n){
+void Nucleosome::setRStartPos(std::vector<double>::const_iterator rStart, std::vector<double>::const_iterator rEnd, int n){
 	d_startR = rStart;
 	d_endR = rEnd;
 	d_sizeR = n;
 }
 
-void Nucleosome::setStartF(std::vector<double>::iterator startF){
+void Nucleosome::setStartF(std::vector<double>::const_iterator startF){
 	d_startF = startF;
 }
 
-std::vector<double>::iterator Nucleosome::startF(){
+vector<double>::const_iterator Nucleosome::startF(){
 	return(d_startF);
 }
 
-void Nucleosome::setEndF(std::vector<double>::iterator endF){
+void Nucleosome::setEndF(std::vector<double>::const_iterator endF){
 	d_endF = endF;
 }
 
-std::vector<double>::iterator Nucleosome::endF(){
+std::vector<double>::const_iterator Nucleosome::endF(){
 	return(d_endF);
 }
 
-void Nucleosome::setStartR(std::vector<double>::iterator startR){
+void Nucleosome::setStartR(std::vector<double>::const_iterator startR){
 	d_startR = startR;
 }
 
-std::vector<double>::iterator Nucleosome::startR(){
+std::vector<double>::const_iterator Nucleosome::startR(){
 	return(d_startR);
 }
 
-void Nucleosome::setEndR(std::vector<double>::iterator endR){
+void Nucleosome::setEndR(std::vector<double>::const_iterator endR){
 	d_endR = endR;
 }
 
-std::vector<double>::iterator Nucleosome::endR(){
+std::vector<double>::const_iterator Nucleosome::endR(){
 	return(d_endR);
 }
 
@@ -137,13 +137,13 @@ long Nucleosome::sizeRR(){
 	return(d_segSeq.sizeRReads());
 }
 
-double Nucleosome::varRead(std::vector<double>::iterator start, std::vector<double>::iterator end, int n){
+double Nucleosome::varRead(std::vector<double>::const_iterator start, std::vector<double>::const_iterator end, int n){
 	double var = -1.0;
 	if(n>0){
 		double avg = accumulate(start, end, 0.0) / n;
 		double sq_sum = 0.0;
 
-        for(std::vector<double>::iterator it = start; it != end;it++){
+        for(std::vector<double>::const_iterator it = start; it != end;it++){
             sq_sum = (*it - avg) * (*it - avg);
         }
 		var = sq_sum / n;

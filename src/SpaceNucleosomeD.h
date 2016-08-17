@@ -23,9 +23,15 @@ namespace space_process{
 	class SpaceNucleosomeD: public SpaceNucleosome<NucleoD>{
 		typedef std::list<NucleoD*> containerNucleo;
 		typedef typename containerNucleo::const_iterator itNucleo;
-		std::vector<double> d_w;
+		typedef typename std::vector<double> containerD;
+		typedef typename containerD::const_iterator iteratorD;
+		double *d_w;
 		double d_kD;
 		double d_priorMuDensity;
+		double d_multinomial;
+
+		int d_lambda;
+		int *d_dim;
 
 		double d_meanRead, d_r2, d_cMuDensity;
 
@@ -56,7 +62,15 @@ namespace space_process{
 			setDefault();
 		};
 */
-		virtual ~SpaceNucleosomeD(){};
+		virtual ~SpaceNucleosomeD(){}; //delete[] d_w;
+
+		int lambda(){
+			return(d_lambda);
+		};
+
+		void setLambda(int l){
+			d_lambda = l;
+		};
 
 		double meanRead(){
 			return(d_meanRead);
@@ -66,6 +80,21 @@ namespace space_process{
 		{
 			return(d_r2);
 		};
+
+		void evalW(){
+			/* gsl_ran_dirichlet (const gsl_rng * r, size_t K, const double alpha[], double theta[]) */
+			int k = this->valK();
+
+			double *alpha = new double[k];
+			//memset(alpha, 1.0, k);
+			std::fill_n(alpha, k, 1.0);
+			double *theta = new double[k];
+			gsl_ran_dirichlet (this->rng(), k, alpha, theta);
+
+			d_w = theta;
+			delete[] alpha;
+		};
+
 
 		double cMuDensity(){
 			return(d_cMuDensity);
@@ -96,11 +125,6 @@ namespace space_process{
 			double m = meanRead(); /* Mean of the read*/
 			double result = 0;
 			int k = this->valK();
-
-
-
-
-            //nucleoIt = this->nucleoBegin();
 
 			itNucleo nucleoIt = this->nucleoBegin();
 			result = 0;
@@ -139,85 +163,59 @@ namespace space_process{
 			setPriorMuDensity(tmpC * exp(- result/ (2 * r2()) ));
 		};
 
-		/* *******************************************
-		 *
-		 * Version gsl of evalPriorMuDensity
-		 * evalGSLPriorMuDensity
-		 * Unit: milliseconds
-		 * min       lq     mean   median       uq      max neval
-		 * 53.57089 55.60392 58.43092 57.84131 60.53918 73.7484   200
-		 * evalPriorMuDensity
-		 * 2.370297 2.539221 2.754932 2.667075 2.85793 4.749791   200
-		 *
-		 ********************************************  */
-		double evalGSLPriorMuDensity(){
-			/* Matrix  omega
-			 * R <- max(readPositions) - min(readPositions)
-			 * tau <- 1/R^2
-			 * E <- (max(readPositions) + min(readPositions))/2
-			 * M <- rep(E, k)
-			 * const <- (pi/(2*tau))^{-k/2}
-			 *
-			 * equation 11
-			 * const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M)))
-			 *
-			 * */
-			//std::cout.precision(17);
-			double m = meanRead(); /* Mean of the read*/
-			double result = 0;
-			int k = this->valK();
 
-
-			/* Version gsl slower */
-			for(int a = 0; a < 100000; a++){
-			itNucleo nucleoIt = this->nucleoBegin();
-
-
-			double *omegaD = new double[k * k]();
-			double *vD = new double[k]();
-
-
-
-			for(int i = 0; i < k; i++){
-				omegaD[i * k + i] = 2.0;
-				vD[i] = (*nucleoIt++).mu() - m;
-				//gsl_matrix_set(omega, i, i, 2.0);
-				//gsl_matrix_set(v, 1, i, (*nucleoIt).mu() - m);
-				//nucleoIt++;
-				if(i > 0){
-					omegaD[i * k +i-1] = -1.0;
-					omegaD[(i-1) * k + i] = -1.0;
-					//gsl_matrix_set(omega, i, i-1, -1.0);
-
-					//gsl_matrix_set(omega, i-1, i, -1.0);
+		void evalKdDim(){
+			/*std::cout << "sizeF " << this->sizeFReads() << "\n";
+			std::cout << "sizeR " << this->sizeRReads() << "\n";*/
+			d_dim = new int[this->valK()];
+			int i;
+			int s = this->sizeFReads() + this->sizeRReads();
+			double *yRead = new double[s];
+			//double *yR = new double[this->sizeRReads()];
+			std::fill_n(yRead, s, 0.0);
+			//std::fill_n(yR, this->sizeRReads(), 0.0);
+			int n = 0;
+			for(itNucleo it = this->nucleoBegin(); it != this->nucleoEnd(); it++)
+			{
+				i = 0;
+				d_dim[n] = (*it)->sizeF() + (*it)->sizeR();
+				for(iteratorD  itF = (*it)->bFBegin(); itF != (*it)->bFEnd(); itF++){
+					yRead[i++] += d_w[n] * (*itF);
 				}
+				for(iteratorD  itF = (*it)->bRBegin(); itF != (*it)->bREnd(); itF++){
+					yRead[i++] += d_w[n++] * (*itF);
+				}
+
 			}
-			omegaD[(k-1) * k + (k-1)] = 1.0;
-
-			double *cD = new double[k]();
-			double *dD = new double[1]();
-			gsl_matrix_view omega = gsl_matrix_view_array(omegaD, k, k);
-			gsl_matrix_view v = gsl_matrix_view_array(vD, k, 1);
-			gsl_matrix_view c = gsl_matrix_view_array(cD, 1, k);
-			gsl_matrix_view d = gsl_matrix_view_array(dD, 1, 1);
-			gsl_blas_dgemm (CblasTrans, CblasNoTrans,
-										  1.0, &v.matrix, &omega.matrix,
-										  0.0, &c.matrix);
-			gsl_blas_dgemm (CblasNoTrans, CblasNoTrans,
-													  1.0, &c.matrix, &v.matrix,
-													  0.0, &d.matrix);
-
-			delete[] omegaD;
-			delete[] vD;
-			delete[] cD;
-			delete[] dD;
+			d_kD = 0;
+			for(int j = 0; j < s; j++){
+				d_kD += log(yRead[j]);
 			}
 
+            //delete[] yF;
+            delete[] yRead;
+		}
 
-			//double tmpC = pow(cMuDensity(), -1 * this->valK() / 2);
-			//tmpC * exp(- result/ (2 * r2()) )
-			return(result);
-		};
+		void evalMultinomial(){
+			/* double gsl_ran_multinomial_pdf (size_t K, const double p[], const unsigned int n[])*/
+			d_multinomial = gsl_ran_multinomial_pdf (this->valK(), d_w, d_dim);
+		}
+
+		double dK(){
+			double d = 0;
+			if(this->valK() > 1){
+				d = 0.5 * std::min(1, this->valK() / d_lambda);
+			}
+			return(d);
+		}
+		double bK(){
+			double d = 0;
+			if(this->valK() > 1){
+				d = 0.5 * std::min(1, d_lambda / (this->valK() + 1) );
+			}
+			return(d);
+		}
+
 	protected:
 		void setMeanRead(double meanRead){
 			d_meanRead = meanRead;
@@ -235,6 +233,7 @@ namespace space_process{
 			d_r2 = pow((this->maxPos() - this->minPos()),2);
 			d_meanRead = (this->maxPos() + this->minPos()) / 2;
 			d_cMuDensity = M_PI * d_r2 / 2;
+			d_lambda = 3;
 		}
 
 	};
