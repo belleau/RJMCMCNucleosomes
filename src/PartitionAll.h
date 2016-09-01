@@ -740,31 +740,33 @@ public:
 					double a = this->maxPos() + 1;
 					flag = false;
 					cpt++;
+
+					/* select the nucleosome to remove */
 					i = (int) gsl_ran_flat (this->rng(), 0, k);
-					this->setTB(i);
+
+					/* get the nucleosome */
 					it2 = this->nucleosomes(this->nucleoBegin(), 0, i);
 
-					if( i > 0){ // Update nucleo before
+					if( i > 0){ // get nucleo before
 						it1 = it2; // go to the position i-1
 						it1--;
 						muBef = (*it1)->mu();
 						//a = (*it1)->aR();
 					}
-					else{
+					else{ /* case i == 0 */
 						muBef = this->minPos();
-						//a = this->minPos();
 					}
 
-					if( i < (k-1) ){ // Update nucleo after
+					if( i < (k-1) ){ // get nucleo after
 						it3 = it2;
 						it3++; // go to the position i+1
 						muNext = (*it3)->mu();
 						vNext = muNext;
 					}
-					else{
+					else{ /* case i is the last nucleo */
 
 						vNext = this->maxPos();
-						muNext = vNext + 1;
+						muNext = vNext + 1; /* to include the last read*/
 					}
 
 					if(i > 0){
@@ -774,28 +776,26 @@ public:
 						if(i < (k-1)){
 							a = gsl_ran_flat(this->rng(), muBef, muNext);
 						} // by default a = maxPos() + 1
-						// Enough reads between a and (*it1)->aR()
+
+						/* Init uBef and validate the number reads between
+						 * a and (*it1)->aR() */
 						flag = !(setNucleoD(uBef, (*it1)->aF(), a));
-
-
 					}
 					else{
 						a = this->minPos();
 					}
-					// here a is the aR of uBef and aF of uNext
+
+					/* here a is the aR of uBef and aF of uNext */
 					if(!(flag) && i < (k-1)){ // Modify nucleosome i+1
 
-						uNext = new  NucleoD(muNext, (*it3)->df(), this->segSeq(), this->rng()); // New i+1
-						// Enough reads between a and (*it3)->aR()
+						uNext = new  NucleoD(muNext, (*it3)->df()
+										, this->segSeq(), this->rng()); // New i+1
+						/* Init uBef and validate the number reads between
+						 * a and (*it3)->aR() */
 						flag = !(setNucleoD(uNext, a, (*it3)->aR()));
 
 					}
-/*					else{ // i == 0
 
-						uNext = new  NucleoD(muNext, (*it3)->df(), this->segSeq(), this->rng());
-						// Enough reads between a and (*it3)->aR()
-						flag = !(setNucleoD(uNext, this->minPos(), (*it3)->aR()));
-					}*/
 					if(flag){
 						delete uBef;
 						uBef = NULL;
@@ -808,7 +808,8 @@ public:
 				if(!(flag))
 				{
 					this->setQalloc(vNext - muBef);
-					if(i > 0){
+
+					if(i > 0){ // Update i-1
 
 						this->pushModNucleo(*it1);
 						*it1 = uBef;
@@ -816,15 +817,15 @@ public:
 
 					}
 
-					if(i < (k-1)){
+					if(i < (k-1)){ // Update i+1
 
 						this->pushModNucleo(*it3);
 						*it3 = uNext;
 						this->pushAddNucleo(it3);
 					}
 
+					/* Remove i */
 					this->pushModNucleo(*it2);
-
 					this->eraseNucleo(it2);
 
 				}
