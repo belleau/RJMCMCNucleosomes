@@ -22,7 +22,7 @@ class Nucleosome {
 
 	std::vector<double>::const_iterator d_startF, d_endF;
 	std::vector<double>::const_iterator d_startR, d_endR;
-	long d_sizeF, d_sizeR;
+	long d_sizeF, d_sizeR, d_dimN;
 
 	double d_mu;
 	double d_sigmaF, d_sigmaR;
@@ -37,8 +37,10 @@ public:
 	void setEndR(std::vector<double>::const_iterator endR);
 	void setSizeF(int);
 	void setSizeR(int);
+	void setDimN(long);
 	int sizeF();
 	int sizeR();
+	long dimN();
 	void setFStartPos(std::vector<double>::const_iterator fStart, std::vector<double>::const_iterator fEnd, int n);
 	void setRStartPos(std::vector<double>::const_iterator fStart, std::vector<double>::const_iterator fEnd, int n);
 	double mu();
@@ -54,16 +56,15 @@ public:
 	double zeta();
 	double deltaMin();
 	double deltaMax();
-
-protected:
 	std::vector<double>::const_iterator startF() ;
 	std::vector<double>::const_iterator endF();
+
+
+protected:
+
 	std::vector<double>::const_iterator startR();
 	std::vector<double>::const_iterator endR();
 
-	gsl_rng * rng(){
-		return(d_rng);
-	};
 	std::vector<double>::const_iterator beginFR();
 	std::vector<double>::const_iterator endFR();
 	long sizeFR();
@@ -71,6 +72,11 @@ protected:
 	std::vector<double>::const_iterator beginRR();
 	std::vector<double>::const_iterator endRR();
 	long sizeRR();
+
+	gsl_rng * rng(){
+		return(d_rng);
+	};
+
 };
 
 }/* namespace space_process */

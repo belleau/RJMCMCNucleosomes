@@ -13,7 +13,7 @@
 
 #include <Rcpp.h>
 #include <math.h>
-#include <gsl/gsl_blas.h>
+//#include <gsl/gsl_blas.h>
 #include "SpaceNucleosome.h"
 #include "NucleoDirichlet.h"
 
@@ -29,26 +29,29 @@ namespace space_process{
 		double d_kD;
 		double d_priorMuDensity;
 		double d_multinomial;
+		double d_qalloc;
 
 		int d_lambda;
-		int *d_dim;
+		unsigned int *d_dim;
+		int d_c;
 
 		double d_meanRead, d_r2, d_cMuDensity;
-
+		double d_tB;
 
 	public:
 		SpaceNucleosomeD(SegmentSeq const &segSeq)
-			:SpaceNucleosome<NucleoD>(segSeq){
+			:SpaceNucleosome<NucleoD>(segSeq), d_w(NULL), d_dim(NULL){
 			setDefault();
 		};
 
 		SpaceNucleosomeD(SegmentSeq const &segSeq, int seed)
-			:SpaceNucleosome<NucleoD>(segSeq, seed){
+			:SpaceNucleosome<NucleoD>(segSeq, seed), d_w(NULL), d_dim(NULL){
+			setDefault();
 		};
 
 		SpaceNucleosomeD(SegmentSeq const &segSeq, gsl_rng * rng)
-			:SpaceNucleosome<NucleoD>(segSeq, rng){
-
+			:SpaceNucleosome<NucleoD>(segSeq, rng), d_w(NULL), d_dim(NULL){
+			setDefault();
 		};
 
 /*
@@ -63,6 +66,12 @@ namespace space_process{
 		};
 */
 		virtual ~SpaceNucleosomeD(){}; //delete[] d_w;
+		double tB(){
+			return(d_tB);
+		};
+		void setTB(double tB){
+			d_tB = tB;
+		}
 
 		int lambda(){
 			return(d_lambda);
@@ -70,6 +79,15 @@ namespace space_process{
 
 		void setLambda(int l){
 			d_lambda = l;
+		};
+
+		double qalloc(){
+			return(d_qalloc);
+		};
+
+		void setQalloc(double qalloc){
+
+			d_qalloc = qalloc;
 		};
 
 		double meanRead(){
@@ -85,14 +103,21 @@ namespace space_process{
 			/* gsl_ran_dirichlet (const gsl_rng * r, size_t K, const double alpha[], double theta[]) */
 			int k = this->valK();
 
-			double *alpha = new double[k];
-			//memset(alpha, 1.0, k);
-			std::fill_n(alpha, k, 1.0);
-			double *theta = new double[k];
-			gsl_ran_dirichlet (this->rng(), k, alpha, theta);
+			try{
+				double *alpha = new double[k];
 
-			d_w = theta;
-			delete[] alpha;
+				std::fill_n(alpha, k, 1.0);
+
+				d_w = new double[k];
+				gsl_ran_dirichlet (this->rng(), k, alpha, d_w);
+
+				delete[] alpha;
+			}
+			catch(std::bad_alloc&) {
+				std::cout << "Memory problem\n";
+				std::cerr << "Memory problem\n";
+			}
+
 		};
 
 
@@ -102,7 +127,11 @@ namespace space_process{
 
 		void setPriorMuDensity(double priorMuDensity){
 			d_priorMuDensity = priorMuDensity;
-		}
+		};
+
+		double priorMuDensity(){
+			return(d_priorMuDensity);
+		};
 
 		void insertD(double mu, int df){
 			NucleoD *u = new NucleoD(mu, df, this->segSeq(), this->rng());
@@ -157,64 +186,182 @@ namespace space_process{
 				}
 			}
 
-			double tmpC = pow(cMuDensity(), -1 * this->valK() / 2);
+			double tmpC = pow(cMuDensity(), -1 * this->valK() / 2.0);
 
 
-			setPriorMuDensity(tmpC * exp(- result/ (2 * r2()) ));
+			setPriorMuDensity(tmpC * exp(- result/ (2.0 * r2()) ));
 		};
 
+		void evalDim(){
+
+			try{
+				d_dim = new unsigned int[this->valK()];
+
+				int n = 0;
+				for(itNucleo it = this->nucleoBegin(); it != this->nucleoEnd(); it++)
+				{
+
+					d_dim[n++] = (*it)->dimN();
+				}
+			}
+			catch(std::bad_alloc&) {
+				std::cout << "Memory problem\n";
+				std::cerr << "Memory problem\n";
+			}
+		}
 
 		void evalKdDim(){
 			/*std::cout << "sizeF " << this->sizeFReads() << "\n";
 			std::cout << "sizeR " << this->sizeRReads() << "\n";*/
-			d_dim = new int[this->valK()];
-			int i;
-			int s = this->sizeFReads() + this->sizeRReads();
-			double *yRead = new double[s];
-			//double *yR = new double[this->sizeRReads()];
-			std::fill_n(yRead, s, 0.0);
-			//std::fill_n(yR, this->sizeRReads(), 0.0);
-			int n = 0;
-			for(itNucleo it = this->nucleoBegin(); it != this->nucleoEnd(); it++)
-			{
-				i = 0;
-				d_dim[n] = (*it)->sizeF() + (*it)->sizeR();
-				for(iteratorD  itF = (*it)->bFBegin(); itF != (*it)->bFEnd(); itF++){
-					yRead[i++] += d_w[n] * (*itF);
-				}
-				for(iteratorD  itF = (*it)->bRBegin(); itF != (*it)->bREnd(); itF++){
-					yRead[i++] += d_w[n++] * (*itF);
+
+			try{
+				d_dim = new unsigned int[this->valK()];
+				int i;
+				int s = this->sizeFReads() + this->sizeRReads();
+
+				double *yRead = new double[s];
+
+				std::fill_n(yRead, s, 0.0);
+
+				int n = 0;
+				for(itNucleo it = this->nucleoBegin(); it != this->nucleoEnd(); it++)
+				{
+					i = 0;
+					d_dim[n] = (*it)->dimN();//(*it)->sizeF() + (*it)->sizeR();
+					for(iteratorD  itF = (*it)->bFBegin(); itF != (*it)->bFEnd(); itF++){
+						yRead[i++] += d_w[n] * (*itF);
+					}
+					for(iteratorD  itR = (*it)->bRBegin(); itR != (*it)->bREnd(); itR++){
+						yRead[i++] += d_w[n] * (*itR);
+					}
+
+					n++;
+
 				}
 
-			}
-			d_kD = 0;
-			for(int j = 0; j < s; j++){
-				d_kD += log(yRead[j]);
-			}
+				d_kD = 0;
 
-            //delete[] yF;
-            delete[] yRead;
-		}
+				for(int j = 0; j < s; j++){
+					d_kD += log(yRead[j]);
+				}
+
+
+				delete[] yRead;
+			}
+			catch(std::bad_alloc&) {
+				std::cout << "Memory problem\n";
+				std::cerr << "Memory problem\n";
+			}
+		};
+
+		void evalKdDim1(){
+					/*std::cout << "sizeF " << this->sizeFReads() << "\n";
+					std::cout << "sizeR " << this->sizeRReads() << "\n";*/
+                    //d_tB = 0;
+					try{
+						d_dim = new unsigned int[this->valK()];
+						int i;
+						int s = this->sizeFReads() + this->sizeRReads();
+
+						double *yRead = new double[s];
+						double *pourv = new double[s];
+
+						std::fill_n(yRead, s, 0.0);
+						std::fill_n(pourv, s, 0.0);
+
+						int n = 0;
+						for(itNucleo it = this->nucleoBegin(); it != this->nucleoEnd(); it++)
+						{
+							i = 0;
+							d_dim[n] = (*it)->dimN();//(*it)->sizeF() + (*it)->sizeR();
+							for(iteratorD  itF = (*it)->bFBegin(); itF != (*it)->bFEnd(); itF++){
+								pourv[i] += (*itF);
+								yRead[i] += d_w[n] * (*itF);
+								i++;
+							}
+							for(iteratorD  itR = (*it)->bRBegin(); itR != (*it)->bREnd(); itR++){
+								pourv[i] += (*itR);
+								yRead[i] += d_w[n] * (*itR);
+								i++;
+							}
+
+							n++;
+
+						}
+
+						d_kD = 0;
+						int bla = 0;
+						for(int j = 0; j < s; j++){
+							if(j%2 == 0){
+								//d_tB += pourv[j];
+								//d_tB += log(yRead[j]);
+								bla++;
+								/*if(bla == 5){
+									std::cout << "yf5 " << log(yRead[j]) << "\n";
+								}*/
+							}
+							d_kD += log(yRead[j]);
+						}
+						//d_tB /= bla;
+
+						delete[] yRead;
+						delete[] pourv;
+					}
+					catch(std::bad_alloc&) {
+						std::cout << "Memory problem\n";
+						std::cerr << "Memory problem\n";
+					}
+				};
 
 		void evalMultinomial(){
-			/* double gsl_ran_multinomial_pdf (size_t K, const double p[], const unsigned int n[])*/
 			d_multinomial = gsl_ran_multinomial_pdf (this->valK(), d_w, d_dim);
-		}
+		};
+
+		double multinomial(){
+			return(d_multinomial);
+		};
 
 		double dK(){
 			double d = 0;
 			if(this->valK() > 1){
-				d = 0.5 * std::min(1, this->valK() / d_lambda);
+				d = 0.5 * std::min(1.0, this->valK() / ((double) d_lambda));
 			}
 			return(d);
-		}
+		};
+
 		double bK(){
 			double d = 0;
-			if(this->valK() > 1){
-				d = 0.5 * std::min(1, d_lambda / (this->valK() + 1) );
-			}
+			d = 0.5 * std::min(1.0,  d_lambda / (double)(this->valK() + 1.0) );
 			return(d);
+		};
+		double kD(){
+			return(d_kD);
 		}
+		double rhoP1(){
+
+			return(priorMuDensity() * multinomial());
+		};
+
+		double rhoP2(){
+			//std::cout << "dK " << dK() << " " << lambda() << " " << this->valK() << " " << qalloc() << "\n";
+			return(dK() * (lambda() / ((double) this->valK())) );
+		};
+
+		double rhoModBirth(){
+			double rhoM = priorMuDensity() * multinomial() * dK() * lambda() / ((double) this->valK()) * qalloc();
+		};
+
+		double rhoCurBirth(){
+			double rhoM = priorMuDensity() * multinomial() * bK();
+		};
+
+		double rhoModDeath(){
+			double rhoM = priorMuDensity() * multinomial() * bK();
+		};
+
+		double rhoCurDeath(){
+			double rhoM = priorMuDensity() * multinomial() * dK() * lambda() / ((double) this->valK()) * qalloc();
+		};
 
 	protected:
 		void setMeanRead(double meanRead){
@@ -228,13 +375,21 @@ namespace space_process{
 		void setCMuDensity(double cMuDensity){
 			d_cMuDensity = cMuDensity;
 		};
+
+		void delCurrentD(){
+			delete[] d_dim;
+			d_dim = NULL;
+			delete[] d_w;
+			d_w = NULL;
+		};
+
 	private:
 		void setDefault(){
 			d_r2 = pow((this->maxPos() - this->minPos()),2);
-			d_meanRead = (this->maxPos() + this->minPos()) / 2;
-			d_cMuDensity = M_PI * d_r2 / 2;
+			d_meanRead = (this->maxPos() + this->minPos()) / 2.0;
+			d_cMuDensity = M_PI * d_r2 / 2.0;
 			d_lambda = 3;
-		}
+		};
 
 	};
 }

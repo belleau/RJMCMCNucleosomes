@@ -74,13 +74,16 @@ void NucleoDirichlet::evalSigmaR(){
 void NucleoDirichlet::evalDelta(){
 	/* compute truncated normal */
 	if(sigmaF() > 0 && sigmaR() > 0){
-		double sigma = sqrt( 1 /(1/sigmaF() + 1/sigmaR()));
+
+		//double sigma = sqrt( 1 /(1/sigmaF() + 1/sigmaR()));
+		double sigma = sqrt( 1 /(sigmaF() + sigmaR()));
 		double tmpDelta = 147;
 		do{
 
 			tmpDelta = zeta() + gsl_ran_gaussian(rng(), sigma);
 
 		}while(tmpDelta > deltaMin() &&  tmpDelta < deltaMax());
+
 		setDelta(tmpDelta);
 	}
 	else{
@@ -97,18 +100,75 @@ void NucleoDirichlet::evalBF(){
 	d_bF.resize(sizeFR());
 	if(sigmaF() > 0.000001)
 	{
-		double tmp = mu() + delta()/2;
+		double tmp = mu() - delta()/2.0;
 		double sdF = sqrt(sigmaF());
 		long i = 0;
-		for(vector<double>::const_iterator it = beginFR(); it != endFR(); it++){
-			//d_bF.push_back(gsl_ran_tdist_pdf(((*it - tmp ) / sdF), df()));
+
+		for(vector<double>::const_iterator it = beginFR(); it != endFR(); it++){ //run on all seq
+
 			d_bF[i++] = gsl_ran_tdist_pdf(((*it - tmp ) / sdF), df()) / sdF;
 		}
+
 	}
 	else{
 		cerr << "sigmaF or sigmaR not bigger than 0\n";
 		//exit(1);
 	}
+}
+
+double NucleoDirichlet::tP(){
+	return(d_tP);
+}
+
+void NucleoDirichlet::testF(){
+	std::cout << "tmp " << mu() + delta()/2.0 << " delta " << delta() << "\n";
+	/*cout << "Read ";
+	for(vector<double>::const_iterator it = startF(); it != endF(); it++){ //run on all seq
+		cout << ", " << (*it);
+	}
+	cout << "\n";*/
+}
+
+void NucleoDirichlet::evalBF1(){
+
+	/* reinit d_bF */
+	d_bF.clear();
+	d_bF.resize(sizeFR());
+	d_tP = 0;
+	if(sigmaF() > 0.000001)
+	{
+		double tmp = mu() - delta()/2.0;
+		double sdF = sqrt(sigmaF());
+		long i = 0;
+		//if(1/sdF > 0.5)
+		//std::cout << "tmp " << 1/sdF << " df " << df() << "\n";
+		//std::cout << "tmp ";
+		//d_tP = mu(); // + delta()/2;
+
+		d_tP = sdF;
+		//std::cout << " sigmafBF " << sigmaF() << "\n";
+		for(vector<double>::const_iterator it = beginFR(); it != endFR(); it++){ //run on all seq
+			//std::cout << " t " << ((*it - tmp ) / sdF);
+			//d_tP += ((*it - tmp ) / sdF);
+			d_bF[i++] = gsl_ran_tdist_pdf(((*it - tmp ) / sdF), df()) / sdF;
+		}
+		//d_tP /= i;
+		//std::cout << "\n";
+		//cout << "Sigma " << sigmaF() << " " << sdF << "\n";
+	}
+	else{
+		cerr << "sigmaF or sigmaR not bigger than 0\n";
+		//exit(1);
+	}
+}
+
+
+void NucleoDirichlet::setBF(containerD &bF){
+	d_bF = bF;
+}
+
+containerD & NucleoDirichlet::bF(){
+	return(d_bF);
 }
 
 iteratorD NucleoDirichlet::bFBegin() const{
@@ -136,11 +196,11 @@ void NucleoDirichlet::evalBR(){
 
 	if(sigmaR() > 0.000001){
 
-		double tmp = mu() + delta()/2;
+		double tmp = mu() + delta()/2.0;
 		double sdR = sqrt(sigmaR());
 		long i = 0;
 		for(vector<double>::const_iterator it = beginRR(); it != endRR(); it++){
-			//d_bF.push_back(gsl_ran_tdist_pdf(((*it - tmp ) / sdF), df()));
+
 			d_bR[i++] = gsl_ran_tdist_pdf(((*it - tmp ) / sdR), df()) / sdR;
 		}
 	}
@@ -150,6 +210,12 @@ void NucleoDirichlet::evalBR(){
 	}
 }
 
+void NucleoDirichlet::setBR(containerD &bR){
+	d_bR = bR;
+}
 
+containerD &NucleoDirichlet::bR(){
+	return(d_bR);
+}
 
 } /* namespace space_process */

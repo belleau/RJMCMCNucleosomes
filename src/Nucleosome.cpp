@@ -66,6 +66,15 @@ std::vector<double>::const_iterator Nucleosome::endR(){
 	return(d_endR);
 }
 
+void Nucleosome::setDimN(long dimN){
+	d_dimN = dimN;
+}
+
+long Nucleosome::dimN(){
+	return(d_dimN);
+}
+
+
 void Nucleosome::setSizeF(int sizeF){
 	d_sizeF = sizeF;
 }
@@ -139,18 +148,23 @@ long Nucleosome::sizeRR(){
 
 double Nucleosome::varRead(std::vector<double>::const_iterator start, std::vector<double>::const_iterator end, int n){
 	double var = -1.0;
+	int pv = 0;
 	if(n>0){
 		double avg = accumulate(start, end, 0.0) / n;
-		double sq_sum = 0.0;
 
+		double sq_sum = 0.0;
+		//std::vector<double>::const_iterator tmp = end;
+		//tmp--;
+		//std::cout << "Start " << *start << " End " << *tmp << " Diff " << *tmp - *start << "\n";
         for(std::vector<double>::const_iterator it = start; it != end;it++){
-            sq_sum = (*it - avg) * (*it - avg);
+            sq_sum += (*it - avg) * (*it - avg);
+            pv++;
         }
-		var = sq_sum / n;
+		var = sq_sum / (n - 1);
 	}
+	//cout << " var " << var << " n " << n << " pv " << pv <<"\n";
 	return(var);
 }
-
 
 void Nucleosome::evalSigmaF(){
 	d_sigmaF = varRead(startF(), endF(), sizeF());

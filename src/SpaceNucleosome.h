@@ -12,6 +12,7 @@
 #include <gsl/gsl_randist.h>
 #include <unistd.h>
 #include <list>
+#include <math.h>
 
 #include "Nucleosome.h"
 #include "SegmentSeq.h"
@@ -123,9 +124,27 @@ public:
 	}
 
 	void displayMu(){
+		std::cout << "Mu";
 		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
-			std::cout << "Mu " << (*it)->mu() << "\n";
+			std::cout << " " << (*it)->mu();
+			//std::cout << " : " << (*it)->avg();
 		}
+		std::cout << "\n";
+	}
+
+	Rcpp::NumericVector mu(){
+		Rcpp::NumericVector mu = Rcpp::NumericVector( Rcpp::Dimension(valK()));;
+		int i = 0;
+		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
+			mu[i++] = (*it)->mu();
+		}
+		return(mu);
+	}
+
+	void eraseNucleo(itNucleo it){ //itNucleo it
+		d_nucleosomes.erase(it);
+		d_valK--;
+		//d_nucleosomes.erase(d_nucleosomes.begin());
 	}
 protected:
 	gsl_rng * rng(){
@@ -155,6 +174,8 @@ protected:
 		return(itPos);
 	};
 
+
+
 	void pushModNucleo(NucleoClass *u){
 		d_modNucleo.push_back(u);
 	};
@@ -177,6 +198,17 @@ protected:
 			delete *it;
 			*it = NULL;
 		}
+		d_modNucleo.clear();
+	};
+	void displayMod(){
+
+		std::cout << "Mod ";
+		for(itVNucleo it = d_modNucleo.begin(); it != d_modNucleo.end();it++){
+			std::cout << " M " << (*it)->mu();
+			//delete *it;
+			//*it = NULL;
+		}
+		std::cout << "\n";
 		d_modNucleo.clear();
 	};
 

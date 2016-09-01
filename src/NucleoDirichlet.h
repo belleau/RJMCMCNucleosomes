@@ -21,13 +21,14 @@ class NucleoDirichlet: public Nucleosome {
 	int d_df;
 	containerD d_bF, d_bR; /* Kbr divided by w */
 	double d_delta;
+	double d_tP;
 public:
 	NucleoDirichlet(double mu, int df, SegmentSeq const &segSeq, gsl_rng *rng);
 	NucleoDirichlet(double mu, SegmentSeq const &segSeq, gsl_rng *rng);
 	virtual ~NucleoDirichlet();
 	double testT();
 
-
+	double tP();
 	void setDelta(double delta);
 	double delta();
 
@@ -39,16 +40,22 @@ public:
 	void setBR(double bR);
 	double bR();
 */
-
+	void testF();
 	void evalSigmaF();
 	void evalSigmaR();
 
 	void evalDelta();
 	void evalBF();
+	void evalBF1();
+	void setBF(containerD &bF);
+	containerD &bF();
+
 	iteratorD bFBegin() const;
 	iteratorD bFEnd() const;
 
 	void evalBR();
+	void setBR(containerD &bR);
+	containerD &bR();
 	iteratorD bRBegin() const;
 	iteratorD bREnd() const;
 
