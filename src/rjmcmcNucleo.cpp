@@ -8,9 +8,9 @@
 #include "PartitionAll.h"
 
 #include "NucleoDirichletPA.h"
-#include "Factory.h"
+//#include "Factory.h"
 //#include "bla2.h"
-#include "bla1.h"
+//#include "bla1.h"
 
 #include "SegmentSeq.h"
 
