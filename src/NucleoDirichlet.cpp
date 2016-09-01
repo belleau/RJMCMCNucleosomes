@@ -9,8 +9,8 @@ using namespace std;
 
 namespace space_process {
 
-typedef typename std::vector<double> containerD;
-typedef typename containerD::const_iterator iteratorD;
+//typedef typename std::vector<double> containerD;
+//typedef typename containerD::const_iterator iteratorD;
 
 NucleoDirichlet::NucleoDirichlet(double mu, int df, SegmentSeq const &segSeq, gsl_rng *rng):
 	Nucleosome(mu, segSeq, rng), d_df(df){
@@ -163,27 +163,27 @@ void NucleoDirichlet::evalBF1(){
 }
 
 
-void NucleoDirichlet::setBF(containerD &bF){
+void NucleoDirichlet::setBF(std::vector<double> &bF){
 	d_bF = bF;
 }
 
-containerD & NucleoDirichlet::bF(){
+std::vector<double> & NucleoDirichlet::bF(){
 	return(d_bF);
 }
 
-iteratorD NucleoDirichlet::bFBegin() const{
+std::vector<double>::const_iterator NucleoDirichlet::bFBegin() const{
 	return(d_bF.begin());
 }
 
-iteratorD NucleoDirichlet::bFEnd() const{
+std::vector<double>::const_iterator NucleoDirichlet::bFEnd() const{
 	return(d_bF.end());
 }
 
-iteratorD NucleoDirichlet::bRBegin() const{
+std::vector<double>::const_iterator NucleoDirichlet::bRBegin() const{
 	return(d_bR.begin());
 }
 
-iteratorD NucleoDirichlet::bREnd() const{
+std::vector<double>::const_iterator NucleoDirichlet::bREnd() const{
 	return(d_bR.end());
 }
 
@@ -210,11 +210,11 @@ void NucleoDirichlet::evalBR(){
 	}
 }
 
-void NucleoDirichlet::setBR(containerD &bR){
+void NucleoDirichlet::setBR(std::vector<double> &bR){
 	d_bR = bR;
 }
 
-containerD &NucleoDirichlet::bR(){
+std::vector<double> &NucleoDirichlet::bR(){
 	return(d_bR);
 }
 

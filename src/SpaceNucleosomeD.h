@@ -23,8 +23,8 @@ namespace space_process{
 	class SpaceNucleosomeD: public SpaceNucleosome<NucleoD>{
 		typedef std::list<NucleoD*> containerNucleo;
 		typedef typename containerNucleo::const_iterator itNucleo;
-		typedef typename std::vector<double> containerD;
-		typedef typename containerD::const_iterator iteratorD;
+//		typedef typename std::vector<double> containerD;
+//		typedef typename containerD::const_iterator iteratorD;
 		double *d_w;
 		double d_kD;
 		double d_priorMuDensity;
@@ -228,10 +228,10 @@ namespace space_process{
 				{
 					i = 0;
 					d_dim[n] = (*it)->dimN();//(*it)->sizeF() + (*it)->sizeR();
-					for(iteratorD  itF = (*it)->bFBegin(); itF != (*it)->bFEnd(); itF++){
+					for(std::vector<double>::const_iterator  itF = (*it)->bFBegin(); itF != (*it)->bFEnd(); itF++){
 						yRead[i++] += d_w[n] * (*itF);
 					}
-					for(iteratorD  itR = (*it)->bRBegin(); itR != (*it)->bREnd(); itR++){
+					for(std::vector<double>::const_iterator  itR = (*it)->bRBegin(); itR != (*it)->bREnd(); itR++){
 						yRead[i++] += d_w[n] * (*itR);
 					}
 
@@ -274,12 +274,12 @@ namespace space_process{
 						{
 							i = 0;
 							d_dim[n] = (*it)->dimN();//(*it)->sizeF() + (*it)->sizeR();
-							for(iteratorD  itF = (*it)->bFBegin(); itF != (*it)->bFEnd(); itF++){
+							for(std::vector<double>::const_iterator  itF = (*it)->bFBegin(); itF != (*it)->bFEnd(); itF++){
 								pourv[i] += (*itF);
 								yRead[i] += d_w[n] * (*itF);
 								i++;
 							}
-							for(iteratorD  itR = (*it)->bRBegin(); itR != (*it)->bREnd(); itR++){
+							for(std::vector<double>::const_iterator  itR = (*it)->bRBegin(); itR != (*it)->bREnd(); itR++){
 								pourv[i] += (*itR);
 								yRead[i] += d_w[n] * (*itR);
 								i++;

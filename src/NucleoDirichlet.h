@@ -16,10 +16,10 @@
 namespace space_process {
 
 class NucleoDirichlet: public Nucleosome {
-	typedef typename std::vector<double> containerD;
-	typedef typename containerD::const_iterator iteratorD;
+//	typedef typename std::vector<double> containerD;
+//	typedef typename containerD::const_iterator iteratorD;
 	int d_df;
-	containerD d_bF, d_bR; /* Kbr divided by w */
+	std::vector<double> d_bF, d_bR; /* Kbr divided by w */
 	double d_delta;
 	double d_tP;
 public:
@@ -47,17 +47,17 @@ public:
 	void evalDelta();
 	void evalBF();
 	void evalBF1();
-	void setBF(containerD &bF);
-	containerD &bF();
+	void setBF(std::vector<double> &bF);
+	std::vector<double> &bF();
 
-	iteratorD bFBegin() const;
-	iteratorD bFEnd() const;
+	std::vector<double>::const_iterator bFBegin() const;
+	std::vector<double>::const_iterator bFEnd() const;
 
 	void evalBR();
-	void setBR(containerD &bR);
-	containerD &bR();
-	iteratorD bRBegin() const;
-	iteratorD bREnd() const;
+	void setBR(std::vector<double> &bR);
+	std::vector<double> &bR();
+	std::vector<double>::const_iterator bRBegin() const;
+	std::vector<double>::const_iterator bREnd() const;
 
 //	void setBf();
 };

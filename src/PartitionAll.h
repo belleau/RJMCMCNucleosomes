@@ -20,8 +20,8 @@ class PartitionAll: public SpaceNucleosomeD<NucleoD> {
     typedef std::list<NucleoD*> containerNucleo;
     typedef typename containerNucleo::iterator iteratorNucleo;
 
-    typedef typename std::vector<double> containerD;
-    typedef typename containerD::const_iterator iteratorD;
+//    typedef typename std::vector<double> containerD;
+//    typedef typename containerD::const_iterator iteratorD;
 
     std::vector<double> *d_y;
     long d_ySize;
@@ -29,7 +29,7 @@ class PartitionAll: public SpaceNucleosomeD<NucleoD> {
 public:
 
 	PartitionAll(SegmentSeq const &segSeq)
-		:SpaceNucleosomeD<NucleoD>(segSeq), d_y(new containerD){ //
+		:SpaceNucleosomeD<NucleoD>(segSeq), d_y(new std::vector<double>){ //
         //d_y = new std::vector<double>;
         //d_y->push_back(1.0);
 
@@ -41,7 +41,7 @@ public:
 	};
 
 	PartitionAll(SegmentSeq const &segSeq, int seed)
-		:SpaceNucleosomeD<NucleoD>(segSeq,seed), d_y(new containerD){ //
+		:SpaceNucleosomeD<NucleoD>(segSeq,seed), d_y(new std::vector<double>){ //
 		//d_y = new std::vector<double>;
 		//d_y->push_back(1.0);
 
@@ -52,7 +52,7 @@ public:
 		d_ySize = (*d_y).size();
 	};
 	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng)
-		:SpaceNucleosomeD<NucleoD>(segSeq,rng), d_y(new containerD){ //
+		:SpaceNucleosomeD<NucleoD>(segSeq,rng), d_y(new std::vector<double>){ //
 		//d_y = new std::vector<double>;
 		//d_y->push_back(1.0);
 
@@ -63,12 +63,12 @@ public:
 		d_ySize = (*d_y).size();
 	};
 
-	PartitionAll(SegmentSeq const &segSeq, int seed, containerD *y, long ySize)
+	PartitionAll(SegmentSeq const &segSeq, int seed, std::vector<double> *y, long ySize)
 		:SpaceNucleosomeD<NucleoD>(segSeq, seed), d_y(y){ //
 
 	};
 
-	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, containerD *y, long ySize)
+	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, std::vector<double> *y, long ySize)
 		:SpaceNucleosomeD<NucleoD>(segSeq, rng), d_y(y), d_ySize(ySize){ //
 
 	};
@@ -184,7 +184,7 @@ public:
 	};*/
 
 
-	long setFoward(iteratorD fStart, iteratorD fEnd, double start, double end, NucleoD &u){
+	long setFoward(std::vector<double>::const_iterator fStart, std::vector<double>::const_iterator fEnd, double start, double end, NucleoD &u){
 		long l = 0;
 		int cpt = getLimit(start,end, fStart, fEnd, l);
 		//std::cout << "Start " << start << " End " << end << " Diff " << (end - start) <<"\n";
@@ -203,7 +203,7 @@ public:
 		return(l);
 	};*/
 
-	long setReverse(iteratorD rStart, iteratorD rEnd, double start, double end, NucleoD &u){
+	long setReverse(std::vector<double>::const_iterator rStart, std::vector<double>::const_iterator rEnd, double start, double end, NucleoD &u){
 
 		long l = 0;
 		int cpt = getLimit(start,end, rStart, rEnd, l);
@@ -261,7 +261,7 @@ public:
 
 			bool flag = false;
 			long l;
-			iteratorD startIt, endIt;
+			std::vector<double>::const_iterator startIt, endIt;
 			int dimNucleo = getLimit( aF, aR, startIt, endIt, l, true);
 			(*u).setDimN(dimNucleo);
 			if(l > 1){
@@ -337,7 +337,7 @@ public:
 
 		bool flag = true;
 		long l;
-		iteratorD startIt, endIt;
+		std::vector<double>::const_iterator startIt, endIt;
 		int dimNucleo = getLimit( aF, aR, startIt, endIt, l, true);
 		(*u).setDimN(dimNucleo);
 		if(l > 1){
@@ -1225,9 +1225,9 @@ public:
 	}
 
 private:
-	int getLimit(double start, double end, iteratorD &startIt, iteratorD &endIt, long &l, bool excEnd = false){
+	int getLimit(double start, double end, std::vector<double>::const_iterator &startIt, std::vector<double>::const_iterator &endIt, long &l, bool excEnd = false){
 
-		iteratorD it=yBegin();
+		std::vector<double>::const_iterator it=yBegin();
 		bool flag=1;
 		int cpt = 0;
 		double pr = -1.0;
@@ -1266,11 +1266,11 @@ private:
         	return(d_ySize);
 	};
 
-	inline iteratorD yBegin(){
+	inline std::vector<double>::const_iterator yBegin(){
 		return((*d_y).begin());
 	};
 
-	inline iteratorD yEnd(){
+	inline std::vector<double>::const_iterator yEnd(){
 		return((*d_y).end());
 	};
 
