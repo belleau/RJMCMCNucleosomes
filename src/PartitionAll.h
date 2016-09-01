@@ -33,7 +33,7 @@ public:
         //d_y = new std::vector<double>;
         //d_y->push_back(1.0);
 
-		d_y->insert(yBegin(), segSeq.beginFR(), segSeq.endFR());
+		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
 		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
 
 		std::sort(d_y->begin(),d_y->end());
@@ -45,7 +45,7 @@ public:
 		//d_y = new std::vector<double>;
 		//d_y->push_back(1.0);
 
-		d_y->insert(yBegin(), segSeq.beginFR(), segSeq.endFR());
+		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
 		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
 
 		std::sort(d_y->begin(),d_y->end());
@@ -56,7 +56,7 @@ public:
 		//d_y = new std::vector<double>;
 		//d_y->push_back(1.0);
 
-		d_y->insert(yBegin(), segSeq.beginFR(), segSeq.endFR());
+		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
 		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
 
 		std::sort(d_y->begin(),d_y->end());
@@ -1266,11 +1266,11 @@ private:
         	return(d_ySize);
 	};
 
-	inline std::vector<double>::const_iterator yBegin(){
+	inline std::vector<double>::iterator yBegin(){
 		return((*d_y).begin());
 	};
 
-	inline std::vector<double>::const_iterator yEnd(){
+	inline std::vector<double>::iterator yEnd(){
 		return((*d_y).end());
 	};
 
