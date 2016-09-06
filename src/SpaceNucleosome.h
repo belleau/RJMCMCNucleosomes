@@ -35,25 +35,25 @@ class SpaceNucleosome {
 	vecItNucleo d_addNucleo;
 
 	int d_valK;
-
+	int d_Max;
 	gsl_rng *d_rng;  // random number generator
-
+	long d_iteration;
 
 public:
 
 
 	SpaceNucleosome(SegmentSeq const &segSeq):
-		d_segSeq(segSeq), d_valK(0){
+		d_segSeq(segSeq), d_valK(0), d_iteration(0){
 		setRNG();
 	};// Finir la cascade
 
 	SpaceNucleosome(SegmentSeq const &segSeq, int seed):
-			d_segSeq(segSeq), d_valK(0){
+			d_segSeq(segSeq), d_valK(0), d_iteration(0){
 			setRNG(seed);
 		};// Finir la cascade
 
 	SpaceNucleosome(SegmentSeq const &segSeq, gsl_rng * rng):
-		d_segSeq(segSeq), d_rng(rng), d_valK(0){
+		d_segSeq(segSeq), d_rng(rng), d_valK(0), d_iteration(0){
 
 	}
 	//const gsl_rng_type * T
@@ -127,13 +127,13 @@ public:
 		std::cout << "Mu";
 		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
 			std::cout << " " << (*it)->mu();
-			//std::cout << " : " << (*it)->avg();
+			std::cout << " : " << (*it)->avg();
 		}
 		std::cout << "\n";
 	}
 
 	Rcpp::NumericVector mu(){
-		Rcpp::NumericVector mu = Rcpp::NumericVector( Rcpp::Dimension(valK()));;
+		Rcpp::NumericVector mu = Rcpp::NumericVector( Rcpp::Dimension(valK()));
 		int i = 0;
 		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
 			mu[i++] = (*it)->mu();
@@ -146,6 +146,15 @@ public:
 		d_valK--;
 		//d_nucleosomes.erase(d_nucleosomes.begin());
 	}
+
+	void addIteration(){
+		d_iteration++;
+	};
+
+	long iteration(){
+		return(d_iteration);
+	}
+
 protected:
 	gsl_rng * rng(){
 		return(d_rng);

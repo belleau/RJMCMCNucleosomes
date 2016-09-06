@@ -3,11 +3,9 @@
 #include <iostream>
 #include <math.h>
 
-//#include "SpaceState.h"
-#include "SpaceNucleosomeD.h"
 #include "PartitionAll.h"
 
-#include "NucleoDirichletPA.h"
+//#include "NucleoDirichletPA.h"
 //#include "Factory.h"
 //#include "bla2.h"
 //#include "bla1.h"
@@ -35,53 +33,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
     int nf=1, nr;
     long tot;
-    //startFReads[1] = 1;
 
-
-    /*space_process::bla2<int> a;
-    a.insert(1);
-    a.insert(2);
-    a.insert(3);
-    cout << "Size a " << a.size() << "\n";
-
-    space_process::bla2<int> b(a);
-    b.insert(5);
-
-    cout << "Size a " << a.size() << "\n";
-    cout << "Size b " << b.size() << "\n";
-    space_process::bla2<int> *c = a.clone();
-
-    (*c).insert(6);
-    (*c).insert(6);
-    (*c).insert(6);
-
-    cout << "Size a " << a.size() << "\n";
-    cout << "Size b " << b.size() << "\n";
-    cout << "Size c " << (*c).size() << "\n";*/
-
-    //space_process::SpaceState currentState(startFReads, startRReads, 147);
-    //space_process::SpaceNucleosome currentState(startFReads, startRReads, 147);
-    //space_process::PartitionAll bla(startFReads, startRReads, 147);
-
-    //space_process::Factory<space_process::SpaceNucleosomeD, space_process::PartitionAll> truc;
-    // space_process::NucleoDirichletPA
-
-    //space_process::PartitionAll<space_process::NucleoDirichletPA> bla(fReads, rReads, 147);
-    //cout << "Bla " << fReads[0] << "\n";
-
-    /*space_process::PartitionAll<space_process::NucleoDirichletPA> currentState(fReads, rReads, 147);
-
-    currentState.insertD(10010,3);
-    currentState.insertD(10020,3);
-    currentState.insertD(10030,3);
-    currentState.insertD(10040,3);
-    currentState.insertD(10050,3);
-    currentState.insertD(10060,3);
-    currentState.evalPriorMuDensity();*/
-/*
-    bla1<int> o;
-    o.pourv();
-*/
     const gsl_rng_type * T;
     gsl_rng *rng;
 	long seed;
@@ -94,38 +46,15 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
 
 
-	/*PartitionAll<NucleoDirichletPA> *mod = (*currentState).clone();
-	    (*mod).birth();
-		(*mod).accept();
-		(*mod).birth();
-		(*mod).accept();
-		(*mod).birth();
-		(*mod).accept();
-		(*mod).birth();
-		(*mod).accept();
-		(*mod).birth();
-		(*mod).accept();
-		(*mod).birth();
-		(*mod).accept();
-		(*mod).birth();
-		//(*mod).accept();
-		delete currentState;
-		(*mod).accept();
-		currentState = mod;
-		mod = (*currentState).clone();
-		cout << "New\n";
-		(*mod). displayMu();
-		(*mod).death();
-		(*mod).accept();
-		(*mod).reset();*/
 
+	std::vector< PartitionAll<NucleoDirichletPA> *> res;
 
     SegmentSeq seg(fReads, rReads, 147);
     PartitionAll<NucleoDirichletPA> *currentState = new PartitionAll<NucleoDirichletPA>(seg, rng);
     (*currentState).initMu1( 3);// test si ok
     (*currentState).prepSpace();
-
-
+    (*currentState).addIteration();
+   res.push_back(currentState);
 
    bool dispRho = adaptIterationsToReads;
    double bla = 0;
@@ -133,6 +62,10 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
    int test3 = 0;
    double nbType[5] = {0,0,0,0,0};
    bool vStop = true;
+   int kMaxO = (*currentState).valK();
+   //int *k = new int[nbrIterations];
+   //double **mu = new double *[nbrIterations];
+
    for(long i = 0; i< nbrIterations;i++){
 	   double valPourv = 0;
 	   double pt;
@@ -142,7 +75,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	   {
 		   cout << i << "\n";
 		   (*currentState).displayMu();
-		   if(dispRho)
+		   //if(dispRho)
 		   cout << "K " << (*currentState).valK() << "\n";
 	   }
 
@@ -257,10 +190,13 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 								cout << "\n";*/
 					// clean currentState
 					/*if(vStop){*/
-					(*currentState).delCurrent();
-					delete currentState;
+					//(*currentState).delCurrent();
+					//delete currentState;
 					(*mod).accept();
 					currentState = mod;
+					(*currentState).addIteration();
+					res.push_back(currentState);
+					kMaxO = max(kMaxO, (*currentState).valK());
 				/*}
 				if((*currentState).valK() == 3)
 					vStop = false;*/
@@ -287,58 +223,63 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 					//cout << " " << nbType[0] << " " << nbType[1] << " " << nbType[2] << " " << nbType[3] << " " << nbType[4];
 					cout << "\n";
 				}*/
+				(*currentState).addIteration();
 				(*mod).reject();
 				delete mod;
 			}
     	}
     	else{
+    		(*currentState).addIteration();
 			delete mod;
     	}
 
     }
 
-    /*cout << "\n";
+    cout << "\n";
    	(*currentState).displayMu();
 
-    cout << "K " << (*currentState).valK() << "\n";*/
+    cout << "K " << (*currentState).valK() << "\n";
     //cout << "Ok " << bla << " cpt " << cptBla << " m " << bla / cptBla << "\n";
-    //(*mod).reset();
-    //delete mod;
-    /*currentState.insertD(10010,3);
-	currentState.insertD(10020,3);
-	currentState.insertD(10030,3);
-	currentState.insertD(10040,3);
-	currentState.insertD(10050,3);
-	currentState.insertD(10060,3);
-	currentState.evalPriorMuDensity();
+    tot = res.size();
+    cout << "Res " << tot << "\n";
 
-	PartitionAll<NucleoDirichletPA> *mod = currentState.clone();
+   Rcpp::NumericVector listK = Rcpp::NumericVector( Rcpp::Dimension(tot));
+   Rcpp::NumericMatrix mu = Rcpp::NumericMatrix( Rcpp::Dimension(tot, kMaxO));
+   Rcpp::IntegerVector listIt = Rcpp::IntegerVector( Rcpp::Dimension(tot));
+   int i = 0;
+   for(std::vector< PartitionAll<NucleoDirichletPA> *>::iterator it = res.begin(); it != res.end();it++){
 
-	cout << "valKc " << currentState.valK() << "\n";
-	cout << "valKm " << mod->valK() << "\n";
-	cout << "sizem " << mod->size() << "\n";
-	mod->insertD(10070,3);
-	mod->insertD(10080,3);
-	cout << "valKc " << currentState.valK() << "\n";
-	cout << "valKm " << mod->valK() << "\n";
-	cout << "sizem " << mod->size() << "\n";
-	mod->evalW();
-	mod->evalKdDim();
-	mod->birth();*/
-	//mod->w();
-    //space_process::SpaceDirichlet<space_process::PartitionAll<space_process::NucleoDirichletPA> > currentState(fReads, rReads, 147);
-    //cout << "Bla " << fReads[0] << "\n";
-    //cout << "initMu " << currentState.initMu( 3) << "\n";
-    //cout << "Aye " << startFReads[1] << "\n";
-    //bla.initMu(currentState.newMu(), 3);
-    //double mu = currentState.newMu();
-    //cout << " Mu " << mu << "\n";
-    //currentState.insert(nf);
-    nf = startFReads.size();
+	   listK[i] = (*it)->valK();
+	   listIt[i] = (*it)->iteration();
+	   Rcpp::NumericVector tmp = (*it)->mu();
+
+	   for(int j = 0; j < kMaxO; j++){
+		   if(j < listK[i]){
+               mu[i  + j * tot] = tmp[j];
+		   }
+           else{
+               mu[i + j * tot] = 0;
+           }
+	   }
+	   i++;
+	   cout << " " <<  (*it)->iteration() << ":" << (*it)->valK();
+
+   }
+   cout << "\n\n";
+    //nf = startFReads.size();
+
     //nf = currentState.getP();
-    nr = startRReads.size();
-    tot = nbrIterations + kMax;
+    //nr = startRReads.size();
 
-    List nbSeq = List::create(Rcpp::Named("nf") = nf, Rcpp::Named("nr") = nr, Rcpp::Named("tot") = tot, Rcpp::Named("mu") = (*currentState).mu());
+
+    List nbSeq = List::create( Rcpp::Named("K") = listK, Rcpp::Named("KMax") = kMaxO, Rcpp::Named("it") = listIt, Rcpp::Named("tot") = tot, Rcpp::Named("mu") = mu); //(*currentState).mu()
+
+    for(std::vector< PartitionAll<NucleoDirichletPA> *>::iterator it = res.begin(); it != res.end();it++){
+    	(*it)->delCurrent();
+    	delete (*it);
+    }
+
+    //(*currentState).delCurrent();
+    //delete currentState;
     return nbSeq;
 }
