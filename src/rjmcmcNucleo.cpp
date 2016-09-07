@@ -71,13 +71,13 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	   double pt;
 	   bool flag = false;
 
-	  if(i%10000 == 0)
+	  /*if(i%10000 == 0)
 	   {
 		   cout << i << "\n";
 		   (*currentState).displayMu();
 		   //if(dispRho)
 		   cout << "K " << (*currentState).valK() << "\n";
-	   }
+	   }*/
 
 
     	PartitionAll<NucleoDirichletPA> *mod = (*currentState).clone();
@@ -192,11 +192,13 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 					/*if(vStop){*/
 					//(*currentState).delCurrent();
 					//delete currentState;
-					(*mod).accept();
+					//(*mod).accept();
 					currentState = mod;
 					(*currentState).addIteration();
 					res.push_back(currentState);
 					kMaxO = max(kMaxO, (*currentState).valK());
+					//(*currentState).displayMu();
+
 				/*}
 				if((*currentState).valK() == 3)
 					vStop = false;*/
@@ -235,47 +237,77 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
     }
 
-    cout << "\n";
+    /*cout << "\n";
    	(*currentState).displayMu();
 
     cout << "K " << (*currentState).valK() << "\n";
-    //cout << "Ok " << bla << " cpt " << cptBla << " m " << bla / cptBla << "\n";
+    //cout << "Ok " << bla << " cpt " << cptBla << " m " << bla / cptBla << "\n";*/
     tot = res.size();
-    cout << "Res " << tot << "\n";
+    //cout << "Res " << tot << "\n";
 
    Rcpp::NumericVector listK = Rcpp::NumericVector( Rcpp::Dimension(tot));
    Rcpp::NumericMatrix mu = Rcpp::NumericMatrix( Rcpp::Dimension(tot, kMaxO));
    Rcpp::IntegerVector listIt = Rcpp::IntegerVector( Rcpp::Dimension(tot));
+   Rcpp::IntegerVector nbK = Rcpp::IntegerVector(kMaxO);
+   Rcpp::NumericVector muHat = Rcpp::NumericVector(Rcpp::Dimension(kMaxO, kMaxO));
+
    int i = 0;
    for(std::vector< PartitionAll<NucleoDirichletPA> *>::iterator it = res.begin(); it != res.end();it++){
 
 	   listK[i] = (*it)->valK();
 	   listIt[i] = (*it)->iteration();
+	   nbK[(*it)->valK()-1]+= (*it)->iteration();
+
 	   Rcpp::NumericVector tmp = (*it)->mu();
 
 	   for(int j = 0; j < kMaxO; j++){
 		   if(j < listK[i]){
                mu[i  + j * tot] = tmp[j];
+               muHat[((*it)->valK()-1) + j * kMaxO] += (*it)->iteration() * tmp[j];
+
 		   }
            else{
                mu[i + j * tot] = 0;
            }
 	   }
+
 	   i++;
-	   cout << " " <<  (*it)->iteration() << ":" << (*it)->valK();
+	   //cout << " " <<  (*it)->iteration() << ":" << (*it)->valK();
 
    }
-   cout << "\n\n";
+
+
+   int posM = 0;
+   int curM = -1;
+   for(int j = 0; j < kMaxO; j++){
+	   if(nbK[j] > curM){
+		   posM = j + 1;
+	   }
+	   for(int l = 0; l < kMaxO; l++){
+		   if(nbK[j] > 0)
+			   muHat[j + l * kMaxO] /= nbK[j];
+	   }
+   }
+
     //nf = startFReads.size();
 
     //nf = currentState.getP();
     //nr = startRReads.size();
 
 
-    List nbSeq = List::create( Rcpp::Named("K") = listK, Rcpp::Named("KMax") = kMaxO, Rcpp::Named("it") = listIt, Rcpp::Named("tot") = tot, Rcpp::Named("mu") = mu); //(*currentState).mu()
+    List nbSeq = List::create( Rcpp::Named("K") = listK
+    				, Rcpp::Named("KMax") = kMaxO, Rcpp::Named("it") = listIt
+					, Rcpp::Named("tot") = tot, Rcpp::Named("mu") = mu
+					, Rcpp::Named("muHat") = muHat
+					, Rcpp::Named("nbK") = nbK); //(*currentState).mu()
 
     for(std::vector< PartitionAll<NucleoDirichletPA> *>::iterator it = res.begin(); it != res.end();it++){
-    	(*it)->delCurrent();
+    	if(it == res.begin()){
+    		(*it)->delCurrent();
+    	}
+    	else{
+    		(*it)->delMod();
+    	}
     	delete (*it);
     }
 

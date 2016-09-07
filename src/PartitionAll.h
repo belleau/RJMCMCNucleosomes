@@ -1204,6 +1204,17 @@ public:
 	void delCurrent(){
 
 		this->delCurrentD();
+		this->resetAdd();
+		this->resetMod();
+		//this->resetNucleo();
+		reset();
+	}
+
+	void delMod(){
+		this->delCurrentD();
+		this->resetAdd();
+		this->resetMod();
+		//reset();
 	}
 
 	void reset(){
@@ -1216,8 +1227,8 @@ public:
 
 	void accept(){
 		//this->displayMod();
-		this->resetMod();
-		this->clearAdd();
+		//this->resetMod();
+		//this->clearAdd();
 	}
 	void reject(){
 

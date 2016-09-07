@@ -133,7 +133,7 @@ public:
 	}
 
 	Rcpp::NumericVector mu(){
-		Rcpp::NumericVector mu = Rcpp::NumericVector( Rcpp::Dimension(valK()));
+		Rcpp::NumericVector mu = Rcpp::NumericVector(valK());
 		int i = 0;
 		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
 			mu[i++] = (*it)->mu();
@@ -195,18 +195,16 @@ protected:
 
 	void resetNucleo(){
 		for(itNucleo it = d_nucleosomes.begin(); it != d_nucleosomes.end();it++){
-			delete *it;
-			*it = NULL;
+			if(*it != NULL){
+				delete *it;
+				*it = NULL;
+			}
 		}
 		d_nucleosomes.clear();
 	};
 
 	void resetMod(){
 
-		for(itVNucleo it = d_modNucleo.begin(); it != d_modNucleo.end();it++){
-			delete *it;
-			*it = NULL;
-		}
 		d_modNucleo.clear();
 	};
 	void displayMod(){
@@ -214,8 +212,6 @@ protected:
 		std::cout << "Mod ";
 		for(itVNucleo it = d_modNucleo.begin(); it != d_modNucleo.end();it++){
 			std::cout << " M " << (*it)->mu();
-			//delete *it;
-			//*it = NULL;
 		}
 		std::cout << "\n";
 		d_modNucleo.clear();
@@ -224,8 +220,10 @@ protected:
 	void resetAdd(){
 
 		for(itItVNucleo it = d_addNucleo.begin(); it != d_addNucleo.end();it++){
-			delete **it;
-			**it = NULL;
+			if(**it != NULL){
+				delete **it;
+				**it = NULL;
+			}
 		}
 		d_addNucleo.clear();
 	};
