@@ -25,13 +25,13 @@ using namespace space_process;
 List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
                         long nbrIterations, int kMax, int lambda,
                         int minInterval, int maxInterval, int minReads = 5,
-                        bool adaptIterationsToReads = true) {
+                        bool adaptIterationsToReads = true, int vSeed = -1) {
     NumericVector startFReads(startPosForwardReads); // *startFReads = new IntegerVector(startPosForwardReads);
     NumericVector startRReads(startPosReverseReads); // *startRReads = new IntegerVector(startPosReverseReads);
     std::vector<double> fReads = Rcpp::as<std::vector<double> >(startFReads);
     std::vector<double> rReads = Rcpp::as<std::vector<double> >(startRReads);
 
-    int nf=1, nr;
+    long nf=1, nr;
     long tot;
 
     const gsl_rng_type * T;
@@ -41,7 +41,9 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	T = gsl_rng_default;
 
 	rng = gsl_rng_alloc (T);     // pick random number generator
-	seed = kMax; //time (NULL) * getpid();
+	if(seed == -1){
+		seed = time (NULL) * getpid();
+	}
 	gsl_rng_set (rng, seed);
 
 
@@ -50,6 +52,12 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	std::vector< PartitionAll<NucleoDirichletPA> *> res;
 
     SegmentSeq seg(fReads, rReads, 147);
+    nr = seg.sizeFReads() + seg.sizeRReads();
+    if(adaptIterationsToReads){
+    	if(nr <= 12){
+    		nbrIterations = 1000;
+    	}
+    }
     PartitionAll<NucleoDirichletPA> *currentState = new PartitionAll<NucleoDirichletPA>(seg, rng);
     (*currentState).initMu1( 3);// test si ok
     (*currentState).prepSpace();

@@ -57,12 +57,12 @@ rjmcmcNucleo <- function(startPosForwardReads,
                               nbrIterations, kMax, lambda,
                               minInterval, maxInterval,
                               minReads = 5L,
-                              adaptIterationsToReads = TRUE) {
+                              adaptIterationsToReads = TRUE, vSeed = -1) {
     .Call('RJMCMCNucleosomes_rjmcmcNucleo',
           PACKAGE = 'RJMCMCNucleosomes',
           startPosForwardReads, startPosReverseReads,
           nbrIterations, kMax, lambda, minInterval,
-          maxInterval, minReads, adaptIterationsToReads)
+          maxInterval, minReads, adaptIterationsToReads, vSeed)
 }
 
 
