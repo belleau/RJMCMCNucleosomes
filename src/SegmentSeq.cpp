@@ -54,7 +54,7 @@ long SegmentSeq::sizeFReads() const{
 };
 
 long SegmentSeq::sizeRReads() const{
-	return(d_sizeFReads);
+	return(d_sizeRReads);
 };
 
 double SegmentSeq::minPos() const{

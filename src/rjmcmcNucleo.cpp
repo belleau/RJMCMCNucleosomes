@@ -2,13 +2,9 @@
 #include <gsl/gsl_randist.h>
 #include <iostream>
 #include <math.h>
-
+#include <time.h>
 #include "PartitionAll.h"
 
-//#include "NucleoDirichletPA.h"
-//#include "Factory.h"
-//#include "bla2.h"
-//#include "bla1.h"
 
 #include "SegmentSeq.h"
 
@@ -26,14 +22,32 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
                         long nbrIterations, int kMax, int lambda,
                         int minInterval, int maxInterval, int minReads = 5,
                         bool adaptIterationsToReads = true, int vSeed = -1) {
-    NumericVector startFReads(startPosForwardReads); // *startFReads = new IntegerVector(startPosForwardReads);
+	/*********************************************************************
+	 * init R var
+	 *********************************************************************/
+	NumericVector startFReads(startPosForwardReads); // *startFReads = new IntegerVector(startPosForwardReads);
     NumericVector startRReads(startPosReverseReads); // *startRReads = new IntegerVector(startPosReverseReads);
+
     std::vector<double> fReads = Rcpp::as<std::vector<double> >(startFReads);
     std::vector<double> rReads = Rcpp::as<std::vector<double> >(startRReads);
 
-    long nf=1, nr;
-    long tot;
+    long nr = 0; // Number of read
+    long tot = 0;
+    int kMaxO = 0; // the biggest K
 
+    /*********************************************************************
+	 * Debug var
+	 *********************************************************************/
+
+    bool dispRho = false;           // display rho for debug
+    bool displayInt = false;
+    int typeMv = 0;                 // move type for debug
+    double nbType[5] = {0,0,0,0,0}; // number of type move for debug
+
+
+    /*********************************************************************
+	 * init random number generator
+	 *********************************************************************/
     const gsl_rng_type * T;
     gsl_rng *rng;
 	long seed;
@@ -46,46 +60,56 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	}
 	gsl_rng_set (rng, seed);
 
+	/*********************************************************************
+	 * Space Nucleosome and Segment
+	 *********************************************************************/
+
+	std::vector< PartitionAll<NucleoDirichletPA> *> res; // vector of space nucleosome accepted
+
+	SegmentSeq seg(fReads, rReads, 147);                 // Reads of the segment
+
+	/*********************************************************************
+	 * test
+	 *********************************************************************/
+
+/*	bla<int> oups(3);
+	oups.truc();*/
 
 
+	/*********************************************************************
+	 * Fin test
+	 *********************************************************************/
 
-	std::vector< PartitionAll<NucleoDirichletPA> *> res;
 
-    SegmentSeq seg(fReads, rReads, 147);
-    nr = seg.sizeFReads() + seg.sizeRReads();
+	nr = seg.sizeFReads() + seg.sizeRReads();
     if(adaptIterationsToReads){
     	if(nr <= 12){
     		nbrIterations = 1000;
     	}
     }
+
+    /*********************************************************************
+	 * Init Space Nucleosome
+	 *********************************************************************/
+
     PartitionAll<NucleoDirichletPA> *currentState = new PartitionAll<NucleoDirichletPA>(seg, rng);
     (*currentState).initMu1( 3);// test si ok
     (*currentState).prepSpace();
     (*currentState).addIteration();
-   res.push_back(currentState);
+    res.push_back(currentState);
 
-   bool dispRho = adaptIterationsToReads;
-   double bla = 0;
-   int cptBla = 0;
-   int test3 = 0;
-   double nbType[5] = {0,0,0,0,0};
-   bool vStop = true;
-   int kMaxO = (*currentState).valK();
-   //int *k = new int[nbrIterations];
-   //double **mu = new double *[nbrIterations];
 
-   for(long i = 0; i< nbrIterations;i++){
-	   double valPourv = 0;
-	   double pt;
-	   bool flag = false;
 
-	  /*if(i%10000 == 0)
-	   {
-		   cout << i << "\n";
-		   (*currentState).displayMu();
-		   //if(dispRho)
-		   cout << "K " << (*currentState).valK() << "\n";
-	   }*/
+    for(long i = 0; i< nbrIterations;i++){
+
+		double pt;
+		bool flag = false; // Generate a new valide (with enought read in the partition) move
+
+		if(displayInt && i%10000 == 0){
+			cout << i << "\n";
+			(*currentState).displayMu();
+			cout << "K " << (*currentState).valK() << "\n";
+		}
 
 
     	PartitionAll<NucleoDirichletPA> *mod = (*currentState).clone();
@@ -101,15 +125,11 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 					if(flag){
 						(*mod).prepSpace();
 						rho = (*mod).rhoP2() / (*currentState).bK();
-						valPourv = (*mod).rhoP2();
 						rho *= (*mod).qalloc();
-						//bla += (*mod).kD();
-						//bla += (*mod).tB();
-						//cptBla++;
-						//cout << "v0 " << (*mod).kD() << " " << (*currentState).kD() << "\n";
+
 						if(dispRho)
 						cout << "Birth " << rho << "\n";
-						test3 = 4;
+						typeMv = 4;
 
 					}
 					else{
@@ -125,7 +145,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
 						if(dispRho)
 						cout << "MH " << rho << "\n";
-						test3 = 5;
+						typeMv = 5;
 					}
     			}
 			}
@@ -138,7 +158,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 					rho /= (*mod).qalloc();
 					if(dispRho)
 					cout << "Death " << rho << "\n";
-					test3 = 3;
+					typeMv = 3;
 				}
 			}
     	}
@@ -153,7 +173,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 					//cout << "v0 1 " << (*mod).kD() << " " << (*currentState).kD() << "\n";
 					if(dispRho)
 					cout << "Birth1 "  << rho << "\n";
-					test3 = 1;
+					typeMv = 1;
 				}
     		}
     		else{
@@ -165,74 +185,38 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
 					if(dispRho)
 					cout << "MH1 " << rho << "\n";
-					test3 = 2;
+					typeMv = 2;
 				}
     		}
     	}
 
     	if(flag){
-    		nbType[test3-1]++;
+    		nbType[typeMv-1]++;
     		if(dispRho)
     		cout << "v0 " << (*mod).kD() << " " << (*currentState).kD() << "\n";
-    		//valPourv = rho;
+
     		double tmp = exp(((*mod).kD() - (*currentState).kD()));
-    		//cout << " v1 " << tmp;
+
     		rho *= tmp;
     		tmp = ((*mod).priorMuDensity() / (*currentState).priorMuDensity());
-    		//cout << " v2 " << tmp;
+
 			rho *= tmp;
 
 
     		tmp = ((*mod).multinomial() / (*currentState).multinomial());
-    		//cout << " v3 " << tmp;
+
 			rho *= tmp;
 
     		rho = std::min(1.0, rho);
-    		//cout << " Rho " << rho << "\n";
+
 			pt = gsl_ran_flat (rng, 0, 1);
 			if(rho >= pt){
-				/*std::cout << "type " << test3 << " i " << (*mod).tB();
-								cout << " k " << (*mod).valK() << " kd " << (*mod).kD();
-								cout << " " << nbType[0] << " " << nbType[1] << " " << nbType[2] << " " << nbType[3] << " " << nbType[4];
-								cout << " rho " << rho << " pt " << pt;
-								cout << "\n";*/
-					// clean currentState
-					/*if(vStop){*/
-					//(*currentState).delCurrent();
-					//delete currentState;
-					//(*mod).accept();
 					currentState = mod;
 					(*currentState).addIteration();
 					res.push_back(currentState);
 					kMaxO = max(kMaxO, (*currentState).valK());
-					//(*currentState).displayMu();
-
-				/*}
-				if((*currentState).valK() == 3)
-					vStop = false;*/
-				/*std::cout << "type " << test3 << " i " << (*currentState).tB();
-				cout << " k " << (*currentState).valK() << " kd " << (*currentState).kD();
-				cout << " " << nbType[0] << " " << nbType[1] << " " << nbType[2] << " " << nbType[3] << " " << nbType[4];
-				cout << "\n";*/
-				//fill(&nbType[0], &nbType[5], 0);
-
-				/*if(test3){
-					if((*currentState).valK() == 4){
-						std::cout << "test3 " << (i+1) << "\n";
-						//(*currentState).displayMu();
-						test3 = false;
-					}
-				}*/
 			}
 			else{
-				/*if(test3 == 4){
-					std::cout << "Rtype " << test3 << " i " << (*mod).tB();
-					cout << " k " << (*mod).valK() << " kd " << (*mod).kD();
-					cout << " kdC " << (*currentState).kD();
-					cout << " rho " << rho << " pt " << pt << " pourv " << valPourv;
-					//cout << " " << nbType[0] << " " << nbType[1] << " " << nbType[2] << " " << nbType[3] << " " << nbType[4];
-					cout << "\n";
-				}*/
 				(*currentState).addIteration();
 				(*mod).reject();
 				delete mod;
@@ -243,21 +227,17 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 			delete mod;
     	}
 
-    }
+    } // End for iteration
 
-    /*cout << "\n";
-   	(*currentState).displayMu();
 
-    cout << "K " << (*currentState).valK() << "\n";
-    //cout << "Ok " << bla << " cpt " << cptBla << " m " << bla / cptBla << "\n";*/
     tot = res.size();
-    //cout << "Res " << tot << "\n";
 
-   Rcpp::NumericVector listK = Rcpp::NumericVector( Rcpp::Dimension(tot));
-   Rcpp::NumericMatrix mu = Rcpp::NumericMatrix( Rcpp::Dimension(tot, kMaxO));
-   Rcpp::IntegerVector listIt = Rcpp::IntegerVector( Rcpp::Dimension(tot));
-   Rcpp::IntegerVector nbK = Rcpp::IntegerVector(kMaxO);
-   Rcpp::NumericVector muHat = Rcpp::NumericVector(Rcpp::Dimension(kMaxO, kMaxO));
+
+    Rcpp::NumericVector listK = Rcpp::NumericVector( Rcpp::Dimension(tot));
+    Rcpp::NumericMatrix mu = Rcpp::NumericMatrix( Rcpp::Dimension(tot, kMaxO));
+    Rcpp::IntegerVector listIt = Rcpp::IntegerVector( Rcpp::Dimension(tot));
+    Rcpp::IntegerVector nbK = Rcpp::IntegerVector(kMaxO);
+    Rcpp::NumericVector muHat = Rcpp::NumericVector(Rcpp::Dimension(kMaxO, kMaxO));
 
    int i = 0;
    for(std::vector< PartitionAll<NucleoDirichletPA> *>::iterator it = res.begin(); it != res.end();it++){
@@ -280,7 +260,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	   }
 
 	   i++;
-	   //cout << " " <<  (*it)->iteration() << ":" << (*it)->valK();
+
 
    }
 
@@ -297,10 +277,6 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	   }
    }
 
-    //nf = startFReads.size();
-
-    //nf = currentState.getP();
-    //nr = startRReads.size();
 
 
     List nbSeq = List::create( Rcpp::Named("K") = listK
@@ -319,7 +295,5 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     	delete (*it);
     }
 
-    //(*currentState).delCurrent();
-    //delete currentState;
     return nbSeq;
 }

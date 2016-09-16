@@ -202,6 +202,7 @@ void NucleoDirichlet::evalBR(){
 		for(vector<double>::const_iterator it = beginRR(); it != endRR(); it++){
 
 			d_bR[i++] = gsl_ran_tdist_pdf(((*it - tmp ) / sdR), df()) / sdR;
+
 		}
 	}
 	else{
