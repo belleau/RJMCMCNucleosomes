@@ -6,7 +6,7 @@ output:
 bibliography: rjmcmc.bibtex
 vignette: >
   %\VignetteIndexEntry{Nucleosome Positioning}
-  %\VignettePackage{RJMCMC}
+  %\VignettePackage{RJMCMCNucleosomes}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,17 +17,17 @@ library(knitr)
 ```
 
 <br />
-**Package**: `r Rpackage("RJMCMC")`<br />
-**Authors**: `r packageDescription("RJMCMC")[["Author"]]`<br />
-**Version**: `r packageDescription("RJMCMC")$Version`<br />
+**Package**: `r Rpackage("RJMCMCNucleosomes")`<br />
+**Authors**: `r packageDescription("RJMCMCNucleosomes")[["Author"]]`<br />
+**Version**: `r packageDescription("RJMCMCNucleosomes")$Version`<br />
 **Compiled date**: `r Sys.Date()`<br />
-**License**: `r packageDescription("RJMCMC")[["License"]]`<br />
+**License**: `r packageDescription("RJMCMCNucleosomes")[["License"]]`<br />
 
 # Licensing and citing
 
-The **RJMCMC** package and the underlying **RJMCMC** code are distributed 
-under the Artistic license 2.0. You are free to use and redistribute 
-this software. 
+The **RJMCMCNucleosomes** package and the underlying **RJMCMCNucleosomes** code 
+are distributed under the Artistic license 2.0. You are free to use and 
+redistribute this software. 
 
 If you use this package for a publication, we would ask you to cite the
 following:
@@ -49,34 +49,34 @@ inferences within parametric approaches (see for instance @Chen2010 and
 @Xi2010).  In those works, the detection of nucleosome positions is done 
 using a hidden Markov model with an assumed known order.
 
-The **RJMCMC** package is an implementation of a fully Bayesian hierarchical 
-model for profiling of nucleosome positions based on high-throughput
-short-read data (MNase-Seq data). The implementation is based on a strategy 
-which incorporates four aspects. First, it jointly models local concentrations
-of directional reads. Second, it uses a Multinomial-Dirichlet model in the 
-construction of an informative prior distribution coupled to a t-mixture model 
-with unknown degrees of freedom. Third, the number of nucleosomes
-is considered to be a random variable and refers to a prior distribution. 
-Fourth, the unknown parameters are simultaneously using the reversible jump 
-Markov chain Monte Carlo (RJMCMC) simulation technique (see for instance 
-@Green1995 and @Richardson1997). 
+The **RJMCMCNucleosomes** package is an implementation of a fully Bayesian 
+hierarchical model for profiling of nucleosome positions based on 
+high-throughput short-read data (MNase-Seq data). The implementation is based 
+on a strategy which incorporates four aspects. First, it jointly models local 
+concentrations of directional reads. Second, it uses a Multinomial-Dirichlet 
+model in the construction of an informative prior distribution coupled to a 
+t-mixture model with unknown degrees of freedom. Third, the number of 
+nucleosomes is considered to be a random variable and refers to a prior 
+distribution. Fourth, the unknown parameters are simultaneously using the 
+reversible jump Markov chain Monte Carlo (RJMCMC) simulation technique 
+(see for instance @Green1995 and @Richardson1997). 
 
 Detailed information about the **RJMCMC** model can be found in the article 
 mentioned in the precedent section.
 
 # Loading the RJMCMC package
 
-As with any R package, the **RJMCMC** package should first be loaded with 
+As with any R package, the **RJMCMCNucleosomes** package should first be loaded with 
 the following command:
 
 ```{r loadingPackage, warning=FALSE, message=FALSE} 
-library(RJMCMC)
+library(RJMCMCNucleosomes)
 ```
 
 
-# RJMCMC analysis
+# RJMCMCNucleosomes analysis
 
-A typical **RJMCMC** analysis consists of the following steps:
+A typical **RJMCMCNucleosomes** analysis consists of the following steps:
 
 1. Segment the genome into candidate regions that have sufficient aligned
 reads. The region cannot be larger than one chromosome.
@@ -87,7 +87,7 @@ one chromosome.
 predictions.
 
 
-# RJMCMC analysis step by step
+# RJMCMCNucleosomes analysis step by step
 
 A synthetic nucleosome sample containing 100 nucleosomes (80 
 well-positioned + 20 fuzzy) has been created using the 
@@ -158,7 +158,7 @@ length(slot(sampleSegmented, "List"))
 ```
 
 
-## Run RJMCMC
+## Run RJMCMCNucleosomes
 
 The RJMCMC function must be run on each candidate region. As an example, the 
 first candidate region is processed using a very low number of iterations. On
@@ -217,7 +217,7 @@ The segments of the sample created sooner have all been processed (using
 ```{r regroup01, warning=FALSE, collapse=TRUE, message=FALSE}
 ## The directory containing the results of all segments
 ## On RDS file has been created for each segment
-directory <- system.file("extdata", "demo_vignette", package = "RJMCMC")
+directory <- system.file("extdata", "demo_vignette", package = "RJMCMCNucleosomes")
 
 ## Merging predicted nucleosomes from all segments
 resultsAllMerged <- mergeAllRDSFilesFromDirectory(directory)
@@ -263,7 +263,8 @@ allReadsReverse <- subset(sample$dataIP, strand == "-")
 resultsAllMerged$k
 
 ## Use the post-treatment function
-resultsPostTreatment <- RJMCMC::postTreatment(startPosForwardReads =  allReadsForward$start, 
+resultsPostTreatment <- RJMCMCNucleosomes::postTreatment(startPosForwardReads =  
+                                    allReadsForward$start,
                                     startPosReverseReads = allReadsReverse$start, 
                                     resultRJMCMC = resultsAllMerged,
                                     chrLength = max(allReadsForward$start, 
