@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <list>
 #include <math.h>
+#include <time.h>
 
 #include "Nucleosome.h"
 #include "SegmentSeq.h"
