@@ -1,4 +1,4 @@
-#' RJMCMC: Bayesian hierarchical model for genome-wide profiling of nucleosome positions based on high-throughput short-read data (MNase-Seq data)
+#' RJMCMCNucleosomes: Bayesian hierarchical model for genome-wide profiling of nucleosome positions based on high-throughput short-read data (MNase-Seq data)
 #'
 #' This package does nucleosome positioning using informative
 #' Multinomial-Dirichlet prior in a t-mixture with reversible jump
@@ -6,9 +6,9 @@
 #'
 #' @docType package
 #'
-#' @name RJMCMC-package
+#' @name RJMCMCNucleosomes-package
 #'
-#' @aliases RJMCMC-package RJMCMC
+#' @aliases RJMCMCNucleosomes-package RJMCMCNucleosomes
 #'
 #' @author  Rawane Samb,
 #' Khader Khadraoui,
