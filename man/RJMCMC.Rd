@@ -6,7 +6,7 @@
 \usage{
 rjmcmc(startPosForwardReads, startPosReverseReads, nbrIterations, kMax,
   lambda = 3, minInterval, maxInterval, minReads = 5,
-  adaptIterationsToReads = TRUE)
+  adaptIterationsToReads = TRUE, vSeed = -1)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
