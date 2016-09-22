@@ -44,7 +44,7 @@ LinkingTo: Rcpp
 Encoding: UTF-8
 License: Artistic-2.0
 VignetteBuilder: knitr
-NeedsCompilation: no
+NeedsCompilation: yes
 biocViews: BiologicalQuestion, ChIPSeq, NucleosomePositioning,
     Software, StatisticalMethod, Bayesian
 Maintainer: Astrid Deschenes <Astrid-Louise.Deschenes@crchudequebec.ulaval.ca>
