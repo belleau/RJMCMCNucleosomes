@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{rjmcmcNucleo}
 \alias{rjmcmcNucleo}
-\title{rjmcmc cpp}
+\title{Interface for the RJMCMC nucleosome mapping method in C++}
 \usage{
 rjmcmcNucleo(startPosForwardReads, startPosReverseReads, nbrIterations, kMax,
   lambda, minInterval, maxInterval, minReads = 5L,
