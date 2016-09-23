@@ -2098,6 +2098,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' ## Merging nucleosomes informations from the two files
 #' result <- RJMCMC:::mergeAllRDSFiles(c(file_100, file_101))
 #'
+#' @importFrom methods is
 #' @author Pascal Belleau, Astrid Deschenes
 #' @keywords internal
 #'
