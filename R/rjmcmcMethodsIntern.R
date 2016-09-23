@@ -2087,11 +2087,11 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #'
 #' ## Loading two files containing nucleosomes informations for two sections of
 #' ## the same chromosome
-#' file_100 <- dir(system.file("extdata", package = "RJMCMC"),
+#' file_100 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 #'                 pattern = "yeastRes_Chr1_Seg_100.rds",
 #'                 full.names = TRUE)
 #'
-#' file_101 <- dir(system.file("extdata", package = "RJMCMC"),
+#' file_101 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 #'                 pattern = "yeastRes_Chr1_Seg_101.rds",
 #'                 full.names = TRUE)
 #'
@@ -2158,7 +2158,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #' @examples
 #'
 #' ## Loading a file
-#' file_test <- dir(system.file("extdata", package = "RJMCMC"),
+#' file_test <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 #' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
 #'
 #' ## Testing using a real file
@@ -2200,7 +2200,7 @@ validateRDSFilesParameters <- function(RDSFiles) {
 #' @examples
 #'
 #' ## Load an existing directory
-#' directory <- system.file("extdata", package = "RJMCMC")
+#' directory <- system.file("extdata", package = "RJMCMCNucleosomes")
 #'
 #' ## Testing using a real directory
 #' RJMCMC:::validateDirectoryParameters(directory)
@@ -2255,7 +2255,7 @@ validateDirectoryParameters <- function(directory) {
 #' data(reads_demo)
 #'
 #' ## Load dataset containing nucleosome information
-#' file_002 <- dir(system.file("extdata", package = "RJMCMC"),
+#' file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 #' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
 #' nucleosome_info <- readRDS(file_002)
 #'

@@ -32,11 +32,11 @@ Merge nucleosome information present in multiple RDS files.
 
 ## Loading two files containing nucleosomes informations for two sections of
 ## the same chromosome
-file_100 <- dir(system.file("extdata", package = "RJMCMC"),
+file_100 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
                 pattern = "yeastRes_Chr1_Seg_100.rds",
                 full.names = TRUE)
 
-file_101 <- dir(system.file("extdata", package = "RJMCMC"),
+file_101 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
                 pattern = "yeastRes_Chr1_Seg_101.rds",
                 full.names = TRUE)
 

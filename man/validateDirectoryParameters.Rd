@@ -22,7 +22,7 @@ Validation of all parameters needed by the public
 \examples{
 
 ## Load an existing directory
-directory <- system.file("extdata", package = "RJMCMC")
+directory <- system.file("extdata", package = "RJMCMCNucleosomes")
 
 ## Testing using a real directory
 RJMCMC:::validateDirectoryParameters(directory)
