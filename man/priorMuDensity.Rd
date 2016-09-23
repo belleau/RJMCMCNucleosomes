@@ -37,7 +37,7 @@ readPositions <- c(9909L, 9928L, 9935L, 26603L, 26616L, 26632L, 26636L,
 mu <- c(10000L, 26700L, 45000L)
 
 ## Calculation of the exact prior density of mu
-density <- RJMCMC:::priorMuDensity(mu, readPositions)
+density <- RJMCMCNucleosomes:::priorMuDensity(mu, readPositions)
 
 }
 \author{

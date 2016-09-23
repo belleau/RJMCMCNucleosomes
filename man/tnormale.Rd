@@ -38,7 +38,7 @@ set.seed(3333)
 
 ## Return a value, between 1000 and 3000, generated froma a normal
 ## distribution with a mean of 2000 and a variance of 30.
-RJMCMC:::tnormale(2000, 30, 1000, 30000)
+RJMCMCNucleosomes:::tnormale(2000, 30, 1000, 30000)
 
 }
 \author{

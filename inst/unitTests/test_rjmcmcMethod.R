@@ -11,7 +11,7 @@
 
 if(FALSE) {
     library( "RUnit" )
-    library( "RJMCMC" )
+    library( "RJMCMCNucleosomes" )
 }
 
 ### }}}
@@ -20,17 +20,17 @@ data(reads_demo)
 data(reads_demo_02)
 data(RJMCMC_result)
 
-DIRECTORY <- system.file("extdata", package = "RJMCMC")
+DIRECTORY <- system.file("extdata", package = "RJMCMCNucleosomes")
 
-file_002 <- dir(system.file("extdata", package = "RJMCMC"),
+file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
                         pattern = "yeastRes_Chr1_Seg_002.rds",
                         full.names = TRUE)
 
-file_101 <- dir(system.file("extdata", package = "RJMCMC"),
+file_101 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
                 pattern = "yeastRes_Chr1_Seg_101.rds",
                 full.names = TRUE)
 
-file_100 <- dir(system.file("extdata", package = "RJMCMC"),
+file_100 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
                 pattern = "yeastRes_Chr1_Seg_100.rds",
                 full.names = TRUE)
 

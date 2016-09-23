@@ -32,7 +32,8 @@ Imports:
     consensusSeekeR,
     GenomeInfoDb,
     S4Vectors,
-    stats
+    stats,
+    methods
 Suggests:
     BiocStyle,
     knitr,

@@ -39,6 +39,10 @@
 #' of iterations must be modified in function of the number of reads.
 #' Default: \code{TRUE}.
 #'
+#' @param vSeed a \code{integer}. A seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used. Default: -1.
+#'
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomes" containing:
 #' \itemize{
 #' \item \code{call} the matched call.

@@ -26,10 +26,10 @@ When more than one \code{integer} have the highest number of occurences,
 
 ## Return the element with the hightest number of occurence
 data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-RJMCMC:::elementWithHighestMode(data01)
+RJMCMCNucleosomes:::elementWithHighestMode(data01)
 
 data02 <- c(3L, 6L, 4L, 3L, 6L)
-RJMCMC:::elementWithHighestMode(data02)
+RJMCMCNucleosomes:::elementWithHighestMode(data02)
 
 }
 \author{
