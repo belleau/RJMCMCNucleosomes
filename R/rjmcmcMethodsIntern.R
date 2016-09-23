@@ -1,4 +1,4 @@
-#' @title rjmcmc cpp
+#' @title Interface for the RJMCMC nucleosome mapping method in C++
 #'
 #' @description Function that calls the core of the nucleosome positioning
 #' mapping function that is implemented in C++.
