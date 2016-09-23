@@ -72,6 +72,28 @@ public:
 		:SpaceNucleosomeD<NucleoD>(segSeq, rng), d_y(y), d_ySize(ySize){ //
 
 	};
+
+	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, int dfMax)
+		:SpaceNucleosomeD<NucleoD>(segSeq,rng, dfMax), d_y(new std::vector<double>){ //
+		//d_y = new std::vector<double>;
+		//d_y->push_back(1.0);
+
+		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
+		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
+
+		std::sort(d_y->begin(),d_y->end());
+		d_ySize = (*d_y).size();
+	};
+
+	PartitionAll(SegmentSeq const &segSeq, int seed, std::vector<double> *y, long ySize, int dfMax)
+		:SpaceNucleosomeD<NucleoD>(segSeq, seed, dfMax), d_y(y){ //
+
+	};
+
+	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, std::vector<double> *y, long ySize, int dfMax)
+		:SpaceNucleosomeD<NucleoD>(segSeq, rng, dfMax), d_y(y), d_ySize(ySize){ //
+
+	};
 	/*
 	PartitionAll(std::vector<double> const  &fReads,
 			std::vector<double> const &rReads, int zeta)
@@ -216,7 +238,7 @@ public:
 
 	NucleoSpace * clone(){
 
-		NucleoSpace *a = new NucleoSpace(this->segSeq(), this->rng(), d_y, ySize());
+		NucleoSpace *a = new NucleoSpace(this->segSeq(), this->rng(), d_y, ySize(), this->dfMax());
 
 		a->setValK(this->valK());
 		a->setNucleosomes(this->nucleosomes());
@@ -470,9 +492,9 @@ public:
 					}
 					if(!(flag)){
 
-						int dF = (int) gsl_ran_flat (this->rng(), 3, 31);
+						int df = (int) gsl_ran_flat (this->rng(), 3, this->dfMax() + 1);
 
-						uBirth = new NucleoD(muBirth, dF, this->segSeq(), this->rng());
+						uBirth = new NucleoD(muBirth, df, this->segSeq(), this->rng());
 						flag = !(setNucleoD(uBirth, aFBirth, aRBirth));
 
 					}
@@ -486,7 +508,7 @@ public:
 
 					if(!(flag)){
 
-						int df = (int) gsl_ran_flat (this->rng(), 3, 31);
+						int df = (int) gsl_ran_flat (this->rng(), 3, this->dfMax() + 1);
 						uBirth = new NucleoD(muBirth, df, this->segSeq(), this->rng());
 						flag = !(setNucleoD(uBirth, aFBirth, aRBirth));
 
@@ -626,9 +648,9 @@ public:
 
 					//if(!(flag)){
 
-					int dF = (int) gsl_ran_flat (this->rng(), 3, 31);
+					int df = (int) gsl_ran_flat (this->rng(), 3, this->dfMax() + 1);
 
-					uBirth = new NucleoD(muBirth, dF, this->segSeq(), this->rng());
+					uBirth = new NucleoD(muBirth, df, this->segSeq(), this->rng());
 
 					flag = !(setNucleoD(uBirth, aFBirth, aRBirth));
 					//this->setTB(uBirth->tP());
@@ -645,7 +667,7 @@ public:
 
 					//if(!(flag)){
 
-					int df = (int) gsl_ran_flat (this->rng(), 3, 31);
+					int df = (int) gsl_ran_flat (this->rng(), 3, this->dfMax() + 1);
 					uBirth = new NucleoD(muBirth, df, this->segSeq(), this->rng());
 
 					flag = !(setNucleoD(uBirth, aFBirth, aRBirth));
@@ -999,9 +1021,9 @@ public:
 				}
 
 				muMH = gsl_ran_flat(this->rng(), muBef, vNext); // New mu
-				int dF = (int) gsl_ran_flat (this->rng(), 3, 31);
+				int df = (int) gsl_ran_flat (this->rng(), 3, this->dfMax() + 1);
 
-				uMH = new  NucleoD(muMH, dF, this->segSeq(), this->rng());
+				uMH = new  NucleoD(muMH, df, this->segSeq(), this->rng());
 
 				aF = gsl_ran_flat(this->rng(), muBef, muMH);
 				aR = gsl_ran_flat(this->rng(), muMH, muNext);
@@ -1122,9 +1144,9 @@ public:
 				}
 
 				muMH = gsl_ran_flat(this->rng(), muBef, vNext); // New mu
-				int dF = (int) gsl_ran_flat (this->rng(), 3, 31);
+				int df = (int) gsl_ran_flat (this->rng(), 3, this->dfMax() + 1);
 
-				uMH = new  NucleoD(muMH, dF, this->segSeq(), this->rng());
+				uMH = new  NucleoD(muMH, df, this->segSeq(), this->rng());
 
 				aF = gsl_ran_flat(this->rng(), muBef, muMH);
 				aR = gsl_ran_flat(this->rng(), muMH, muNext);
