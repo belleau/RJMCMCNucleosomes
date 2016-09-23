@@ -31,26 +31,37 @@ namespace space_process{
 		double d_multinomial;
 		double d_qalloc;
 
+
 		int d_lambda;
 		unsigned int *d_dim;
 		int d_c;
+		int d_dfMax;
 
 		double d_meanRead, d_r2, d_cMuDensity;
 		double d_tB;
 
 	public:
 		SpaceNucleosomeD(SegmentSeq const &segSeq)
-			:SpaceNucleosome<NucleoD>(segSeq), d_w(NULL), d_dim(NULL){
+			:SpaceNucleosome<NucleoD>(segSeq), d_w(NULL), d_dim(NULL),
+			 d_dfMax(30){
 			setDefault();
 		};
 
 		SpaceNucleosomeD(SegmentSeq const &segSeq, int seed)
-			:SpaceNucleosome<NucleoD>(segSeq, seed), d_w(NULL), d_dim(NULL){
+			:SpaceNucleosome<NucleoD>(segSeq, seed), d_w(NULL),
+			 d_dim(NULL), d_dfMax(30){
 			setDefault();
 		};
 
 		SpaceNucleosomeD(SegmentSeq const &segSeq, gsl_rng * rng)
-			:SpaceNucleosome<NucleoD>(segSeq, rng), d_w(NULL), d_dim(NULL){
+			:SpaceNucleosome<NucleoD>(segSeq, rng), d_w(NULL), d_dim(NULL),
+			 d_dfMax(30){
+			setDefault();
+		};
+
+		SpaceNucleosomeD(SegmentSeq const &segSeq, gsl_rng * rng, int dfMax)
+			:SpaceNucleosome<NucleoD>(segSeq, rng), d_w(NULL), d_dim(NULL),
+			 d_dfMax(dfMax){
 			setDefault();
 		};
 
@@ -79,6 +90,10 @@ namespace space_process{
 
 		void setLambda(int l){
 			d_lambda = l;
+		};
+
+		int dfMax(){
+			return(d_dfMax);
 		};
 
 		double qalloc(){

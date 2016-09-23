@@ -40,7 +40,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	 *********************************************************************/
 
     bool dispRho = false;           // display rho for debug
-    bool displayInt = false;
+    bool displayInt = true;
     int typeMv = 0;                 // move type for debug
     double nbType[5] = {0,0,0,0,0}; // number of type move for debug
 
@@ -55,7 +55,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	T = gsl_rng_default;
 
 	rng = gsl_rng_alloc (T);     // pick random number generator
-	if(seed == -1){
+	if(seed <= 0){
 		seed = time (NULL) * getpid();
 	}
 	gsl_rng_set (rng, seed);
@@ -92,7 +92,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	 * Init Space Nucleosome
 	 *********************************************************************/
 
-    PartitionAll<NucleoDirichletPA> *currentState = new PartitionAll<NucleoDirichletPA>(seg, rng);
+    PartitionAll<NucleoDirichletPA> *currentState = new PartitionAll<NucleoDirichletPA>(seg, rng, kMax);
     (*currentState).initMu1( 3);// test si ok
     (*currentState).prepSpace();
     (*currentState).addIteration();

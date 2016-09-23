@@ -35,10 +35,9 @@ class SpaceNucleosome {
 	vecNucleo d_modNucleo;
 	vecItNucleo d_addNucleo;
 
-	int d_valK;
-	int d_Max;
-	gsl_rng *d_rng;  // random number generator
-	long d_iteration;
+	int d_valK;            // Number of nucleosome
+	gsl_rng *d_rng;       // random number generator
+	long d_iteration;     // Number of iteration not accept
 
 public:
 
