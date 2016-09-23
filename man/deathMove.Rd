@@ -112,7 +112,7 @@ muPosition <- c(72800, 73000)
 muPosition
 
 ## Death move
-result <- RJMCMC:::deathMove(paramValues = paramList, kValue = 2L,
+result <- RJMCMCNucleosomes:::deathMove(paramValues = paramList, kValue = 2L,
 muValue = muPosition, sigmafValue = c(100, 120), sigmarValue = c(120, 100),
 deltaValue = c(200, 210), wValue = c(0.5, 0.5), dfValue = c(3, 4),
 aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)), 73150,

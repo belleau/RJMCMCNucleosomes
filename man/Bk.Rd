@@ -27,13 +27,13 @@ nucleosome using a truncated Poisson distribution.
 \examples{
 
 ## Return the birth submove probability
-RJMCMC:::Bk(k = 14L, lambda = 1L, kMax = 30L)
+RJMCMCNucleosomes:::Bk(k = 14L, lambda = 1L, kMax = 30L)
 
 ## Zero is returned when k = 1
-RJMCMC:::Bk(k = 1L, lambda = 3L, kMax = 30L)
+RJMCMCNucleosomes:::Bk(k = 1L, lambda = 3L, kMax = 30L)
 
 ## Zero is returned when k is superior to kMax
-RJMCMC:::Bk(k = 31L, lambda = 2L, kMax = 30L)
+RJMCMCNucleosomes:::Bk(k = 31L, lambda = 2L, kMax = 30L)
 
 }
 \author{

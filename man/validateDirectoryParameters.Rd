@@ -25,7 +25,7 @@ Validation of all parameters needed by the public
 directory <- system.file("extdata", package = "RJMCMCNucleosomes")
 
 ## Testing using a real directory
-RJMCMC:::validateDirectoryParameters(directory)
+RJMCMCNucleosomes:::validateDirectoryParameters(directory)
 
 }
 \author{

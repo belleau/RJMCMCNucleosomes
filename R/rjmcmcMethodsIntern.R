@@ -103,13 +103,13 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #' @examples
 #'
 #' ## Return the death submove probability
-#' RJMCMC:::Dk(k = 12L, lambda = 2L, kMax = 30L)
+#' RJMCMCNucleosomes:::Dk(k = 12L, lambda = 2L, kMax = 30L)
 #'
 #' ## Zero is returned when k = 1
-#' RJMCMC:::Dk(k = 1L, lambda = 3L, kMax = 30L)
+#' RJMCMCNucleosomes:::Dk(k = 1L, lambda = 3L, kMax = 30L)
 #'
 #' ## Zerio is returned when k is superior to kMax
-#' RJMCMC:::Dk(k = 31L, lambda = 2L, kMax = 30L)
+#' RJMCMCNucleosomes:::Dk(k = 31L, lambda = 2L, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
@@ -141,13 +141,13 @@ Dk <- function(k, lambda, kMax = 30) {
 #' @examples
 #'
 #' ## Return the birth submove probability
-#' RJMCMC:::Bk(k = 14L, lambda = 1L, kMax = 30L)
+#' RJMCMCNucleosomes:::Bk(k = 14L, lambda = 1L, kMax = 30L)
 #'
 #' ## Zero is returned when k = 1
-#' RJMCMC:::Bk(k = 1L, lambda = 3L, kMax = 30L)
+#' RJMCMCNucleosomes:::Bk(k = 1L, lambda = 3L, kMax = 30L)
 #'
 #' ## Zero is returned when k is superior to kMax
-#' RJMCMC:::Bk(k = 31L, lambda = 2L, kMax = 30L)
+#' RJMCMCNucleosomes:::Bk(k = 31L, lambda = 2L, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
@@ -189,7 +189,7 @@ Bk <- function(k, lambda, kMax = 30) {
 #'
 #' ## Return a value, between 1000 and 3000, generated froma a normal
 #' ## distribution with a mean of 2000 and a variance of 30.
-#' RJMCMC:::tnormale(2000, 30, 1000, 30000)
+#' RJMCMCNucleosomes:::tnormale(2000, 30, 1000, 30000)
 #'
 #' @author Rawane Samb
 #' @importFrom stats rnorm
@@ -235,7 +235,7 @@ tnormale <- function(mu, sigma, minValue, maxValue) {
 #' @examples
 #'
 #' ## Return a value generated from a student mixture
-#' RJMCMC:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
+#' RJMCMCNucleosomes:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
 #'
 #' @importFrom stats runif rt
@@ -280,7 +280,7 @@ student.mixture <- function(i, k, weight, mu, sigma, dfr) {
 #' @examples
 #'
 #' ## Return a value generated from a normal mixture
-#' RJMCMC:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
+#' RJMCMCNucleosomes:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
 #'
 #' @importFrom stats runif
@@ -337,7 +337,7 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
 #' mu <- c(10000L, 26700L, 45000L)
 #'
 #' ## Calculation of the exact prior density of mu
-#' density <- RJMCMC:::priorMuDensity(mu, readPositions)
+#' density <- RJMCMCNucleosomes:::priorMuDensity(mu, readPositions)
 #'
 #' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
@@ -393,10 +393,10 @@ priorMuDensity <- function(mu, readPositions) {
 #'
 #' ## Return the element with the hightest number of occurence
 #' data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-#' RJMCMC:::elementWithHighestMode(data01)
+#' RJMCMCNucleosomes:::elementWithHighestMode(data01)
 #'
 #' data02 <- c(3L, 6L, 4L, 3L, 6L)
-#' RJMCMC:::elementWithHighestMode(data02)
+#' RJMCMCNucleosomes:::elementWithHighestMode(data02)
 #'
 elementWithHighestMode <- function(sample) {
     tabsample <- tabulate(sample)
@@ -450,14 +450,14 @@ elementWithHighestMode <- function(sample) {
 #' @examples
 #'
 #' ## The function returns 0 when all paramaters are valid
-#' RJMCMC:::validateParameters(startPosForwardReads = c(72400, 72431, 72428,
-#' 72429, 72426), startPosReverseReads = c(72520, 72523, 72521, 72533, 72511),
-#' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
-#' maxInterval = 200, adaptIterationsToReads = TRUE)
+#' RJMCMCNucleosomes:::validateParameters(startPosForwardReads = c(72400,
+#' 72431, 72428, 72429, 72426), startPosReverseReads = c(72520, 72523, 72521,
+#' 72533, 72511), nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1,
+#' minInterval = 100, maxInterval = 200, adaptIterationsToReads = TRUE)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{RJMCMC:::validateParameters(startPosForwardReads = c(72400, 72431,
-#' 72428, 72429, 72426), startPosReverseReads = NA,
+#' \dontrun{RJMCMCNucleosomes:::validateParameters(startPosForwardReads =
+#' c(72400, 72431, 72428, 72429, 72426), startPosReverseReads = NA,
 #' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
 #' maxInterval = 200, adaptIterationsToReads = TRUE)}
 #'
@@ -619,7 +619,7 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
 #' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 #'
 #' ## Create a list containing the mandatory parameters
-#' RJMCMC:::birthMoveK1(paramValues = paramList, kValue = 1L,
+#' RJMCMCNucleosomes:::birthMoveK1(paramValues = paramList, kValue = 1L,
 #' muValue = c(73008.53, rep(0, 29)), sigmafValue = c(1, rep(0, 29)),
 #' sigmarValue = c(1, rep(0 ,29)),
 #' deltaValue = c(61.03185, rep(0, 29)), wValue = c(1, rep(0, 29)),
@@ -932,7 +932,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' muPosition
 #'
 #' ## Birth move when more than one nucleosome
-#' result <- RJMCMC:::birthMove(paramValues = paramList, kValue = 2L,
+#' result <- RJMCMCNucleosomes:::birthMove(paramValues = paramList, kValue = 2L,
 #' muValue = muPosition, sigmafValue = c(100, 120), sigmarValue = c(120, 100),
 #' deltaValue = c(200, 210), wValue = c(0.5, 0.5), dfValue = c(3, 4),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)), 73150,
@@ -1277,7 +1277,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' muPosition
 #'
 #' # Metropolis-Hastings move when 1 nucleosome present
-#' result <- RJMCMC:::mhMoveK1(paramValues = paramList, kValue = 1L,
+#' result <- RJMCMCNucleosomes:::mhMoveK1(paramValues = paramList, kValue = 1L,
 #' muValue = muPosition, sigmafValue = c(100), sigmarValue = c(120),
 #' deltaValue = c(200), wValue = c(1), dfValue = c(3),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
@@ -1556,7 +1556,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' muPosition
 #'
 #' ## Metropolis-Hastings move
-#' result <- RJMCMC:::mhMove(paramValues = paramList, kValue = 2L,
+#' result <- RJMCMCNucleosomes:::mhMove(paramValues = paramList, kValue = 2L,
 #' muValue = muPosition, sigmafValue = c(100, 120), sigmarValue = c(120, 100),
 #' deltaValue = c(200, 210), wValue = c(0.5, 0.5), dfValue = c(3, 4),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)), 73150,
@@ -1863,7 +1863,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' muPosition
 #'
 #' ## Death move
-#' result <- RJMCMC:::deathMove(paramValues = paramList, kValue = 2L,
+#' result <- RJMCMCNucleosomes:::deathMove(paramValues = paramList, kValue = 2L,
 #' muValue = muPosition, sigmafValue = c(100, 120), sigmarValue = c(120, 100),
 #' deltaValue = c(200, 210), wValue = c(0.5, 0.5), dfValue = c(3, 4),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)), 73150,
@@ -2096,7 +2096,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #'                 full.names = TRUE)
 #'
 #' ## Merging nucleosomes informations from the two files
-#' result <- RJMCMC:::mergeAllRDSFiles(c(file_100, file_101))
+#' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_100, file_101))
 #'
 #' @importFrom methods is
 #' @author Pascal Belleau, Astrid Deschenes
@@ -2163,7 +2163,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
 #'
 #' ## Testing using a real file
-#' RJMCMC:::validateRDSFilesParameters(c(file_test))
+#' RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
@@ -2204,7 +2204,7 @@ validateRDSFilesParameters <- function(RDSFiles) {
 #' directory <- system.file("extdata", package = "RJMCMCNucleosomes")
 #'
 #' ## Testing using a real directory
-#' RJMCMC:::validateDirectoryParameters(directory)
+#' RJMCMCNucleosomes:::validateDirectoryParameters(directory)
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
@@ -2261,12 +2261,12 @@ validateDirectoryParameters <- function(directory) {
 #' nucleosome_info <- readRDS(file_002)
 #'
 #' ## The function returns 0 when all parameters are valid
-#' RJMCMC:::validatePrepMergeParameters(startPosForwardReads =
+#' RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads =
 #' reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
 #' resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{RJMCMC:::validatePrepMergeParameters(startPosForwardReads = c(72400,
+#' \dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads = c(72400,
 #' 72431, 72428, 72429, 72426), startPosReverseReads = c(72522, 72531, 72528,
 #' 72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 #'
@@ -2371,7 +2371,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' RJMCMC_result$mu
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- RJMCMC:::postMerge(startPosForwardReads =
+#' postResult <- RJMCMCNucleosomes:::postMerge(startPosForwardReads =
 #' reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
 #' resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 #'

@@ -49,12 +49,12 @@ pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
 nucleosome_info <- readRDS(file_002)
 
 ## The function returns 0 when all parameters are valid
-RJMCMC:::validatePrepMergeParameters(startPosForwardReads =
+RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads =
 reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
 resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 
 ## The function raises an error when at least one paramater is not valid
-\dontrun{RJMCMC:::validatePrepMergeParameters(startPosForwardReads = c(72400,
+\dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads = c(72400,
 72431, 72428, 72429, 72426), startPosReverseReads = c(72522, 72531, 72528,
 72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 

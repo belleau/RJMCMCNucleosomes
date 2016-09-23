@@ -27,7 +27,7 @@ file_test <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
 
 ## Testing using a real file
-RJMCMC:::validateRDSFilesParameters(c(file_test))
+RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
 
 }
 \author{

@@ -28,13 +28,13 @@ selected nucleosome using a truncated Poisson distribution.
 \examples{
 
 ## Return the death submove probability
-RJMCMC:::Dk(k = 12L, lambda = 2L, kMax = 30L)
+RJMCMCNucleosomes:::Dk(k = 12L, lambda = 2L, kMax = 30L)
 
 ## Zero is returned when k = 1
-RJMCMC:::Dk(k = 1L, lambda = 3L, kMax = 30L)
+RJMCMCNucleosomes:::Dk(k = 1L, lambda = 3L, kMax = 30L)
 
 ## Zerio is returned when k is superior to kMax
-RJMCMC:::Dk(k = 31L, lambda = 2L, kMax = 30L)
+RJMCMCNucleosomes:::Dk(k = 31L, lambda = 2L, kMax = 30L)
 
 }
 \author{

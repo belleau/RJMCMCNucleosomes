@@ -41,7 +41,7 @@ file_101 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
                 full.names = TRUE)
 
 ## Merging nucleosomes informations from the two files
-result <- RJMCMC:::mergeAllRDSFiles(c(file_100, file_101))
+result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_100, file_101))
 
 }
 \author{

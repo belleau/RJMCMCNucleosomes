@@ -109,7 +109,7 @@ minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 
 ## Create a list containing the mandatory parameters
-RJMCMC:::birthMoveK1(paramValues = paramList, kValue = 1L,
+RJMCMCNucleosomes:::birthMoveK1(paramValues = paramList, kValue = 1L,
 muValue = c(73008.53, rep(0, 29)), sigmafValue = c(1, rep(0, 29)),
 sigmarValue = c(1, rep(0 ,29)),
 deltaValue = c(61.03185, rep(0, 29)), wValue = c(1, rep(0, 29)),
