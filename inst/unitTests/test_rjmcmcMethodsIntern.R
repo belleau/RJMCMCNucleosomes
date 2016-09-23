@@ -11,13 +11,13 @@
 
 if(FALSE) {
     library( "RUnit" )
-    library( "RJMCMC" )
+    library( "RJMCMCNucleosomes" )
 }
 
 ### }}}
 
 
-file_002 <- dir(system.file("extdata", package = "RJMCMC"),
+file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
                 pattern = "yeastRes_Chr1_Seg_002.rds",
                 full.names = TRUE)
 
