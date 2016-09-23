@@ -1,6 +1,7 @@
-#' @title rjmcmc cpp
+#' @title Interface for the RJMCMC nucleosome mapping method in C++
 #'
-#' @description todo
+#' @description Function that calls the core of the nucleosome positioning
+#' mapping function that is implemented in C++.
 #'
 #' @param k a positive \code{integer}, the number of nucleosomes.
 #'
@@ -39,12 +40,27 @@
 #'
 #' @param adaptIterationsToReads a \code{logical} indicating if the number
 #' of iterations must be modified in function of the number of reads.
-#' Default: \code{TRUE}.#'
+#' Default: \code{TRUE}.
+#'
 #' @return todo
 #'
 #' @examples
 #'
-#' ## todo
+## Loading dataset
+#' data(reads_demo)
+#'
+#' ## Nucleosome positioning, running both merge and split functions
+#' result <- rjmcmcNucleo(startPosForwardReads = reads_demo$readsForward,
+#'          startPosReverseReads = reads_demo$readsReverse,
+#'          nbrIterations = 1000, lambda = 2, kMax = 30,
+#'          minInterval = 146, maxInterval = 292, minReads = 5,
+#'          adaptIterationsToReads = TRUE, vSeed = -1)
+#'
+#' ## Print the final estimation of the number of nucleosomes
+#' result$k
+#'
+#' ## Print the position of nucleosomes
+#' result$mu
 #'
 #' @author Pascal Belleau
 #' @importFrom Rcpp evalCpp
