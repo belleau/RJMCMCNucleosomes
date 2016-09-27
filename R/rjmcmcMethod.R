@@ -82,6 +82,8 @@
 #' \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
 #' of \code{k}, the 2.5\% and 97.5\% quantiles of the weight for each
 #' nucleosome.
+#' \item \code{kMax} a \code{integer}, the maximum number of nucleosomes
+#' obtained during the iterations processus.
 #' }
 #'
 #' @examples
@@ -95,11 +97,13 @@
 #'          nbrIterations = 1000, lambda = 2, kMax = 30,
 #'          minInterval = 146, maxInterval = 292, minReads = 5)
 #'
+#' ## TODO : a faire avec nouveau format
+#'
 #' ## Print the final estimation of the number of nucleosomes
-#' result$k
+#' ##result$k
 #'
 #' ## Print the position of nucleosomes
-#' result$mu
+#' ##result$mu
 #'
 #' @importFrom MCMCpack ddirichlet rdirichlet
 #' @importFrom stats dmultinom dpois var rmultinom dt quantile
@@ -138,7 +142,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                                  minInterval, maxInterval, minReads,
                                  adaptIterationsToReads, vSeed)
 
-
     result <- list(
         call = cl,
         kMax = resultRJMCMC$KMax
@@ -175,8 +178,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' TODO : A faire pour nouveau format
 #'
 #' @description Merge nucleosome information, from all RDS files present
-#' in a same directory, into one
-#' object of \code{class} "rjmcmcNucleosomesMerge".
+#' in a same directory, into one object
+#' of \code{class} "rjmcmcNucleosomesMerge".
 #'
 #' @param directory a \code{character}, the
 #' name of the directory (relative or absolute path) containing RDS files. The
