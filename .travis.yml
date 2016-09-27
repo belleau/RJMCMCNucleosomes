@@ -19,6 +19,7 @@ warnings_are_errors: true
 # Package dependencies from CRAN
 r_binary_packages:
   - RUnit
+  - Rcpp
   - knitr
   - rmarkdown
   - MCMCpack
