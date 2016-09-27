@@ -105,10 +105,6 @@
 #' ## Print the position of nucleosomes
 #' ##result$mu
 #'
-#' @importFrom MCMCpack ddirichlet rdirichlet
-#' @importFrom stats dmultinom dpois var rmultinom dt quantile
-#' @importFrom IRanges IRanges
-#' @import BiocGenerics
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschênes
 #' @export
 rjmcmc <- function(startPosForwardReads, startPosReverseReads,
