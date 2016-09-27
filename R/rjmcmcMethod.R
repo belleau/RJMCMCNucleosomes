@@ -116,7 +116,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     cl <- match.call()
 
     # Parameters validation
-    validateParameters(startPosForwardReads = startPosForwardReads,
+    validateRJMCMCParameters(startPosForwardReads = startPosForwardReads,
                             startPosReverseReads = startPosReverseReads,
                             nbrIterations = nbrIterations,
                             kMax = kMax,
@@ -124,7 +124,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                             minInterval = minInterval,
                             maxInterval = maxInterval,
                             minReads = minReads,
-                            adaptIterationsToReads = adaptIterationsToReads)
+                            adaptIterationsToReads = adaptIterationsToReads,
+                            vSeed = vSeed)
 #     nf              <- length(startPosForwardReads)
 #     nr              <- length(startPosReverseReads)
 #     nbrReads        <- nf + nr

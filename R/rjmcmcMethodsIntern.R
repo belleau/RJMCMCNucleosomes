@@ -450,13 +450,14 @@ elementWithHighestMode <- function(sample) {
 #' @examples
 #'
 #' ## The function returns 0 when all paramaters are valid
-#' RJMCMCNucleosomes:::validateParameters(startPosForwardReads = c(72400,
+#' RJMCMCNucleosomes:::validateRJMCMCParameters(startPosForwardReads = c(72400,
 #' 72431, 72428, 72429, 72426), startPosReverseReads = c(72520, 72523, 72521,
 #' 72533, 72511), nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1,
-#' minInterval = 100, maxInterval = 200, adaptIterationsToReads = TRUE)
+#' minInterval = 100, maxInterval = 200, adaptIterationsToReads = TRUE,
+#' vSeed = 100)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{RJMCMCNucleosomes:::validateParameters(startPosForwardReads =
+#' \dontrun{RJMCMCNucleosomes:::validateRJMCMCParameters(startPosForwardReads =
 #' c(72400, 72431, 72428, 72429, 72426), startPosReverseReads = NA,
 #' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
 #' maxInterval = 200, adaptIterationsToReads = TRUE)}
@@ -464,10 +465,10 @@ elementWithHighestMode <- function(sample) {
 #' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
-validateParameters <- function(startPosForwardReads, startPosReverseReads,
+validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
                                     nbrIterations, kMax, lambda,
                                     minInterval, maxInterval, minReads,
-                                    adaptIterationsToReads) {
+                                    adaptIterationsToReads, vSeed) {
     ## Validate the nbrIterations parameter
     if (!(isSingleInteger(nbrIterations) || isSingleNumber(nbrIterations)) ||
             as.integer(nbrIterations) < 1) {
@@ -512,6 +513,11 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
     ## Validate that adaptIterationsToReads is a logical
     if (!is.logical(adaptIterationsToReads)) {
         stop("adaptIterationsToReads must be a logical.")
+    }
+
+    ## Validate that vSeed is a numeric value
+    if (!isSingleNumber(minReads)) {
+        stop("vSeed must be a numeric value.")
     }
 
     return(0)
