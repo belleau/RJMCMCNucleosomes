@@ -516,7 +516,7 @@ validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
     }
 
     ## Validate that vSeed is a numeric value
-    if (!isSingleNumber(minReads)) {
+    if (!isSingleNumber(vSeed)) {
         stop("vSeed must be a numeric value.")
     }
 

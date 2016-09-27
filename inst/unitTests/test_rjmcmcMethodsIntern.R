@@ -795,8 +795,8 @@ test.validateRJMCMCParameters_vSeed_number <- function() {
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
-        adaptIterationsToReads = 33, vSeed = "Allo"), error=conditionMessage)
-    exp <- "vSeed must be a numerical value."
+        adaptIterationsToReads = FALSE, vSeed = "Allo"), error=conditionMessage)
+    exp <- "vSeed must be a numeric value."
     message <- paste0(" test.validateRJMCMCParameters_vSeed_number() ",
                       "- String value for vSeed did not  ",
                       "generated expected message.")
