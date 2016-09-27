@@ -31,13 +31,13 @@ bioc_packages:
   - IRanges
   - BiocStyle
   - GenomicRanges
+  - nucleoSim
   - PING
 
 # Package dependencies from github
 r_github_packages:
   - jimhester/covr
   - arnauddroitlab/consensusseeker
-  - arnauddroitlab/nucleoSim
 
 after_success:
   - Rscript -e 'library(covr);codecov()'
