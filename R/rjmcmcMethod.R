@@ -133,10 +133,18 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #         nbrIterations <- ifelse(nbrReads <= 12, 1000, nbrIterations)
 #     }
 
-    result <- rjmcmcNucleo(startPosForwardReads, startPosReverseReads,
+    resultRJMCMC <- rjmcmcNucleo(startPosForwardReads, startPosReverseReads,
                                  nbrIterations, kMax, lambda,
                                  minInterval, maxInterval, minReads,
                                  adaptIterationsToReads, vSeed)
+
+
+    result <- list(
+        call = cl,
+        kMax = resultRJMCMC$KMax
+    )
+
+    class(result)<-"rjmcmcNucleosomes"
 
 #     result <- list(
 #         call    = cl,
@@ -163,6 +171,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' @title Merge nucleosome information from all RDS files present
 #' in a same directory. Beware that only nucleosome information from same
 #' chromosome should be merged together.
+#'
+#' TODO : A faire pour nouveau format
 #'
 #' @description Merge nucleosome information, from all RDS files present
 #' in a same directory, into one
@@ -310,6 +320,8 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' @examples
 #'
+#' ## TODO : A faire
+#'
 #' ## Fix seed
 #' set.seed(1132)
 #'
@@ -323,10 +335,10 @@ mergeRDSFiles <- function(RDSFiles) {
 #'          minInterval = 146, maxInterval = 292, minReads = 5)
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
+#' ##postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
+#' ##         startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
 #'
-#' postResult
+#' ##postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export

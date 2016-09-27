@@ -4,7 +4,9 @@
 \alias{mergeAllRDSFilesFromDirectory}
 \title{Merge nucleosome information from all RDS files present
 in a same directory. Beware that only nucleosome information from same
-chromosome should be merged together.}
+chromosome should be merged together.
+
+TODO : A faire pour nouveau format}
 \usage{
 mergeAllRDSFilesFromDirectory(directory)
 }
