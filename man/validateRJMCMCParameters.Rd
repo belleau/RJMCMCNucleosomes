@@ -42,6 +42,10 @@ zero.}
 
 \item{adaptIterationsToReads}{a \code{logical} indicating if the number
 of iterations must be modified in function of the number of reads.}
+
+\item{vSeed}{a \code{integer}. A seed used when reproducible results are
+needed. When a value inferior or equal to zero is given, a random integer
+is used.}
 }
 \value{
 \code{0} indicating that all parameters validations have been
@@ -64,7 +68,7 @@ vSeed = 100)
 \dontrun{RJMCMCNucleosomes:::validateRJMCMCParameters(startPosForwardReads =
 c(72400, 72431, 72428, 72429, 72426), startPosReverseReads = NA,
 nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
-maxInterval = 200, adaptIterationsToReads = TRUE)}
+maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 
 }
 \author{

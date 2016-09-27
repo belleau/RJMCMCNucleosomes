@@ -813,7 +813,7 @@ test.validateRJMCMCParameters_all_valid <- function() {
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
-        adaptIterationsToReads = TRUE)
+        adaptIterationsToReads = TRUE, vSeed = 1002)
     exp <- 0
     message <- paste0(" test.validateParameters_all_valid() ",
                       "- All valid parameters did not  ",

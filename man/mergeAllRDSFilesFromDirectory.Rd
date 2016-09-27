@@ -34,8 +34,8 @@ reverse reads position densities for each nucleosome.
 }
 \description{
 Merge nucleosome information, from all RDS files present
-in a same directory, into one
-object of \code{class} "rjmcmcNucleosomesMerge".
+in a same directory, into one object
+of \code{class} "rjmcmcNucleosomesMerge".
 }
 \examples{
 

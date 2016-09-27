@@ -43,13 +43,17 @@ zero. Default: 5.}
 of iterations must be modified in function of the number of reads.
 Default: \code{TRUE}.}
 
+\item{vSeed}{a \code{integer}. A seed used when reproducible results are
+needed. When a value inferior or equal to zero is given, a random integer
+is used. Default: -1.}
+
 \item{k}{a positive \code{integer}, the number of nucleosomes.}
 
 \item{lambda}{a positive \code{numeric}, the theorical mean
 of the Poisson distribution. Default: 3.}
 }
 \value{
-todo
+TODO
 }
 \description{
 Function that calls the core of the nucleosome positioning

@@ -44,7 +44,8 @@ test.rjmcmc_good_result_01 <- function() {
     obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                         startPosReverseReads = reads_demo$readsReverse,
                         nbrIterations = 100, lambda = 2, kMax = 30,
-                        minInterval = 146, maxInterval = 292, minReads = 5)
+                        minInterval = 146, maxInterval = 292, minReads = 5,
+                        vSeed = 1001)
     exp.k       <- 2
     exp.mu      <- c(72669.922485424002, 72904.348062342819)
     exp.sigmaf  <- c(21509.940563849304, 4624.834390666467)

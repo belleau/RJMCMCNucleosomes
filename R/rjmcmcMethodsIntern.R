@@ -42,7 +42,11 @@
 #' of iterations must be modified in function of the number of reads.
 #' Default: \code{TRUE}.
 #'
-#' @return todo
+#' @param vSeed a \code{integer}. A seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used. Default: -1.
+#'
+#' @return TODO
 #'
 #' @examples
 #'
@@ -444,6 +448,10 @@ elementWithHighestMode <- function(sample) {
 #' @param adaptIterationsToReads a \code{logical} indicating if the number
 #' of iterations must be modified in function of the number of reads.
 #'
+#' @param vSeed a \code{integer}. A seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used.
+#'
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
 #'
@@ -460,7 +468,7 @@ elementWithHighestMode <- function(sample) {
 #' \dontrun{RJMCMCNucleosomes:::validateRJMCMCParameters(startPosForwardReads =
 #' c(72400, 72431, 72428, 72429, 72426), startPosReverseReads = NA,
 #' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
-#' maxInterval = 200, adaptIterationsToReads = TRUE)}
+#' maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 #'
 #' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
@@ -2177,7 +2185,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 validateRDSFilesParameters <- function(RDSFiles) {
 
     ## Validate the RDSFiles parameters
-    if (is.na(RDSFiles) || is.null(RDSFiles)) {
+    if (is.null(RDSFiles) || is.na(RDSFiles)) {
         stop("RDSFiles must be a list of valid RDS files")
     }
 
