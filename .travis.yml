@@ -32,12 +32,12 @@ bioc_packages:
   - BiocStyle
   - GenomicRanges
   - nucleoSim
+  - consensusSeekeR
   - PING
 
 # Package dependencies from github
 r_github_packages:
   - jimhester/covr
-  - arnauddroitlab/consensusseeker
 
 after_success:
   - Rscript -e 'library(covr);codecov()'
