@@ -87,6 +87,8 @@ for each nucleosome.
 \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
 of \code{k}, the 2.5\% and 97.5\% quantiles of the weight for each
 nucleosome.
+\item \code{kMax} a \code{integer}, the maximum number of nucleosomes
+obtained during the iterations processus.
 }
 }
 \description{
@@ -106,11 +108,13 @@ result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
          nbrIterations = 1000, lambda = 2, kMax = 30,
          minInterval = 146, maxInterval = 292, minReads = 5)
 
+## TODO : a faire avec nouveau format
+
 ## Print the final estimation of the number of nucleosomes
-result$k
+##result$k
 
 ## Print the position of nucleosomes
-result$mu
+##result$mu
 
 }
 \author{

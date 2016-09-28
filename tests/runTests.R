@@ -1,2 +1,2 @@
 ## Run all tests presnt in the package
-BiocGenerics:::testPackage("RJMCMC")
+BiocGenerics:::testPackage("RJMCMCNucleosomes")

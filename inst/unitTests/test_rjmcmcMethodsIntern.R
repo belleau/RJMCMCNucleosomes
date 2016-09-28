@@ -458,12 +458,12 @@ test.validatePrepMergeParameters_all_valid <- function() {
 
 
 #########################################################
-## validateParameters() function
+## validateRJMCMCParameters() function
 #########################################################
 
 ## Test the result when nbrIterations is NA
-test.validateParameters_nbrIterations_NA <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_nbrIterations_NA <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                     72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -480,8 +480,8 @@ test.validateParameters_nbrIterations_NA <- function() {
 }
 
 ## Test the result when nbrIterations is zero
-test.validateParameters_nbrIterations_zero <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_nbrIterations_zero <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -498,8 +498,8 @@ test.validateParameters_nbrIterations_zero <- function() {
 }
 
 ## Test the result when nbrIterations is negative
-test.validateParameters_nbrIterations_negative <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_nbrIterations_negative <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -516,8 +516,8 @@ test.validateParameters_nbrIterations_negative <- function() {
 }
 
 ## Test the result when kMax is NA
-test.validateParameters_kMax_NA <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_kMax_NA <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -534,8 +534,8 @@ test.validateParameters_kMax_NA <- function() {
 }
 
 ## Test the result when kMax is zero
-test.validateParameters_kMax_zero <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters (
+test.validateRJMCMCParameters_kMax_zero <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters (
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -552,8 +552,8 @@ test.validateParameters_kMax_zero <- function() {
 }
 
 ## Test the result when kMax is negative
-test.validateParameters_kMax_negative <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters (
+test.validateRJMCMCParameters_kMax_negative <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters (
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -570,8 +570,8 @@ test.validateParameters_kMax_negative <- function() {
 }
 
 ## Test the result when minReads is NA
-test.validateParameters_minReads_NA <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_minReads_NA <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -588,8 +588,8 @@ test.validateParameters_minReads_NA <- function() {
 }
 
 ## Test the result when minReads is zero
-test.validateParameters_minReads_zero <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_minReads_zero <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -606,8 +606,8 @@ test.validateParameters_minReads_zero <- function() {
 }
 
 ## Test the result when minReads is negative
-test.validateParameters_minReads_negative <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_minReads_negative <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -624,8 +624,8 @@ test.validateParameters_minReads_negative <- function() {
 }
 
 ## Test the result when lambda is NA
-test.validateParameters_lambda_NA <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_lambda_NA <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -642,8 +642,8 @@ test.validateParameters_lambda_NA <- function() {
 }
 
 ## Test the result when lambda is zero
-test.validateParameters_lambda_zero <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_lambda_zero <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -660,8 +660,8 @@ test.validateParameters_lambda_zero <- function() {
 }
 
 ## Test the result when lambda is negative
-test.validateParameters_lambda_negative <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_lambda_negative <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -678,8 +678,8 @@ test.validateParameters_lambda_negative <- function() {
 }
 
 ## Test the result when startPosForwardReads is NA
-test.validateParameters_startPosForwardReads_NA <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_startPosForwardReads_NA <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = NA,
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
@@ -696,8 +696,8 @@ test.validateParameters_startPosForwardReads_NA <- function() {
 }
 
 ## Test the result when startPosForwardReads is empty array
-test.validateParameters_startPosForwardReads_empty <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_startPosForwardReads_empty <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
@@ -714,8 +714,8 @@ test.validateParameters_startPosForwardReads_empty <- function() {
 }
 
 ## Test the result when startPosReverseReads is NA
-test.validateParameters_startPosReverseReads_NA <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_startPosReverseReads_NA <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = NA,
@@ -732,8 +732,8 @@ test.validateParameters_startPosReverseReads_NA <- function() {
 }
 
 ## Test the result when startPosReverseReads is empty array
-test.validateParameters_startPosReverseReads_empty_array <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_startPosReverseReads_empty_array <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(),
@@ -750,8 +750,8 @@ test.validateParameters_startPosReverseReads_empty_array <- function() {
 }
 
 ## Test the result when adaptIterationsToReads is string
-test.validateParameters_adaptIterationsToReads_string <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_adaptIterationsToReads_string <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -768,8 +768,8 @@ test.validateParameters_adaptIterationsToReads_string <- function() {
 }
 
 ## Test the result when adaptIterationsToReads is number
-test.validateParameters_adaptIterationsToReads_number <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateParameters(
+test.validateRJMCMCParameters_adaptIterationsToReads_number <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -785,9 +785,9 @@ test.validateParameters_adaptIterationsToReads_number <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when all parameters are valid
-test.validateParameters_all_valid <- function() {
-    obs <- RJMCMCNucleosomes:::validateParameters(
+## Test the result when vSeed is not a number
+test.validateRJMCMCParameters_vSeed_number <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -795,14 +795,31 @@ test.validateParameters_all_valid <- function() {
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
-        adaptIterationsToReads = TRUE)
+        adaptIterationsToReads = FALSE, vSeed = "Allo"), error=conditionMessage)
+    exp <- "vSeed must be a numeric value."
+    message <- paste0(" test.validateRJMCMCParameters_vSeed_number() ",
+                      "- String value for vSeed did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when all parameters are valid
+test.validateRJMCMCParameters_all_valid <- function() {
+    obs <- RJMCMCNucleosomes:::validateRJMCMCParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = TRUE, vSeed = 1002)
     exp <- 0
     message <- paste0(" test.validateParameters_all_valid() ",
                       "- All valid parameters did not  ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
-
 
 #########################################################
 ## validateRDSFilesParameters() function

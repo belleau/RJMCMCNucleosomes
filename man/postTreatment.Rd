@@ -43,6 +43,8 @@ Beware that each chromosome must be treated separatly.
 }
 \examples{
 
+## TODO : A faire
+
 ## Fix seed
 set.seed(1132)
 
@@ -56,10 +58,10 @@ result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
          minInterval = 146, maxInterval = 292, minReads = 5)
 
 ## Post-treatment function which merged closely positioned nucleosomes
-postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-         startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
+##postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
+##         startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
 
-postResult
+##postResult
 
 }
 \author{

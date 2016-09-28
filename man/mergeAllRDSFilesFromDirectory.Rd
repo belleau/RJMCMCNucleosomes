@@ -4,7 +4,9 @@
 \alias{mergeAllRDSFilesFromDirectory}
 \title{Merge nucleosome information from all RDS files present
 in a same directory. Beware that only nucleosome information from same
-chromosome should be merged together.}
+chromosome should be merged together.
+
+TODO : A faire pour nouveau format}
 \usage{
 mergeAllRDSFilesFromDirectory(directory)
 }
@@ -32,8 +34,8 @@ reverse reads position densities for each nucleosome.
 }
 \description{
 Merge nucleosome information, from all RDS files present
-in a same directory, into one
-object of \code{class} "rjmcmcNucleosomesMerge".
+in a same directory, into one object
+of \code{class} "rjmcmcNucleosomesMerge".
 }
 \examples{
 
