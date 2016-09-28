@@ -645,6 +645,7 @@ validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
 #'
 #'
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
+#' @importFrom stats var
 #' @keywords internal
 #'
 birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
@@ -1888,7 +1889,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' ## Final position of the nucleosomes
 #' result$mu[1:2]
 #'
-#' @importFrom stats runif dmultinom dpois
+#' @importFrom stats runif dmultinom dpois rmultinom
 #' @importFrom MCMCpack rdirichlet ddirichlet
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @keywords internal
