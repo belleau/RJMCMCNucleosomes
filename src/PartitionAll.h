@@ -189,6 +189,7 @@ public:
 			else{
 				std::cerr << "No reads \n";
 				//exit(1);
+				flag = false;
 			}
 		}
 
