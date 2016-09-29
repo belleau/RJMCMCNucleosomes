@@ -4,6 +4,7 @@
 #include <math.h>
 #include <time.h>
 #include "PartitionAll.h"
+//#include "SimulationNucleoD.h"
 
 
 #include "SegmentSeq.h"
@@ -50,15 +51,15 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	 *********************************************************************/
     const gsl_rng_type * T;
     gsl_rng *rng;
-	long seed;
+	//long seed;
 
 	T = gsl_rng_default;
 
 	rng = gsl_rng_alloc (T);     // pick random number generator
-	if(seed <= 0){
-		seed = time (NULL) * getpid();
+	if(vSeed <= 0){
+		vSeed = time (NULL) * getpid();
 	}
-	gsl_rng_set (rng, seed);
+	gsl_rng_set (rng, vSeed);
 
 	/*********************************************************************
 	 * Space Nucleosome and Segment
@@ -68,17 +69,6 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
 	SegmentSeq seg(fReads, rReads, 147);                 // Reads of the segment
 
-	/*********************************************************************
-	 * test
-	 *********************************************************************/
-
-/*	bla<int> oups(3);
-	oups.truc();*/
-
-
-	/*********************************************************************
-	 * Fin test
-	 *********************************************************************/
 
 
 	nr = seg.sizeFReads() + seg.sizeRReads();
@@ -87,6 +77,14 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     		nbrIterations = 1000;
     	}
     }
+    /*
+    SimulationNucleoD<PartitionAll<NucleoDirichletPA> > pourv(seg, rng, kMax, nbrIterations);
+    if(pourv.initMu()){
+    	cout << "Ok\n";
+    }
+    else{
+    	cout << "No\n";
+    }*/
 
     /*********************************************************************
 	 * Init Space Nucleosome
@@ -130,10 +128,6 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 						if(dispRho)
 						cout << "Birth " << rho << "\n";
 						typeMv = 4;
-
-					}
-					else{
-						cout << "Aye\n";
 					}
     			}
     			else{
@@ -258,10 +252,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
                mu[i + j * tot] = 0;
            }
 	   }
-
 	   i++;
-
-
    }
 
 
