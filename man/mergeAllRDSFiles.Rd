@@ -27,6 +27,8 @@ reverse reads position densities for each nucleosome.
 }
 \description{
 Merge nucleosome information present in multiple RDS files.
+
+TODO: to modify when new format will be set.
 }
 \examples{
 
@@ -45,7 +47,7 @@ result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_100, file_101))
 
 }
 \author{
-Pascal Belleau, Astrid Deschenes
+Pascal Belleau, Astrid Deschênes
 }
 \keyword{internal}
 

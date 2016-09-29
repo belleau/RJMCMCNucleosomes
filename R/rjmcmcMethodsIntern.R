@@ -645,6 +645,7 @@ validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
 #'
 #'
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
+#' @importFrom stats var
 #' @keywords internal
 #'
 birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
@@ -1888,7 +1889,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' ## Final position of the nucleosomes
 #' result$mu[1:2]
 #'
-#' @importFrom stats runif dmultinom dpois
+#' @importFrom stats runif dmultinom dpois rmultinom
 #' @importFrom MCMCpack rdirichlet ddirichlet
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @keywords internal
@@ -2080,6 +2081,8 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #'
 #' @description Merge nucleosome information present in multiple RDS files.
 #'
+#' TODO: to modify when new format will be set.
+#'
 #' @param arrayOfFiles a \code{array}, the name of each file that must be
 #' used to merge nucleosome information.
 #'
@@ -2113,7 +2116,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_100, file_101))
 #'
 #' @importFrom methods is
-#' @author Pascal Belleau, Astrid Deschenes
+#' @author Pascal Belleau, Astrid Deschênes
 #' @keywords internal
 #'
 mergeAllRDSFiles <- function(arrayOfFiles) {
@@ -2370,7 +2373,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' number of reads in a potential canditate region. Non-integer values
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero. Default: 5.
-#
+#'
 #'
 #' @return a \code{array} of \code{numeric}, the updated values of the
 #' nucleosome positions.
