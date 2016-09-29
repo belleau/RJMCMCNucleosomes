@@ -40,13 +40,15 @@ file_100 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 ###########################################################
 
 test.rjmcmc_good_result_01 <- function() {
-    set.seed(101)
     obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                         startPosReverseReads = reads_demo$readsReverse,
                         nbrIterations = 100, lambda = 2, kMax = 30,
                         minInterval = 146, maxInterval = 292, minReads = 5,
                         vSeed = 1001)
 
+    exp.k           <- 1
+    exp.kMax        <- 2
+    exp.mu          <- c(72732.2522489924)
     ## TODO : update with new output format
     # exp.k       <- 2
     # exp.mu      <- c(72669.922485424002, 72904.348062342819)
@@ -68,11 +70,13 @@ test.rjmcmc_good_result_01 <- function() {
     # exp.qw      <- matrix(c(0.617525448736, 0.382474551264, 0.617525448736,
     #                         0.382474551264),  nrow = 2)
     #
-    # message     <- paste0(" rjmcmc_good_result_01() ",
-    #                   "- RJMCMC did not generated expected values")
-    #
-    # checkEqualsNumeric(obs$k, exp.k, msg = message)
-    # checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+
+    message     <- paste0(" rjmcmc_good_result_01() ",
+                       "- RJMCMC did not generated expected values")
+
+    checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$kMax, exp.kMax, msg = message)
+    checkEqualsNumeric(obs$mu, exp.mu, msg = message)
     # checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
     # checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
     # checkEqualsNumeric(obs$delta, exp.delta, msg = message)
@@ -87,12 +91,16 @@ test.rjmcmc_good_result_01 <- function() {
 }
 
 test.rjmcmc_good_result_02 <- function() {
-    set.seed(101)
+
     obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                     startPosReverseReads = reads_demo$readsReverse,
                     nbrIterations = 200, lambda = 3, kMax = 30,
                     minInterval = 146, maxInterval = 292, minReads = 5,
                     vSeed = 201)
+
+    exp.k           <- 2
+    exp.kMax        <- 4
+    exp.mu          <- c(72357.4299690136, 72783.8202945444)
 
     ## TODO : update with new output format
     # exp.k       <- 2
@@ -115,12 +123,14 @@ test.rjmcmc_good_result_02 <- function() {
     # exp.qw      <- matrix(c(0.617525448736, 0.382474551264,
     #                         0.617525448736, 0.382474551264),  nrow = 2)
     #
-    # message     <- paste0(" rjmcmc_good_result_02() ",
-    #                   "- RJMCMC did not generated expected values")
-    #
-    # checkEqualsNumeric(obs$k, exp.k, msg = message)
-    # checkEqualsNumeric(obs$mu, exp.mu, msg = message)
-    # checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
+    message     <- paste0(" rjmcmc_good_result_02() ",
+                      "- RJMCMC did not generated expected values")
+
+
+    checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$kMax, exp.kMax, msg = message)
+    checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+
     # checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
     # checkEqualsNumeric(obs$delta, exp.delta, msg = message)
     # checkEqualsNumeric(obs$df, exp.df, msg = message)
@@ -134,12 +144,17 @@ test.rjmcmc_good_result_02 <- function() {
 }
 
 test.rjmcmc_good_result_03 <- function() {
-    set.seed(101)
+
     obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                   startPosReverseReads = reads_demo$readsReverse,
                   nbrIterations = 110, lambda = 3, kMax = 30,
                   minInterval = 100, maxInterval = 200, minReads = 335,
                   vSeed = 2011)
+
+    exp.k           <- 3
+    exp.kMax        <- 3
+    exp.mu          <- c(72361.8251993102, 72516.5860210975, 72924.5896672093)
+
 
     ## TODO : update with new output format
     # exp.k       <- 2
@@ -162,11 +177,12 @@ test.rjmcmc_good_result_03 <- function() {
     # exp.qw      <- matrix(c(0.617525448736, 0.382474551264, 0.617525448736,
     #                         0.382474551264),  nrow = 2)
     #
-    # message     <- paste0(" rjmcmc_good_result_03() ",
-    #                       "- RJMCMC did not generated expected values")
-    #
-    # checkEqualsNumeric(obs$k, exp.k, msg = message)
-    # checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+    message     <- paste0(" rjmcmc_good_result_03() ",
+                           "- RJMCMC did not generated expected values")
+
+    checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$kMax, exp.kMax, msg = message)
+    checkEqualsNumeric(obs$mu, exp.mu, msg = message)
     # checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
     # checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
     # checkEqualsNumeric(obs$delta, exp.delta, msg = message)
@@ -181,12 +197,16 @@ test.rjmcmc_good_result_03 <- function() {
 }
 
 test.rjmcmc_good_result_04 <- function() {
-    set.seed(331)
+
     obs <- rjmcmc(startPosForwardReads = reads_demo_02$readsForward,
                   startPosReverseReads = reads_demo_02$readsReverse,
                   nbrIterations = 210, lambda = 3, kMax = 30,
                   minInterval = 100, maxInterval = 200, minReads = 10,
                   vSeed = 2211)
+
+    exp.k           <- 4
+    exp.kMax        <- 5
+    exp.mu          <- c(18863.372731294, 18929.7025947147, 19179.4889851622, 19613.2314291298)
 
     ## TODO : update with new output format
     # exp.k       <- 6
@@ -239,11 +259,12 @@ test.rjmcmc_good_result_04 <- function() {
     #                         0.188478067985, 0.166321788126,
     #                         0.221487533477, 0.154071089279), nrow = 2)
     #
-    # message     <- paste0(" test.rjmcmc_good_result_04() ",
-    #                       "- RJMCMC did not generated expected values")
-    #
-    # checkEqualsNumeric(obs$k, exp.k, msg = message)
-    # checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+    message     <- paste0(" test.rjmcmc_good_result_04() ",
+                          "- RJMCMC did not generated expected values")
+
+    checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$kMax, exp.kMax, msg = message)
+    checkEqualsNumeric(obs$mu, exp.mu, msg = message)
     # checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
     # checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
     # checkEqualsNumeric(obs$delta, exp.delta, msg = message)
