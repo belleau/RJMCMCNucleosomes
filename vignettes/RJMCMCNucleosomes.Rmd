@@ -61,7 +61,7 @@ distribution. Fourth, the unknown parameters are simultaneously using the
 reversible jump Markov chain Monte Carlo (RJMCMC) simulation technique 
 (see for instance @Green1995 and @Richardson1997). 
 
-Detailed information about the **RJMCMC** model can be found in the article 
+Detailed information about the model can be found in the article 
 mentioned in the precedent section.
 
 # Loading the RJMCMC package
