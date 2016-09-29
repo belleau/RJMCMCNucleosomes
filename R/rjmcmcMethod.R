@@ -141,8 +141,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                                  minInterval, maxInterval, minReads,
                                  adaptIterationsToReads, vSeed)
 
-    print(resultRJMCMC)
-
     # Find k value with the maximum of iterations
     iterPerK <- data.frame(k=resultRJMCMC$K, it=resultRJMCMC$it)
     sumIterPerK <- aggregate(it ~ k, data=iterPerK, sum)
@@ -156,7 +154,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
         call = cl,
         k = k,
         mu = mu[1:k],
-        kMax = resultRJMCMC$KMax
+        k_max = resultRJMCMC$KMax
     )
 
     class(result)<-"rjmcmcNucleosomes"
