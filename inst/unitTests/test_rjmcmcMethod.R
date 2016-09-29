@@ -205,9 +205,9 @@ test.rjmcmc_good_result_04 <- function() {
                   minInterval = 100, maxInterval = 200, minReads = 10,
                   vSeed = 2211)
 
-    exp.k           <- 4
-    exp.k_max       <- 5
-    exp.mu          <- c(18863.372731294, 18929.7025947147, 19179.4889851622, 19613.2314291298)
+    exp.k           <- 5
+    exp.k_max       <- 6
+    exp.mu          <- c(18839.4528131919, 19201.6625115471, 19343.2693614808, 19415.4983810908, 19515.0250764107)
 
     ## TODO : update with new output format
     # exp.k       <- 6
