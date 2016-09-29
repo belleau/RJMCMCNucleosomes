@@ -27,7 +27,6 @@ Depends:
     GenomicRanges
 Imports:
     Rcpp (>= 0.12.5),
-    MCMCpack,
     consensusSeekeR,
     GenomeInfoDb,
     S4Vectors,
