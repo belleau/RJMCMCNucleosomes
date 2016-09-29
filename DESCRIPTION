@@ -23,7 +23,6 @@ Author@R: c(person("Rawane", "Samb",
     email="arnaud.droit@crchuq.ulaval.ca", role=c("aut")))
 Depends:
     R (>= 3.1),
-    BiocGenerics,
     IRanges,
     GenomicRanges
 Imports:
@@ -35,6 +34,7 @@ Imports:
     stats,
     methods
 Suggests:
+    BiocGenerics,
     BiocStyle,
     knitr,
     rmarkdown,

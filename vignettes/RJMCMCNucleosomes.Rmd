@@ -66,8 +66,8 @@ mentioned in the precedent section.
 
 # Loading the RJMCMC package
 
-As with any R package, the **RJMCMCNucleosomes** package should first be loaded with 
-the following command:
+As with any R package, the **RJMCMCNucleosomes** package should first be loaded 
+with the following command:
 
 ```{r loadingPackage, warning=FALSE, message=FALSE} 
 library(RJMCMCNucleosomes)
@@ -177,7 +177,8 @@ set.seed(2221)
 resultSegment01 <- rjmcmc(startPosForwardReads = readsForward,
                             startPosReverseReads = readsReverse,
                             nbrIterations = 1000, lambda = 3, kMax = 30,
-                            minInterval = 100, maxInterval = 200, minReads = 5)
+                            minInterval = 100, maxInterval = 200, minReads = 5,
+                            vSeed = 1921)
 
 ## Print the predicted nucleosomes for the first segment
 resultSegment01
@@ -265,7 +266,7 @@ allReadsReverse <- subset(sample$dataIP, strand == "-")
 resultsAllMerged$k
 
 ## Use the post-treatment function
-resultsPostTreatment <- RJMCMCNucleosomes::postTreatment(startPosForwardReads =  
+resultsPostTreatment <- postTreatment(startPosForwardReads =  
                                     allReadsForward$start,
                                     startPosReverseReads = allReadsReverse$start, 
                                     resultRJMCMC = resultsAllMerged,
