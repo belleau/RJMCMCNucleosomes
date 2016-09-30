@@ -18,7 +18,7 @@ apt_packages:
   - libgsl0ldbl 
   
 # Be strict when checking package
-warnings_are_errors: true
+warnings_are_errors: false
 
 # Package dependencies from CRAN
 r_binary_packages:
