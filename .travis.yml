@@ -8,11 +8,15 @@ env:
   global:
     - BIOC_USE_DEVEL="TRUE"
 
+before_install: 
+  - sudo apt-get -qq update 
+
 # Package dependencies installed using apt-get
 apt_packages:
   - gsl-bin
   - libgsl0-dev
-
+  - libgsl0ldbl 
+  - r-cran-rmp
 # Be strict when checking package
 warnings_are_errors: true
 
@@ -39,5 +43,8 @@ bioc_packages:
 r_github_packages:
   - jimhester/covr
 
+before_script: 
+  - R CMD build RJMCMCNucleosomes
+  
 after_success:
   - Rscript -e 'Rcpp::compileAttributes(); library(covr);codecov()'
