@@ -214,7 +214,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' @examples
 #'
 #' ## Use a directory present in the RJMCMC package
-#' directoryWithRDSFiles <- system.file("extdata", package = "RJMCMC")
+#' directoryWithRDSFiles <- system.file("extdata", package = "RJMCMCNucleosomes")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
 #' ## It is assumed that all files present in the directory are nucleosomes
