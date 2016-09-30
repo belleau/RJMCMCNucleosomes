@@ -272,7 +272,7 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #' @examples
 #'
 #' ## Use RDS files present in the RJMCMC package
-#' RDSFiles <- dir(system.file("extdata", package = "RJMCMC"),
+#' RDSFiles <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 #' full.names = TRUE, pattern = "*rds")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
