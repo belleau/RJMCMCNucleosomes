@@ -26,7 +26,6 @@ r_binary_packages:
   - Rcpp
   - knitr
   - rmarkdown
-  - MCMCpack
 
 # Package dependencies from Bioconductor
 bioc_packages:
@@ -44,7 +43,7 @@ r_github_packages:
   - jimhester/covr
 
 before_script: 
-  - R CMD build RJMCMCNucleosomes
+  - Rscript -e 'library(Rcpp); Rcpp::compileAttributes()"
   
 after_success:
-  - Rscript -e 'Rcpp::compileAttributes(); library(covr);codecov()'
+  - Rscript -e 'library(covr); codecov()'
