@@ -43,7 +43,7 @@ r_github_packages:
   - jimhester/covr
 
 before_script: 
-  - Rscript -e 'library(Rcpp); Rcpp::compileAttributes()"
+  - Rscript -e 'library(Rcpp); Rcpp::compileAttributes()'
   
 after_success:
   - Rscript -e 'library(covr); codecov()'
