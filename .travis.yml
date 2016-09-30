@@ -16,7 +16,7 @@ apt_packages:
   - gsl-bin
   - libgsl0-dev
   - libgsl0ldbl 
-  - r-cran-rmp
+  
 # Be strict when checking package
 warnings_are_errors: true
 
