@@ -50,25 +50,25 @@ test.elementWithHighestMode_results_with_different_vectors <- function() {
 ## priorMuDensity() function
 #########################################################
 
-test.priorMuDensity_with_1000_reads <- function() {
-    set.seed(101)
-    k <- 3L
-    nbrReads <- 500L
-    mu <- c(10000L, 26700L, 45000L)
-    sigma <- rep(400L, k)
-    delta  <- rep(147, k)
-    weight <- c(0.3, 0.2, 0.5)
-    readsForward <- sapply(1:nbrReads, RJMCMCNucleosomes:::normal.mixture, k = k,
-                        w = weight, mu = mu - delta/2, sigma = sigma)
-    readsReverse <- sapply(1:nbrReads, RJMCMCNucleosomes:::normal.mixture, k = k,
-                        w = weight, mu = mu - delta/2, sigma = sigma)
-    reads <- sort(c(readsForward, readsReverse))
-    obs <- RJMCMCNucleosomes:::priorMuDensity(mu, reads)
-    exp <- 8.0883349761e-15
-    message <- paste0(" priorMuDensity_with_1000_reads() ",
-                    "- The result is not the expected value.")
-    checkEqualsNumeric(obs, exp, msg = message)
-}
+# test.priorMuDensity_with_1000_reads <- function() {
+#     set.seed(101)
+#     k <- 3L
+#     nbrReads <- 500L
+#     mu <- c(10000L, 26700L, 45000L)
+#     sigma <- rep(400L, k)
+#     delta  <- rep(147, k)
+#     weight <- c(0.3, 0.2, 0.5)
+#     readsForward <- sapply(1:nbrReads, RJMCMCNucleosomes:::normal.mixture, k = k,
+#                         w = weight, mu = mu - delta/2, sigma = sigma)
+#     readsReverse <- sapply(1:nbrReads, RJMCMCNucleosomes:::normal.mixture, k = k,
+#                         w = weight, mu = mu - delta/2, sigma = sigma)
+#     reads <- sort(c(readsForward, readsReverse))
+#     obs <- RJMCMCNucleosomes:::priorMuDensity(mu, reads)
+#     exp <- 8.0883349761e-15
+#     message <- paste0(" priorMuDensity_with_1000_reads() ",
+#                     "- The result is not the expected value.")
+#     checkEqualsNumeric(obs, exp, msg = message)
+# }
 
 test.priorMuDensity_results_with_various_values_of_mu <- function() {
     set.seed(101)
@@ -80,27 +80,6 @@ test.priorMuDensity_results_with_various_values_of_mu <- function() {
     message <- paste0(" priorMuDensity_results_with_various_values_of_mu() ",
                     "- Not all tested data with various mu generated",
                     " expected values.")
-    checkEqualsNumeric(obs, exp, msg = message)
-}
-
-#########################################################
-## normal.mixture() function
-#########################################################
-
-test.normal_mixture_results_with_various_values_of_mu <- function() {
-    set.seed(101)
-    k <- 6
-    weight <- c(0.1, 0.15, 0.15, 0.2, 0.4)
-    sigma <- c(4,4,4,4,4,4)
-    mu <- list(A=c(4,6,7,8,34,44), B=c(2,16,17,21,24,34),
-            C=c(102, 103, 106, 200, 201, 222))
-    obs <- mapply(mu,
-                    FUN = function(x) { RJMCMCNucleosomes:::normal.mixture(k = k,
-                    weight = weight, mu = x, sigma = sigma)} )
-    exp <- c(3.58414331129, 22.65011231209, 199.13928138368)
-    message <- paste0(" normal_mixture_results_with_various_values_of_mu() ",
-                      "- Not all tested data with various mu generated",
-                      " expected values.")
     checkEqualsNumeric(obs, exp, msg = message)
 }
 

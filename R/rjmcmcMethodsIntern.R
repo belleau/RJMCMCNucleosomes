@@ -86,51 +86,6 @@ rjmcmcNucleo <- function(startPosForwardReads,
 }
 
 
-#' @title Normal Mixture Model
-#'
-#' @description Generation a value from a Normal Mixture distribution.
-#'
-#' @param i a \code{integer}, a count parameter.
-#'
-#' @param k a positive \code{integer} value, the number of nucleosomes in the
-#' analyzed region.
-#'
-#' @param weight a \code{vector} of length \code{k}, the weight for each
-#' nucleosome. The sum of all \code{weight} values must be equal to \code{1}.
-#' The length of \code{weight} must be equal to \code{k}.
-#'
-#' @param mu a \code{vector} of positive \code{integer} of length \code{k},
-#' the positions of all the nucleosomes in the analyzed region. The length
-#' of \code{weight} must be equal to \code{k}.
-#'
-#' @param sigma a \code{vector} of length \code{k}, the variance for each
-#' nucleosome. The length of \code{sigma} must be equal to \code{k}.
-#'
-#' @return a \code{numerical}, the value generated from a Normal Mixture
-#' distribution.
-#'
-#' @examples
-#'
-#' ## Return a value generated from a normal mixture
-#' RJMCMCNucleosomes:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
-#' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
-#'
-#' @importFrom stats runif
-#' @author Rawane Samb, Astrid Deschenes
-#' @keywords internal
-normal.mixture <- function(i, k, weight, mu, sigma) {
-    # Adding zero to the weight vector and calculating the cumulative sums
-    sumWeight <- cumsum(c(0, weight))
-
-    u <- runif(1, 0, 1)
-
-    # Get the maximal position where the sum of weight is inferior to u
-    position <- max(which(sumWeight < u))
-
-    return(rnorm(1, mu[position], sd = sqrt(sigma[position])))
-}
-
-
 #' @title Prior density of \eqn{mu}
 #'
 #' @description Computes the prior density of \eqn{mu} conditionally to
