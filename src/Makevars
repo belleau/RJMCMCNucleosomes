@@ -6,4 +6,9 @@
 #PKG_LIBS = $(GSL_LIBS)
 
 PKG_CFLAGS = `gsl-config --cflags`
-PKG_LIBS = `gsl-config --libs -lgsl -lgslcblas`
+#PKG_LIBS = `gsl-config --libs`
+
+PKG_LIBS+=-lgsl -lgslcblas
+
+#PKG_CFLAGS = `gsl-config --cflags`
+#PKG_LIBS = `-lgsl -lgslcblas`

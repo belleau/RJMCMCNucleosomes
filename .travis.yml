@@ -8,13 +8,17 @@ env:
   global:
     - BIOC_USE_DEVEL="TRUE"
 
+before_install: 
+  - sudo apt-get -qq update 
+
 # Package dependencies installed using apt-get
 apt_packages:
   - gsl-bin
   - libgsl0-dev
-
+  - libgsl0ldbl 
+  
 # Be strict when checking package
-warnings_are_errors: true
+warnings_are_errors: false
 
 # Package dependencies from CRAN
 r_binary_packages:
@@ -22,7 +26,6 @@ r_binary_packages:
   - Rcpp
   - knitr
   - rmarkdown
-  - MCMCpack
 
 # Package dependencies from Bioconductor
 bioc_packages:
@@ -39,5 +42,8 @@ bioc_packages:
 r_github_packages:
   - jimhester/covr
 
+before_script: 
+  - Rscript -e 'library(Rcpp); Rcpp::compileAttributes()'
+  
 after_success:
-  - Rscript -e 'Rcpp::compileAttributes(); library(covr);codecov()'
+  - Rscript -e 'library(covr); codecov()'
