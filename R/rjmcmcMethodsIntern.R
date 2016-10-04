@@ -86,51 +86,6 @@ rjmcmcNucleo <- function(startPosForwardReads,
 }
 
 
-#' @title Random deviate from a truncated normal distribution
-#'
-#' @description Generate a random deviate value from a normal distribution.
-#' The returned value is included inside a specified range
-#' ]\code{minValue},\code{maxValue}[
-#' specified by user. The mean and variance of the normal distribution is
-#' also specified by user.
-#'
-#' @param mu a \code{numeric} value, the mean of the normal distribution.
-#'
-#' @param sigma a non-negative \code{numeric}, the variance of the normal
-#' distribution.
-#'
-#' @param minValue a \code{numeric} value, the inferior boundary of the
-#' range in which the output value must be located. The returned value has to
-#' be superior to \code{minValue}.
-#'
-#' @param maxValue a \code{numeric} value, the superior boundary of the range
-#' in which the output value must be located. The returned value has to be
-#' inferior to \code{maxValue}.
-#'
-#' @return a \code{numeric} which is superior to \code{minValue} and inferior
-#' to \code{maxValue}.
-#'
-#' @examples
-#'
-#' ## Set seed to replicate results
-#' set.seed(3333)
-#'
-#' ## Return a value, between 1000 and 3000, generated froma a normal
-#' ## distribution with a mean of 2000 and a variance of 30.
-#' RJMCMCNucleosomes:::tnormale(2000, 30, 1000, 30000)
-#'
-#' @author Rawane Samb
-#' @importFrom stats rnorm
-#' @keywords internal
-tnormale <- function(mu, sigma, minValue, maxValue) {
-    repeat {
-        y <- rnorm(1, mu, sd = sqrt(sigma))
-        if (y > minValue & y < maxValue) break()
-    }
-    return(y)
-}
-
-
 #' @title Student Mixture Model
 #'
 #' @description Generation a value from a Student Mixture distribution.
