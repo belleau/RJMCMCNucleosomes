@@ -86,57 +86,6 @@ rjmcmcNucleo <- function(startPosForwardReads,
 }
 
 
-#' @title Student Mixture Model
-#'
-#' @description Generation a value from a Student Mixture distribution.
-#'
-#' @param i an \code{integer}, a count parameter.
-#'
-#' @param k a positive \code{integer} value, the number of nucleosomes in the
-#' analyzed region.
-#'
-#' @param weight a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the weight for each
-#' nucleosome. The sum of all \code{weight} values must be equal to \code{1}.
-#' The length of \code{weight} must be equal to \code{k}.
-#'
-#' @param mu a \code{vector} of positive \code{integer} of length \code{k},
-#' the positions of all the nucleosomes in the analyzed region. The length
-#' of \code{weight} must be equal to \code{k}.
-#'
-#' @param sigma a \code{vector} of \code{numeric} of length \code{k}, the
-#' variance for each nucleosome. The length of \code{sigma} must be equal
-#' to \code{k}.
-#'
-#' @param dfr a \code{vector} of \code{numeric} of length \code{k}, the degrees
-#' of freedom for each nucleosome. The length of \code{dfr} must
-#' be equal to \code{k}.
-#'
-#' @return a \code{numerical}, the value generated from a Student Mixture
-#' distribution.
-#'
-#' @examples
-#'
-#' ## Return a value generated from a student mixture
-#' RJMCMCNucleosomes:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
-#' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
-#'
-#' @importFrom stats runif rt
-#' @author Rawane Samb, Astrid Deschenes
-#' @keywords internal
-student.mixture <- function(i, k, weight, mu, sigma, dfr) {
-    # Adding zero to the weight vector and calculating the cumulative sums
-    sumWeight <- cumsum(c(0, weight))
-
-    u <- runif(1, 0, 1)
-
-    # Get the maximal position where the sum of weight is inferior to u
-    position <- max(which(sumWeight < u))
-
-    return(mu[position] + sqrt(sigma[position]) * rt(1, dfr[position]))
-}
-
-
 #' @title Normal Mixture Model
 #'
 #' @description Generation a value from a Normal Mixture distribution.
