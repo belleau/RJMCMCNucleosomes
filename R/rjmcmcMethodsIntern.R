@@ -68,7 +68,7 @@
 #'
 #' @author Pascal Belleau
 #' @importFrom Rcpp evalCpp
-#' @useDynLib RJMCMCNucleosomes
+#' @useDynLib RJMCMCNucleosomes, .registration = TRUE
 #' @exportPattern "^[[:alpha:]]+"
 #' @keywords internal
 #'
