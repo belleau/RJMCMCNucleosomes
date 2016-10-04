@@ -27,38 +27,6 @@ data(RJMCMC_result)
 data(reads_demo)
 
 ###########################################################
-## Dk() function
-###########################################################
-
-test.Dk_result_k_inferior_to_kmax <- function() {
-    obs <- mapply(c(8, 6, 5, 4, 3, 1, 0, -1),
-                    FUN = function(x) {RJMCMCNucleosomes:::Dk(9, 8, x)})
-    message <- paste0(" Dk_result_k_inferior_to_kmax() ",
-                    "- A kmax inferior to k did not always returned 0")
-    checkIdentical(obs, rep(0, 8), msg = message)
-}
-
-test.Dk_result_with_various_values_of_k <- function() {
-    obs <- mapply(c(9, 8, 6, 5, 4, 3, 1, 0),
-                    FUN = function(x) {RJMCMCNucleosomes:::Dk(x, 8, 10)})
-    exp <- c(0.5000, 0.5000, 0.3750, 0.3125, 0.2500, 0.1875,
-                    0.0000, 0.0000)
-    message <- paste0(" Dk_result_with_various_values_of_k() ",
-                    "- Not all tested data generated expected values.")
-    checkEqualsNumeric(obs, exp, msg = message)
-}
-
-test.Dk_result_with_various_values_of_lambda <- function() {
-    obs <- mapply(c(9, 8, 6, 35, 24, 13, 1),
-                    FUN = function(x) {RJMCMCNucleosomes:::Dk(7, x, 10)})
-    exp <- c(0.38888888888888, 0.4375000, 0.5000000, 0.1000000,
-                    0.14583333333, 0.2692307692, 0.5000000)
-    message <- paste0(" Dk_result_with_various_values_of_lambda() ",
-                    "- Not all tested data generated expected values.")
-    checkEqualsNumeric(obs, exp, msg = message)
-}
-
-###########################################################
 ## Bk() function
 ###########################################################
 

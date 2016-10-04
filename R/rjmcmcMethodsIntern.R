@@ -86,45 +86,6 @@ rjmcmcNucleo <- function(startPosForwardReads,
 }
 
 
-#' @title Death Submove Probability
-#'
-#' @description Calculation of the death submove probability of a randomly
-#' selected nucleosome using a truncated Poisson distribution.
-#'
-#' @param k a positive \code{integer}, the number of nucleosomes.
-#'
-#' @param lambda a positive \code{numeric}, the theorical mean
-#' of the Poisson distribution.
-#'
-#' @param kMax a positive \code{integer}, the maximum number of nucleosomes
-#' authorized. When \code{k} is equal or superior to \code{kMax}, the
-#' returned value is \code{0}. Default: \code{30}.
-#'
-#' @return a \code{numeric} value representing the calculated death submove
-#' probability. The value \code{0} when \code{k} is equal or superior to
-#' \code{kMax} or when \code{k} is equal to \code{1}.
-#'
-#' @examples
-#'
-#' ## Return the death submove probability
-#' RJMCMCNucleosomes:::Dk(k = 12L, lambda = 2L, kMax = 30L)
-#'
-#' ## Zero is returned when k = 1
-#' RJMCMCNucleosomes:::Dk(k = 1L, lambda = 3L, kMax = 30L)
-#'
-#' ## Zerio is returned when k is superior to kMax
-#' RJMCMCNucleosomes:::Dk(k = 31L, lambda = 2L, kMax = 30L)
-#'
-#' @author Rawane Samb
-#' @importFrom stats dpois
-#' @keywords internal
-Dk <- function(k, lambda, kMax = 30) {
-    ifelse((k == 1 || k > kMax), 0,
-            0.5* min(1, k / lambda)) # min(1, dpois(k - 1, lambda)/dpois(k, lambda)))
-
-}
-
-
 #' @title Birth Submove Probability
 #'
 #' @description Calculation of the birth submove probability of adding a new
