@@ -1,6 +1,8 @@
 RJMCMCNucleosomes: Nucleosome Positioning
 ==============================================================
 
+[![Build Status](https://travis-ci.org/adeschen/RJMCMCNucleosomes.svg?branch=master)](https://travis-ci.org/adeschen/RJMCMCNucleosomes)
+
 # THIS PACKAGE IS UNDER DEVELOPMENT AND SHOULD NOT BE USED AT THIS MOMENT #
 
 This package uses informative Multinomial-Dirichlet prior in a t-mixture with 
