@@ -86,43 +86,6 @@ rjmcmcNucleo <- function(startPosForwardReads,
 }
 
 
-#' @title Birth Submove Probability
-#'
-#' @description Calculation of the birth submove probability of adding a new
-#' nucleosome using a truncated Poisson distribution.
-#'
-#' @param k a positive \code{integer}, the number of nucleosomes.
-#'
-#' @param lambda a positive \code{numeric}, the theorical mean
-#' of the Poisson distribution.
-#'
-#' @param kMax a positive \code{integer}, the maximum number of nucleosomes
-#' authorized. When \code{k} is equal or superior to \code{kMax}, the
-#' returned value is \code{0}. Default: \code{30}.
-#'
-#' @return a \code{numeric} value. The value \code{0} when \code{k} is equal
-#' or superior to \code{kMax} or when \code{k} is equal to \code{1}.
-#'
-#' @examples
-#'
-#' ## Return the birth submove probability
-#' RJMCMCNucleosomes:::Bk(k = 14L, lambda = 1L, kMax = 30L)
-#'
-#' ## Zero is returned when k = 1
-#' RJMCMCNucleosomes:::Bk(k = 1L, lambda = 3L, kMax = 30L)
-#'
-#' ## Zero is returned when k is superior to kMax
-#' RJMCMCNucleosomes:::Bk(k = 31L, lambda = 2L, kMax = 30L)
-#'
-#' @author Rawane Samb
-#' @importFrom stats dpois
-#' @keywords internal
-Bk <- function(k, lambda, kMax = 30) {
-    ifelse((k >= kMax), 0,
-            0.5 * min(1, lambda/ (k+1))) # min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
-}
-
-
 #' @title Random deviate from a truncated normal distribution
 #'
 #' @description Generate a random deviate value from a normal distribution.
