@@ -33,6 +33,7 @@ bool SimulationNucleoD<NucleoSpace>::initMu(int df){
 		(*tmp).addIteration();
 		this->setCurrentState(tmp);
 		this->pushState();
+		this->setKMaxS(1);
 	}
 	return(flag);
 }
@@ -48,7 +49,7 @@ bool SimulationNucleoD<NucleoSpace>::sampler(){
 	bool flag = false;
 	double u = gsl_ran_flat (this->rng(), 0, 1);
 	double rhoP1 = 1.0;
-	int typeMv = 0;
+	//int typeMv = 0;
 
 	this->currentClone();   // init mod
 
@@ -63,7 +64,7 @@ bool SimulationNucleoD<NucleoSpace>::sampler(){
 					(*(this->mod())).prepSpace();
 					rhoP1 = (*(this->mod())).rhoP2() / (*(this->currentState())).bK();
 					rhoP1 *= (*(this->mod())).qalloc();
-					typeMv = 4;
+					//typeMv = 4;
 				}
 			}
 			else{
@@ -71,7 +72,7 @@ bool SimulationNucleoD<NucleoSpace>::sampler(){
 				if(flag){
 					(*(this->mod())).prepSpace();
 					/* rhoP1 = 1.0; in the case mh */
-					typeMv = 5;
+					//typeMv = 5;
 				}
 			}
 		}
@@ -81,7 +82,7 @@ bool SimulationNucleoD<NucleoSpace>::sampler(){
 				(*(this->mod())).prepSpace();
 				rhoP1 = (*(this->mod())).bK() / (*(this->currentState())).rhoP2();
 				rhoP1 /= (*(this->mod())).qalloc();
-				typeMv = 3;
+				//typeMv = 3;
 			}
 		} /* End death */
 	} /* End  case K > 1 */
@@ -92,7 +93,7 @@ bool SimulationNucleoD<NucleoSpace>::sampler(){
 				(*(this->mod())).prepSpace();
 				rhoP1 = (*(this->mod())).rhoP2() / (*(this->currentState())).bK(); // << (*mod).rhoP2()
 				rhoP1 *= (*(this->mod())).qalloc();
-				typeMv = 1;
+				//typeMv = 1;
 			}
 		}
 		else{
@@ -100,7 +101,7 @@ bool SimulationNucleoD<NucleoSpace>::sampler(){
 			if(flag){
 				(*(this->mod())).prepSpace();
 				/* rhoP1 = 1.0; in the case mh */
-				typeMv = 2;
+				//typeMv = 2;
 			}
 		}
 	}

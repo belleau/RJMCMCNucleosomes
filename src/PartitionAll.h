@@ -147,8 +147,6 @@ public:
 		if(this->empty()){
 			if(!(yEmpty()))
 			{
-				int cpt = 0;
-
 				double mu= gsl_ran_flat(this->rng(), this->minPos(), this->maxPos());
 
 				u = new NucleoD(mu, df, this->segSeq(), this->rng());
@@ -425,7 +423,7 @@ public:
 		int i = 0;
 		try{
 			do{
-				double aFBirth, aRBirth, tmp;
+				double aFBirth, aRBirth;
 				uBef = NULL;
 				uBirth = NULL;
 				uNext = NULL;
@@ -913,7 +911,7 @@ public:
 				uBef = NULL;
 				uMH = NULL;
 				uNext = NULL;
-				double a = this->maxPos() + 1;
+
 				flag = false;
 				cpt++;
 				if(k == 1){

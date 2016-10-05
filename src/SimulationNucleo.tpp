@@ -13,9 +13,9 @@
 template< typename NucleoSpace>
 SimulationNucleo<NucleoSpace>::SimulationNucleo(SegmentSeq const &segSeq,
 		gsl_rng * rng, long nbIteration):
-		d_segSeq(segSeq), d_rng(rng),
-		d_nbIterations(nbIteration),
-		d_currentState(NULL), d_kMaxS(0){
+		d_currentState(NULL), d_rng(rng), d_nbIterations(nbIteration),
+		d_kMaxS(0), d_segSeq(segSeq)
+		{
 
 }
 
