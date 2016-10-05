@@ -53,24 +53,9 @@ public:
 		};// Finir la cascade
 
 	SpaceNucleosome(SegmentSeq const &segSeq, gsl_rng * rng):
-		d_segSeq(segSeq), d_rng(rng), d_valK(0), d_iteration(0){
+		d_segSeq(segSeq), d_valK(0), d_rng(rng), d_iteration(0){
 
 	}
-	//const gsl_rng_type * T
-/*	SpaceNucleosome(std::vector<double> const  &fReads,
-			std::vector<double> const &rReads, int zeta)
-		:d_segSeq(fReads, rReads, zeta), d_valK(0){
-		setDefault();
-	};
-
-	SpaceNucleosome(std::vector<double> const  &fReads,
-			std::vector<double> const &rReads, int zeta,
-			long sizeFReads, long sizeRReads)
-		:d_segSeq(fReads, rReads, zeta, sizeFReads, sizeRReads)
-		, d_valK(0){
-
-		setDefault();
-	};*/
 
 
 	virtual ~SpaceNucleosome(){};
@@ -132,8 +117,9 @@ public:
 		std::cout << "\n";
 	}
 
-	Rcpp::NumericVector mu(){
-		Rcpp::NumericVector mu = Rcpp::NumericVector(valK());
+	std::vector<double> mu(){
+		//Rcpp::NumericVector mu = Rcpp::NumericVector(valK());
+		std::vector<double> mu(valK(), 0.0);
 		int i = 0;
 		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
 			mu[i++] = (*it)->mu();

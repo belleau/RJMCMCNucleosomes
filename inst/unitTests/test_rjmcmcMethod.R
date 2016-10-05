@@ -39,6 +39,27 @@ file_100 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 ## RJMCMC() function
 ###########################################################
 
+test.rjmcmc_one_read_forward_and_one_read_reverse <- function() {
+
+    obs <- rjmcmc(startPosForwardReads = c(1),
+                  startPosReverseReads = c(2),
+                  nbrIterations = 210, lambda = 3, kMax = 30,
+                  minInterval = 100, maxInterval = 200, minReads = 10,
+                  vSeed = 2211)
+
+    exp.k           <- 1
+
+    # TODO : update when code changed to manage this case
+
+    message     <- paste0(" test.rjmcmc_one_read_forward_and_one_read_reverse() ",
+                          "- RJMCMC did not generated expected values")
+
+    checkEqualsNumeric(obs$k, exp.k, msg = message)
+    #checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
+    #checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+}
+
+
 test.rjmcmc_good_result_01 <- function() {
 
     obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
@@ -278,6 +299,7 @@ test.rjmcmc_good_result_04 <- function() {
     # checkEqualsNumeric(obs$qdf, exp.qdf, msg = message)
     # checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
+
 
 
 

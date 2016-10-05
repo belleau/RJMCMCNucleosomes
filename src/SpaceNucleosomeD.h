@@ -168,7 +168,7 @@ namespace space_process{
 			//std::cout.precision(17);
 			double m = meanRead(); /* Mean of the read*/
 			double result = 0;
-			int k = this->valK();
+
 
 			itNucleo nucleoIt = this->nucleoBegin();
 			result = 0;
@@ -360,22 +360,6 @@ namespace space_process{
 		double rhoP2(){
 			//std::cout << "dK " << dK() << " " << lambda() << " " << this->valK() << " " << qalloc() << "\n";
 			return(dK() * (lambda() / ((double) this->valK())) );
-		};
-
-		double rhoModBirth(){
-			double rhoM = priorMuDensity() * multinomial() * dK() * lambda() / ((double) this->valK()) * qalloc();
-		};
-
-		double rhoCurBirth(){
-			double rhoM = priorMuDensity() * multinomial() * bK();
-		};
-
-		double rhoModDeath(){
-			double rhoM = priorMuDensity() * multinomial() * bK();
-		};
-
-		double rhoCurDeath(){
-			double rhoM = priorMuDensity() * multinomial() * dK() * lambda() / ((double) this->valK()) * qalloc();
 		};
 
 	protected:
