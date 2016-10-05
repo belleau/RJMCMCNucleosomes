@@ -141,22 +141,29 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                                  minInterval, maxInterval, minReads,
                                  adaptIterationsToReads, vSeed)
 
-    print(resultRJMCMC)
-
-    # Find k value with the maximum of iterations
-    iterPerK <- data.frame(k=resultRJMCMC$k, it=resultRJMCMC$it)
-    sumIterPerK <- aggregate(it ~ k, data=iterPerK, sum)
-    maxRow <- which.max( sumIterPerK[,"it"])
-    k <- sumIterPerK$k[maxRow]
-
-    # Find mu values associated to the k value
-    mu <- resultRJMCMC$muHat[k,]
+    if (is.null(resultRJMCMC)) {
+        ## Set values when no nucleosome can be found
+        k = 0
+        mu = NA
+        k_max = NA
+    } else {
+        ## Set values when no nucleosome can be found
+        # Find k value with the maximum of iterations
+        iterPerK <- data.frame(k=resultRJMCMC$k, it=resultRJMCMC$it)
+        sumIterPerK <- aggregate(it ~ k, data=iterPerK, sum)
+        maxRow <- which.max( sumIterPerK[,"it"])
+        k <- sumIterPerK$k[maxRow]
+        # Find mu values associated to the k value
+        mu <- resultRJMCMC$muHat[k,][1:k]
+        # Get the k_max value
+        k_max <- resultRJMCMC$k_max
+    }
 
     result <- list(
         call = cl,
         k = k,
-        mu = mu[1:k],
-        k_max = resultRJMCMC$k_max
+        mu = mu,
+        k_max = k_max
     )
 
     class(result)<-"rjmcmcNucleosomes"
