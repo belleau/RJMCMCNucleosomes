@@ -35,8 +35,8 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     long nr = 0; // Number of read
     long tot = 0;
     int kMaxO = 0; // the biggest K
-    int mO = 2;
-
+    int mO = 1;
+    //kMax = 30;
 
     /*********************************************************************
 	 * Debug var
