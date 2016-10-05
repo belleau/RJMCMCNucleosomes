@@ -91,7 +91,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 			resO = pourv.simRapport();
 		}
 		else{
-			cout << "No\n";
+			resO = R_NilValue;
 		}
     }
     else{
