@@ -94,25 +94,7 @@ public:
 		:SpaceNucleosomeD<NucleoD>(segSeq, rng, dfMax), d_y(y), d_ySize(ySize){ //
 
 	};
-	/*
-	PartitionAll(std::vector<double> const  &fReads,
-			std::vector<double> const &rReads, int zeta)
-	:SpaceNucleosomeD<NucleoD>(fReads, rReads, zeta) {
 
-		y = fReads;
-	    y.insert(y.end(),rReads.begin(),rReads.end());
-	    sort(y.begin(),y.end());
-	};
-	PartitionAll(std::vector<double> const  &fReads,
-			std::vector<double> const &rReads,
-			int zeta, long sizeFReads, long sizeRReads)
-	:SpaceNucleosomeD<NucleoD>(fReads, rReads, zeta, sizeFReads, sizeRReads) {
-
-		y = fReads;
-	    y.insert(y.end(),rReads.begin(),rReads.end());
-	    sort(y.begin(),y.end());
-	};
-	*/
 	virtual ~PartitionAll(){};
 
 
@@ -195,16 +177,7 @@ public:
 
 		return(flag);
 	};
-/*
-	long setFoward(double start, double end, NucleoD &u){
-		long l = 0;
-		iteratorD fStart = yBegin();
-		iteratorD fEnd =  yEnd();
-		int cpt = getLimit(start,end, fStart, fEnd, l);
 
-		u.setFStartPos(fStart, fEnd, cpt);
-		return(l);
-	};*/
 
 
 	long setFoward(std::vector<double>::const_iterator fStart, std::vector<double>::const_iterator fEnd, double start, double end, NucleoD &u){
@@ -215,16 +188,6 @@ public:
 		return(l);
 	};
 
-	/*
-	long setReverse(double start, double end, NucleoD &u){
-		long l = 0;
-		iteratorD rStart = yBegin();
-		iteratorD rEnd =  yEnd();
-		int cpt = getLimit(start,end, rStart, rEnd, l);
-
-		u.setRStartPos(rStart, rEnd, cpt);
-		return(l);
-	};*/
 
 	long setReverse(std::vector<double>::const_iterator rStart, std::vector<double>::const_iterator rEnd, double start, double end, NucleoD &u){
 
@@ -283,48 +246,6 @@ public:
 			}
 			return(flag);
 		};
-/*	bool setNucleoD(NucleoD *u, double aF, double aR, int o){
-
-		bool flag = false;
-		long l;
-		iteratorD startIt, endIt;
-		int dimNucleo = getLimit( aF, aR, startIt, endIt, l, true);
-		(*u).setDimN(dimNucleo);
-		if(l > 1){
-
-			(*u).setAvg(accumulate( startIt, endIt, 0.0)/dimNucleo);
-
-			if(setFoward(startIt, endIt, aF, (*u).avg(), *u) > 1){
-
-				if(setReverse(startIt, endIt, (*u).avg(), aR, *u) > 1){
-
-					(*u).evalSigmaF();
-					(*u).evalSigmaR();
-					if((*u).sigmaF() > 0.000001 && (*u).sigmaR() > 0.000001){
-						(*u).evalDelta();
-						(*u).evalBF1();
-						/*double bla = 0;
-						if(o == 1){
-							for(iteratorD  itF = (*u).bFBegin(); itF != (*u).bFEnd(); itF++){
-								bla += (*itF) ;
-							}
-						}
-						std::cout << "BF " << bla;
-						std::cout << "\n";*/
-
-						/*(*u).evalBR();
-						(*u).setAF(aF);
-						(*u).setAR(aR);
-						flag = true;
-
-					}
-				}
-
-			}
-		}
-
-		return(flag);
-	};*/
 
 
 	bool setNucleoDR(NucleoD *u, double aF, double aR, NucleoD *old){
@@ -354,43 +275,6 @@ public:
 		}
 		return(flag);
 	};
-/*	bool setNucleoDR(NucleoD *u, double aF, double aR, NucleoD *old, int o){
-
-			bool flag = true;
-			long l;
-			iteratorD startIt, endIt;
-			int dimNucleo = getLimit( aF, aR, startIt, endIt, l, true);
-			(*u).setDimN(dimNucleo);
-			if(l > 1){
-
-				(*u).setAvg(accumulate( startIt, endIt, 0.0)/dimNucleo);
-
-				setFoward(startIt, endIt, aF, (*u).avg(), *u);
-
-				setReverse(startIt, endIt, (*u).avg(), aR, *u);
-
-				(*u).setSigmaF((*old).sigmaF());
-				std::cout << "Sf " << (*u).sigmaF();
-				(*u).setSigmaR((*old).sigmaR());
-				std::cout << " Sr " << (*u).sigmaR();
-				(*u).setDelta((*old).delta());
-				(*u).setBF( (*old).bF() );
-				double bla = 0;
-				if(o == 1){
-					for(iteratorD  itF = (*u).bFBegin(); itF != (*u).bFEnd(); itF++){
-						bla += (*itF) ;
-					}
-				}
-				std::cout << " BF " << bla;
-				std::cout << "\n";
-				(*u).setBR( (*old).bR() );
-				(*u).setAF(aF);
-				(*u).setAR(aR);
-
-
-			}
-			return(flag);
-		};*/
 
 	bool birth(){
 		int cpt = 0;
@@ -576,29 +460,16 @@ public:
 				}
 
 				muBirth = gsl_ran_flat(this->rng(), muBef, muNext); // New mu
-				//this->setTB(muBirth);
-				//this->setTB(muBef);
-				//this->setTB(muNext);
-				//std::cout << "Bef " <<  muBef << " muBirth " << muBirth << " Next " << muNext << "\n";
+
 
 				aRBirth = gsl_ran_flat(this->rng(), muBirth, muNext);
-				/*if(i < (k-1)){
-					tmp = gsl_ran_flat(this->rng(), muBirth, muNext);
-				}
-				else{ // J'ai un doute sur la validite de maxPos a la place de muNext
-					tmp = gsl_ran_flat(this->rng(), muBirth, this->maxPos());
-				}
-				aRBirth = std::max(tmp, (*it2)->aF());*/
+
 				if(i == 0){
 					aFBirth = this->minPos();
 				}
 				else{
 					aFBirth = gsl_ran_flat(this->rng(), muBef, muBirth);
 				}
-
-				//std::cout << "Start " << this->minPos() << " End " << this->maxPos() << "\n";
-				//std::cout << "Bef " << muBef << " Birth " << muBirth << " Next " << muNext << "\n";
-
 
 				if(i > 0) // Modify nucleosome i-1
 				{
@@ -608,7 +479,7 @@ public:
 
 					// Eval the var interne of uBef
 					// and check if enough reads between (*it1)->aF(), aFBirth
-					//flag = !(setNucleoDR(uBef, (*it1)->aF(), aFBirth, *it1));
+
 					setNucleoDR(uBef, (*it1)->aF(), aFBirth, *it1);
 
 					//if(!(flag)){ // Modify nucleosome i
@@ -625,29 +496,21 @@ public:
 					uBirth = new NucleoD(muBirth, df, this->segSeq(), this->rng());
 
 					flag = !(setNucleoD(uBirth, aFBirth, aRBirth));
-					//this->setTB(uBirth->tP());
-					/*if(!flag)
-							std::cout << "Df " << uBirth->tP() << "\n";
 
-					}*/
 				}
 				else{ // i == 0
 
 					uNext = new NucleoD(muNext, (*it2)->df(), this->segSeq(), this->rng()); // New mu 0
-					//flag = !(setNucleoDR(uNext, aRBirth, (*it2)->aR(), *it2));
+
 					setNucleoDR(uNext, aRBirth, (*it2)->aR(), *it2);
 
-					//if(!(flag)){
+
 
 					int df = (int) gsl_ran_flat (this->rng(), 3, this->dfMax() + 1);
 					uBirth = new NucleoD(muBirth, df, this->segSeq(), this->rng());
 
 					flag = !(setNucleoD(uBirth, aFBirth, aRBirth));
-					//this->setTB(uBirth->tP());
-					/*if(!flag)
-							std::cout << "Df " << uBirth->tP() << "\n";
 
-					}*/
 				} // end i == 0
 				if(flag){
 					delete uBef;
@@ -672,40 +535,16 @@ public:
 				}
 
 
-				//if(i < (k-1)){
+
 				this->pushModNucleo(*it2);
 				*it2 = uNext;
 				this->insertNucleo(it2, uBirth);
-				/*if(this->valK() == 2){
-					std::vector<double>::const_iterator pourv = uBirth->endF();
-					pourv--;
-					std::cout  << " mu " << (*it2)->mu();
-					std::cout  << " muBirth " << uBirth->mu() << " sigmaF " << uBirth->sigmaF() << " K " << this->valK();
-					std::cout  << " dF " << uBirth->df();
-					std::cout  << " start " << *(uBirth->startF()) << " end " << *pourv << "\n";
-					uBirth->testF();
-				}*/
-				//std::cout << "Next " << (*it2)->mu() << " muBirth " << uBirth->mu() << "\n";
-				//std::cout  << "\n";
-				//this->displayMu();
-				//std::cout  << " sigmaF " << uBirth->sigmaF();
-				//std::cout  << " delta " << uBirth->delta();
-				//std::cout  << " dF " << uBirth->df() << "\n";
-				/*for(iteratorD itD = uBirth->startF(); itD != uBirth->endF(); itD++){
-					std::cout << " " << *itD;
-				}
-				std::cout << "\n";*/
-				//std::cout << "Bef " << muBef << " Next " << (*it2)->mu() << " muBirth " << uBirth->mu() << " aF "<< uBirth->aF() << " aF "<< uBirth->aR() << " ";
 
 
 				this->pushAddNucleo(it2);
 				this->pushAddNucleo(--it2);
 
-				//}
-				/*else{
-					this->insertNucleo(this->nucleoEnd(), uBirth);
-					this->pushAddNucleo(--(this->nucleoEnd()));
-				}*/
+
 			}
 		}
 		catch(std::bad_alloc&) {

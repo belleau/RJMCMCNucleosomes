@@ -35,7 +35,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     long nr = 0; // Number of read
     long tot = 0;
     int kMaxO = 0; // the biggest K
-    int mO = 1;
+    int mO = 2;
     //kMax = 30;
 
     /*********************************************************************
@@ -85,7 +85,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     if(mO > 1){
 
 		SimulationNucleoD<PartitionAll<NucleoDirichletPA> > pourv(seg, rng, kMax, nbrIterations);
-		if(pourv.initMu()){
+		if(pourv.initMu(3)){
 			pourv.simulate();
 			pourv.statSim();
 			resO = pourv.simRapport();
@@ -212,7 +212,8 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 				rho = std::min(1.0, rho);
 
 				pt = gsl_ran_flat (rng, 0, 1);
-
+				//cout << " typeMv " << typeMv << "\n";
+				//cout << " pt " << pt << " Rho " << rho << "\n";
 				if(rho >= pt){
 						currentState = mod;
 						(*currentState).addIteration();
@@ -266,12 +267,12 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 	   }
 
 
-	   int posM = 0;
+	   //int posM = 0;
 	   int curM = -1;
 	   for(int j = 0; j < kMaxO; j++){
-		   if(nbK[j] > curM){
+		   /*if(nbK[j] > curM){
 			   posM = j + 1;
-		   }
+		   }*/
 		   for(int l = 0; l < kMaxO; l++){
 			   if(nbK[j] > 0)
 				   muHat[j + l * kMaxO] /= nbK[j];

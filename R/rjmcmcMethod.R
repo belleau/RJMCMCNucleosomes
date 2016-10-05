@@ -141,6 +141,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                                  minInterval, maxInterval, minReads,
                                  adaptIterationsToReads, vSeed)
 
+    print(resultRJMCMC)
+
     # Find k value with the maximum of iterations
     iterPerK <- data.frame(k=resultRJMCMC$k, it=resultRJMCMC$it)
     sumIterPerK <- aggregate(it ~ k, data=iterPerK, sum)

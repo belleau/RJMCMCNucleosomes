@@ -168,7 +168,7 @@ namespace space_process{
 			//std::cout.precision(17);
 			double m = meanRead(); /* Mean of the read*/
 			double result = 0;
-			int k = this->valK();
+
 
 			itNucleo nucleoIt = this->nucleoBegin();
 			result = 0;
