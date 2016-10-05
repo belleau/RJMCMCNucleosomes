@@ -86,39 +86,6 @@ rjmcmcNucleo <- function(startPosForwardReads,
 }
 
 
-#' @title Element with the hightest number of occurences
-#'
-#' @description Returned the \code{integer} with the highest number of
-#' occurences in a \code{vector}.
-#' When more than one \code{integer} have the highest number of occurences,
-#' \code{NA} is returned.
-#'
-#' @param sample a \code{numeric} \code{vector} (of positive \code{integer}
-#' values). If the elements of \code{sample} are \code{numeric} but not
-#' \code{integer}, the elements are truncated by \code{as.integer}.
-#'
-#' @return  a \code{integer} with the highest number of occurences or
-#' \code{NA} when more than one \code{integer} have the highest number
-#' of occurences.
-#'
-#' @author Rawane Samb, Astrid Deschenes
-#' @keywords internal
-#' @examples
-#'
-#' ## Return the element with the hightest number of occurence
-#' data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-#' RJMCMCNucleosomes:::elementWithHighestMode(data01)
-#'
-#' data02 <- c(3L, 6L, 4L, 3L, 6L)
-#' RJMCMCNucleosomes:::elementWithHighestMode(data02)
-#'
-elementWithHighestMode <- function(sample) {
-    tabsample <- tabulate(sample)
-    maxOccurence <- tabsample == max(tabsample)
-    ifelse(sum(maxOccurence) == 1, which(maxOccurence), NA)
-}
-
-
 #' @title Parameters validation for the \code{\link{rjmcmc}}
 #' function
 #'

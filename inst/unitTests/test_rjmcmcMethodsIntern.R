@@ -28,25 +28,6 @@ data(reads_demo)
 
 
 #########################################################
-## elementWithHighestMode() function
-#########################################################
-
-test.elementWithHighestMode_results_with_different_vectors <- function() {
-    set.seed(101)
-    obs <- lapply(list(test1 = c(1, 2, 3, 3, 21, 22),
-                    test2 = c(2, 4, 2, 4, 4, 0),
-                    test3 = c(12, 13, 13, 12, 1),
-                    test4 = c(23, 22, 21, 20, 22, 22, 21, 21, 22)),
-                  FUN = function(x) {RJMCMCNucleosomes:::elementWithHighestMode(x)})
-    exp <- list(test1 = 3L, test2 = 4L, test3 = NA, test4 = 22L)
-    message <- paste0(" elementWithHighestMode_results_with_different_vectors() ",
-                    "- Not all tested vectors generated",
-                    " expected values.")
-    checkEquals(obs, exp, msg = message)
-}
-
-
-#########################################################
 ## validatePrepMergeParameters() function
 #########################################################
 
