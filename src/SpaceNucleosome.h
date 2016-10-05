@@ -132,8 +132,9 @@ public:
 		std::cout << "\n";
 	}
 
-	Rcpp::NumericVector mu(){
-		Rcpp::NumericVector mu = Rcpp::NumericVector(valK());
+	std::vector<double> mu(){
+		//Rcpp::NumericVector mu = Rcpp::NumericVector(valK());
+		std::vector<double> mu(valK(), 0.0);
 		int i = 0;
 		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
 			mu[i++] = (*it)->mu();
