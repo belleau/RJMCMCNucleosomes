@@ -251,35 +251,6 @@ public:
         return(a);
 	};
 
-/*	bool setNucleoD1(NucleoD *u, double aF, double aR){
-
-		bool flag = false;
-		long l;
-		iteratorD startIt, endIt;
-		int dimNucleo = getLimit( aF, aR, startIt, endIt, l, true);
-
-		if(l > 1){ /* More than one distinct reads between aF and aR */
-
-/*			(*u).setAvg(accumulate( startIt, endIt, 0.0)/((double) dimNucleo));
-
-			if(setFoward(startIt, endIt, aF, (*u).avg(), *u) > 1){
-
-				if(setReverse(startIt, endIt, (*u).avg(), aR, *u) > 1){
-
-					flag = true;
-					(*u).evalSigmaF();
-					(*u).evalSigmaR();
-					(*u).evalDelta();
-					(*u).evalBF();
-					(*u).evalBR();
-					(*u).setAF(aF);
-					(*u).setAR(aR);
-				}
-
-			}
-		}
-		return(flag);
-	}*/
 	bool setNucleoD(NucleoD *u, double aF, double aR){
 
 			bool flag = false;

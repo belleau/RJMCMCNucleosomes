@@ -362,22 +362,6 @@ namespace space_process{
 			return(dK() * (lambda() / ((double) this->valK())) );
 		};
 
-		double rhoModBirth(){
-			double rhoM = priorMuDensity() * multinomial() * dK() * lambda() / ((double) this->valK()) * qalloc();
-		};
-
-		double rhoCurBirth(){
-			double rhoM = priorMuDensity() * multinomial() * bK();
-		};
-
-		double rhoModDeath(){
-			double rhoM = priorMuDensity() * multinomial() * bK();
-		};
-
-		double rhoCurDeath(){
-			double rhoM = priorMuDensity() * multinomial() * dK() * lambda() / ((double) this->valK()) * qalloc();
-		};
-
 	protected:
 		void setMeanRead(double meanRead){
 			d_meanRead = meanRead;
