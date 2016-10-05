@@ -56,7 +56,7 @@ double NucleoDirichletPA::avg(){
 }
 
 
-double NucleoDirichletPA::testT(){
+/*double NucleoDirichletPA::testT(){
 	// TODO Auto-generated constructor stub
 	double x = gsl_ran_tdist_pdf(0.4,3.0);
 	cout << " T " << x << "\n";
@@ -75,9 +75,9 @@ void NucleoDirichletPA::testFRStart()
 	for(vector<double>::iterator it = d_startR; it != d_endR; it++){
 			cout << "R " << *it << " c " << ++cpt << "\n";
 	}*/
-
+/*
 	cout << "sigmaF " << sigmaF() << "\n";
 }
-
+*/
 
 } /* namespace space_process */
