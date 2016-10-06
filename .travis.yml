@@ -4,25 +4,19 @@ sudo: required
 # Packages from Bioconductor needed
 bioc_required: true
 
+# Be strict when checking package
+warnings_are_errors: false
+
+# Set variables
 env:
   global:
     - BIOC_USE_DEVEL="TRUE"
-
-#before_install:
-#  - sudo apt-get -qq update
 
 # Package dependencies installed using apt-get
 apt_packages:
   - gsl-bin
   - libgsl0-dev
   - libgsl0ldbl
-  - r-bioc-biocgenerics
-  - r-bioc-genomeinfodb
-  - r-bioc-iranges
-  - r-bioc-genomicranges
-
-# Be strict when checking package
-warnings_are_errors: false
 
 # Package dependencies from CRAN
 r_binary_packages:
@@ -34,18 +28,18 @@ r_binary_packages:
 
 # Package dependencies from Bioconductor
 bioc_packages:
-#  - GenomeInfoDb
-#  - IRanges
-  - BiocStyle
-#  - GenomicRanges
-  - nucleoSim
-  - consensusSeekeR
-  - PING
-# - BiocGenerics
+   - BiocGenerics
+   - GenomeInfoDb
+   - IRanges
+   - BiocStyle
+   - GenomicRanges
+   - nucleoSim
+   - consensusSeekeR
+   - PING
 
 # Package dependencies from github
-r_github_packages:
-  - jimhester/covr
+#r_github_packages:
+#  - jimhester/covr
 
 before_script:
   - Rscript -e 'library(Rcpp); Rcpp::compileAttributes()'
