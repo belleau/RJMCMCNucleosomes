@@ -50,6 +50,6 @@ class(result)
 
 }
 \author{
-Pascal Belleau, Astrid Deschenes
+Pascal Belleau, Astrid Deschênes
 }
 

@@ -167,7 +167,7 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
 #' maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 #'
-#' @author Astrid Deschenes
+#' @author Astrid Deschênes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
@@ -334,7 +334,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #' ## Testing using a real file
 #' RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
 #'
-#' @author Astrid Deschenes
+#' @author Astrid Deschênes
 #' @keywords internal
 #'
 validateRDSFilesParameters <- function(RDSFiles) {
@@ -375,7 +375,7 @@ validateRDSFilesParameters <- function(RDSFiles) {
 #' ## Testing using a real directory
 #' RJMCMCNucleosomes:::validateDirectoryParameters(directory)
 #'
-#' @author Astrid Deschenes
+#' @author Astrid Deschênes
 #' @keywords internal
 #'
 validateDirectoryParameters <- function(directory) {
@@ -439,7 +439,7 @@ validateDirectoryParameters <- function(directory) {
 #' 72431, 72428, 72429, 72426), startPosReverseReads = c(72522, 72531, 72528,
 #' 72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 #'
-#' @author Astrid Deschenes
+#' @author Astrid Deschênes
 #' @importFrom GenomeInfoDb Seqinfo
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
@@ -547,7 +547,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' ## Results after post-treatment
 #' postResult
 #'
-#' @author Pascal Belleau, Astrid Deschenes
+#' @author Pascal Belleau, Astrid Deschênes
 #' @importFrom consensusSeekeR findConsensusPeakRegions
 #' @importFrom GenomicRanges GRanges findOverlaps
 #' @importFrom IRanges IRanges

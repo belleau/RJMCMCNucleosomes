@@ -26,6 +26,8 @@ Astrid Deschenes <astrid-louise.deschenes@crchudequebec.ulaval.ca>
     \item \code{\link{rjmcmc}} { for profiling of nucleosome positions}
     \item \code{\link{postTreatment}} { for merging closely positioned
     nucleosomes}
+    \item \code{\lind{mergeRDSFiles}} { for merging nucleosome information
+    from selected RDS files.}
 }
 }
 \keyword{package}

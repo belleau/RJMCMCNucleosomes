@@ -65,6 +65,6 @@ result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
 
 }
 \author{
-Pascal Belleau, Astrid Deschenes
+Pascal Belleau, Astrid Deschênes
 }
 
