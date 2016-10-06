@@ -8,12 +8,7 @@ env:
   global:
     - BIOC_USE_DEVEL="TRUE"
 
-before_install:
-## r-travis by Craig Citro et al
-- curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-- chmod 755 ./travis-tool.sh
-- ./travis-tool.sh bootstrap
-
+#before_install:
 #  - sudo apt-get -qq update
 
 # Package dependencies installed using apt-get
@@ -21,9 +16,6 @@ apt_packages:
   - gsl-bin
   - libgsl0-dev
   - libgsl0ldbl
-
-install:
-- ./travis-tool.sh install_aptget r-bioc-biocgenerics
 
 # Be strict when checking package
 warnings_are_errors: false
@@ -34,6 +26,7 @@ r_binary_packages:
   - Rcpp
   - knitr
   - rmarkdown
+  - BiocGenerics
 
 # Package dependencies from Bioconductor
 bioc_packages:
@@ -44,7 +37,6 @@ bioc_packages:
   - nucleoSim
   - consensusSeekeR
   - PING
-
 # - BiocGenerics
 
 # Package dependencies from github
