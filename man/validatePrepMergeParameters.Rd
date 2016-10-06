@@ -60,7 +60,7 @@ resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 
 }
 \author{
-Astrid Deschenes
+Astrid Deschênes
 }
 \keyword{internal}
 

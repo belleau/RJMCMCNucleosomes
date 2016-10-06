@@ -243,7 +243,7 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #' class(result)
 #'
 #'
-#' @author Pascal Belleau, Astrid Deschenes
+#' @author Pascal Belleau, Astrid Deschênes
 #' @export
 mergeRDSFiles <- function(RDSFiles) {
 
@@ -310,7 +310,7 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' ##postResult
 #'
-#' @author Pascal Belleau, Astrid Deschenes
+#' @author Pascal Belleau, Astrid Deschênes
 #' @export
 postTreatment <- function(startPosForwardReads, startPosReverseReads,
                            resultRJMCMC, extendingSize = 74L, chrLength) {
