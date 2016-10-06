@@ -31,23 +31,10 @@ r_binary_packages:
   - rmarkdown
   - covr
 
-# Package dependencies from Bioconductor
-bioc_packages:
-   - BiocGenerics
-   - GenomeInfoDb
-   - IRanges
-   - BiocStyle
-   - GenomicRanges
-   - nucleoSim
-   - consensusSeekeR
-   - PING
-
-# Package dependencies from github
-#r_github_packages:
-#  - jimhester/covr
-
+# To compile C++ code
 before_script:
   - Rscript -e 'library(Rcpp); Rcpp::compileAttributes()'
 
+# To send info to codecov
 after_success:
   - Rscript -e 'library(covr); codecov()'
