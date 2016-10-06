@@ -46,7 +46,26 @@
 #' needed. When a value inferior or equal to zero is given, a random integer
 #' is used. Default: -1.
 #'
-#' @return TODO
+#' @return a \code{list} containing:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item k_max a \code{integer}, the maximum number of nucleosomes
+#' obtained during the iteration process.
+#'     \item it a \code{vector} of \code{integer} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
+#'     \item nbState a \code{integer}, the number of changes of state.
+#'     \item mu a \code{matrix} of \code{numeric} with \code{k_max} columns
+#' and \code{nbState} row containing, in each row, the \code{mu} values
+#' associated the the state identified by the row number.
+#'     \item muHat a \code{matrix} of \code{numeric} with \code{k_max} columns
+#' and \code{k_max} rows containing, in each row, the mean \code{mu} values
+#' associated the number of nucleosomes detected. The row number
+#' corresponds to the number of nucleosomes detected.
+#'     \item nbK a \code{vector} of length \code{k_max} containing
+#' \code{integer}, the number of iterations
+#' which detected a specific number of nucleosomes. The position in the vector
+#' correspond to the number of nucleosomes.
+#' }
 #'
 #' @examples
 #'
@@ -66,7 +85,7 @@
 #' ## Print the position of nucleosomes
 #' result$mu
 #'
-#' @author Pascal Belleau
+#' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom Rcpp evalCpp
 #' @useDynLib RJMCMCNucleosomes, .registration = TRUE
 #' @exportPattern "^[[:alpha:]]+"
@@ -78,6 +97,7 @@ rjmcmcNucleo <- function(startPosForwardReads,
                               minInterval, maxInterval,
                               minReads = 5L,
                               adaptIterationsToReads = TRUE, vSeed = -1) {
+    # Call C++ function
     .Call('RJMCMCNucleosomes_rjmcmcNucleo',
           PACKAGE = 'RJMCMCNucleosomes',
           startPosForwardReads, startPosReverseReads,

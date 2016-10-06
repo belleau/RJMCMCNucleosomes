@@ -53,7 +53,26 @@ is used. Default: -1.}
 of the Poisson distribution. Default: 3.}
 }
 \value{
-TODO
+a \code{list} containing:
+\itemize{
+    \item k a \code{integer}, the number of nucleosomes.
+    \item k_max a \code{integer}, the maximum number of nucleosomes
+obtained during the iteration process.
+    \item it a \code{vector} of \code{integer} of length
+\code{k}, the variance of the forward reads for each nucleosome.
+    \item nbState a \code{integer}, the number of changes of state.
+    \item mu a \code{matrix} of \code{numeric} with \code{k_max} columns
+and \code{nbState} row containing, in each row, the \code{mu} values
+associated the the state identified by the row number.
+    \item muHat a \code{matrix} of \code{numeric} with \code{k_max} columns
+and \code{k_max} rows containing, in each row, the mean \code{mu} values
+associated the number of nucleosomes detected. The row number
+corresponds to the number of nucleosomes detected.
+    \item nbK a \code{vector} of length \code{k_max} containing
+\code{integer}, the number of iterations
+which detected a specific number of nucleosomes. The position in the vector
+correspond to the number of nucleosomes.
+}
 }
 \description{
 Function that calls the core of the nucleosome positioning
@@ -78,7 +97,7 @@ result$mu
 
 }
 \author{
-Pascal Belleau
+Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
 
