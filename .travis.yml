@@ -16,6 +16,7 @@ apt_packages:
   - gsl-bin
   - libgsl0-dev
   - libgsl0ldbl
+  - r-bioc-biocgenerics
 
 # Be strict when checking package
 warnings_are_errors: false
@@ -26,7 +27,7 @@ r_binary_packages:
   - Rcpp
   - knitr
   - rmarkdown
-  - BiocGenerics
+  - covr
 
 # Package dependencies from Bioconductor
 bioc_packages:
