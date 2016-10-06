@@ -47,41 +47,13 @@
 #' \itemize{
 #' \item \code{call} the matched call.
 #' \item \code{k} a \code{integer}, the final estimation of the number
-#' of nucleosomes.
+#' of nucleosomes. \code{0} when no nucleosome is detected.
 #' \item \code{mu} a \code{vector} of \code{numeric} of length
-#' \code{k}, the positions of the nucleosomes.
-#' \item \code{kMax} a \code{integer}, the maximum number of nucleosomes
-#' obtained during the iteration process.
-#' \item \code{sigmaf} a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the forward reads for each nucleosome.
-#' \item \code{sigmar} a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the reverse reads for each nucleosome.
-#' \item \code{delta} a \code{vector} of \code{numeric} of length
-#' \code{k}, the distance between the maxima of the forward and reverse reads
-#' position densities for each nucleosome.
-#' \item \code{df} a \code{vector} of \code{numeric} of length
-#' \code{k}, the degrees of freedom for each nucleosome.
-#' \item \code{w} a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
-#' must be equal to \code{1}.
-#' \item \code{qmu} a \code{matrix} of \code{numerical} with a number of rows
-#' of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{mu}.
-#' \item \code{qsigmaf} a \code{matrix} of \code{numerical} with a number of
-#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the variance of the
-#' forward reads for each nucleosome.
-#' \item \code{qsigmar} a \code{matrix} of \code{numerical} with a number of
-#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the variance the
-#' reverse reads for each nucleosome.
-#' \item \code{qdelta} a \code{matrix} of \code{numerical} with a number of
-#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the distance between
-#' the maxima of the forward and reverse reads
-#' position densities for each nucleosome.
-#' \item \code{qdf} a \code{matrix} of \code{numerical} with a number of
-#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the degrees of freedom
-#' for each nucleosome.
-#' \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
-#' of \code{k}, the 2.5\% and 97.5\% quantiles of the weight for each
-#' nucleosome.
+#' \code{k}, the positions of the nucleosomes. \code{NA} when no nucleosome is
+#' detected.
+#' \item \code{k_max} a \code{integer}, the maximum number of nucleosomes
+#' obtained during the iteration process. \code{NA} when no nucleosome is
+#' detected.
 #' }
 #'
 #' @examples
@@ -95,8 +67,6 @@
 #'          nbrIterations = 1000, lambda = 2, kMax = 30,
 #'          minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10113)
 #'
-#' ## TODO : a faire avec nouveau format
-#'
 #' ## Print the final estimation of the number of nucleosomes
 #' result$k
 #'
@@ -105,7 +75,7 @@
 #'
 #' ## Print the maximum number of nucleosomes obtained during the iteration
 #' ## process
-#' result$kMax
+#' result$k_max
 #'
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschênes
 #' @importFrom stats aggregate
@@ -129,13 +99,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                             minReads = minReads,
                             adaptIterationsToReads = adaptIterationsToReads,
                             vSeed = vSeed)
-#     nf              <- length(startPosForwardReads)
-#     nr              <- length(startPosReverseReads)
-#     nbrReads        <- nf + nr
-#     if (adaptIterationsToReads) {
-#         nbrIterations <- ifelse(nbrReads <= 12, 1000, nbrIterations)
-#     }
 
+    # Find nucleosome positions
     resultRJMCMC <- rjmcmcNucleo(startPosForwardReads, startPosReverseReads,
                                  nbrIterations, kMax, lambda,
                                  minInterval, maxInterval, minReads,
@@ -159,6 +124,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
         k_max <- resultRJMCMC$k_max
     }
 
+    # Format output
     result <- list(
         call = cl,
         k = k,
@@ -167,24 +133,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     )
 
     class(result)<-"rjmcmcNucleosomes"
-
-#     result <- list(
-#         call    = cl,
-#         K       = k,
-#         k       = km,
-#         mu      = mu_hat,
-#         sigmaf  = sigmaf_hat,
-#         sigmar  = sigmar_hat,
-#         delta   = delta_hat,
-#         df      = df_hat,
-#         w       = w_hat,
-#         qmu     = qmu,
-#         qsigmaf = qsigmaf,
-#         qsigmar = qsigmar,
-#         qdelta  = qdelta,
-#         qdf     = qdf,
-#         qw      = qw
-#     )
 
     return(result)
 }
@@ -254,7 +202,7 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 }
 
 
-#' @title Merge nucleosome information for selected RDS files.
+#' @title Merge nucleosome information from selected RDS files.
 #'
 #' @description Merge nucleosome information present in RDS files into one
 #' object of \code{class} "rjmcmcNucleosomesMerge".
@@ -295,7 +243,7 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #' class(result)
 #'
 #'
-#' @author Pascal Belleau, Astrid Deschenes
+#' @author Pascal Belleau, Astrid Deschênes
 #' @export
 mergeRDSFiles <- function(RDSFiles) {
 
@@ -362,7 +310,7 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' ##postResult
 #'
-#' @author Pascal Belleau, Astrid Deschenes
+#' @author Pascal Belleau, Astrid Deschênes
 #' @export
 postTreatment <- function(startPosForwardReads, startPosReverseReads,
                            resultRJMCMC, extendingSize = 74L, chrLength) {

@@ -72,7 +72,7 @@ maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 
 }
 \author{
-Astrid Deschenes
+Astrid Deschênes
 }
 \keyword{internal}
 

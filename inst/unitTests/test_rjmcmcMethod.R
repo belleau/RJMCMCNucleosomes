@@ -48,15 +48,15 @@ test.rjmcmc_one_read_forward_and_one_read_reverse <- function() {
                   vSeed = 2211)
 
     exp.k           <- 1
-
-    # TODO : update when code changed to manage this case
+    exp.k_max       <- 1
+    exp.mu          <- c(1.017962247133255)
 
     message     <- paste0(" test.rjmcmc_one_read_forward_and_one_read_reverse() ",
                           "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
-    #checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
-    #checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+    checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
+    checkEqualsNumeric(obs$mu, exp.mu, msg = message)
 }
 
 
