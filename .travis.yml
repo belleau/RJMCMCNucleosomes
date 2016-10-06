@@ -32,15 +32,15 @@ r_binary_packages:
   - covr
 
 # Package dependencies from Bioconductor
-bioc_packages:
-   - BiocGenerics
-   - GenomeInfoDb
-   - IRanges
-   - BiocStyle
-   - GenomicRanges
-   - nucleoSim
-   - consensusSeekeR
-   - PING
+#bioc_packages:
+#   - BiocGenerics
+#   - GenomeInfoDb
+#   - IRanges
+#   - BiocStyle
+#   - GenomicRanges
+#   - nucleoSim
+#   - consensusSeekeR
+#   - PING
 
 # Package dependencies from github
 #r_github_packages:
