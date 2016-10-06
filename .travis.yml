@@ -26,10 +26,10 @@ r_binary_packages:
   - Rcpp
   - knitr
   - rmarkdown
+  - r-bioc-biocgenerics
 
 # Package dependencies from Bioconductor
 bioc_packages:
-  - BiocGenerics
   - GenomeInfoDb
   - IRanges
   - BiocStyle
@@ -37,6 +37,8 @@ bioc_packages:
   - nucleoSim
   - consensusSeekeR
   - PING
+
+# - BiocGenerics
 
 # Package dependencies from github
 r_github_packages:
