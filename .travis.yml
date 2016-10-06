@@ -17,6 +17,9 @@ apt_packages:
   - libgsl0-dev
   - libgsl0ldbl
   - r-bioc-biocgenerics
+  - r-bioc-genomeinfodb
+  - r-bioc-iranges
+  - r-bioc-genomicranges
 
 # Be strict when checking package
 warnings_are_errors: false
@@ -31,10 +34,10 @@ r_binary_packages:
 
 # Package dependencies from Bioconductor
 bioc_packages:
-  - GenomeInfoDb
-  - IRanges
+#  - GenomeInfoDb
+#  - IRanges
   - BiocStyle
-  - GenomicRanges
+#  - GenomicRanges
   - nucleoSim
   - consensusSeekeR
   - PING
