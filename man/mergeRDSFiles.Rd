@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethod.R
 \name{mergeRDSFiles}
 \alias{mergeRDSFiles}
-\title{Merge nucleosome information for selected RDS files.}
+\title{Merge nucleosome information from selected RDS files.}
 \usage{
 mergeRDSFiles(RDSFiles)
 }

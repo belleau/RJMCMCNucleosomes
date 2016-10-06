@@ -202,7 +202,7 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 }
 
 
-#' @title Merge nucleosome information for selected RDS files.
+#' @title Merge nucleosome information from selected RDS files.
 #'
 #' @description Merge nucleosome information present in RDS files into one
 #' object of \code{class} "rjmcmcNucleosomesMerge".
