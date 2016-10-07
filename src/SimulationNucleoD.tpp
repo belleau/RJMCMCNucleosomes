@@ -24,9 +24,10 @@ SimulationNucleoD<NucleoSpace>::~SimulationNucleoD() {
 }
 
 template< typename NucleoSpace>
-bool SimulationNucleoD<NucleoSpace>::initMu(int df){
+bool SimulationNucleoD<NucleoSpace>::initMu(int lambda, int df){
 	bool flag= true;
 	NucleoSpace *tmp = new NucleoSpace(this->segSeq(), this->rng(), kMax());
+	(*tmp).setLambda(lambda);
 	flag = (*tmp).initMu1(df);
 	if(flag){
 		(*tmp).prepSpace();

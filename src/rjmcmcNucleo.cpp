@@ -74,7 +74,7 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     List resO;
 
 	SimulationNucleoD<PartitionAll<NucleoDirichletPA> > pourv(seg, rng, kMax, nbrIterations);
-	if(pourv.initMu(3)){
+	if(pourv.initMu(lambda)){
 		pourv.simulate();
 		pourv.statSim();
 		resO = pourv.simRapport();

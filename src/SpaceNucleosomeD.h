@@ -84,7 +84,7 @@ namespace space_process{
 			d_tB = tB;
 		}
 
-		int lambda(){
+		inline int lambda(){
 			return(d_lambda);
 		};
 
@@ -339,14 +339,14 @@ namespace space_process{
 		double dK(){
 			double d = 0;
 			if(this->valK() > 1){
-				d = 0.5 * std::min(1.0, this->valK() / ((double) d_lambda));
+				d = 0.5 * std::min(1.0, this->valK() / ((double) lambda()));
 			}
 			return(d);
 		};
 
 		double bK(){
 			double d = 0;
-			d = 0.5 * std::min(1.0,  d_lambda / (double)(this->valK() + 1.0) );
+			d = 0.5 * std::min(1.0,  lambda() / (double)(this->valK() + 1.0) );
 			return(d);
 		};
 		double kD(){
