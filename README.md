@@ -9,7 +9,14 @@ RJMCMCNucleosomes: Nucleosome Positioning
 This package uses informative Multinomial-Dirichlet prior in a t-mixture with 
 reversible jump estimation of nucleosome positions for genome-wide profiling.
 
-This package is in R with an optimized section in C++
+This package is in R with an optimized section in C++.
+
+## Notes ##
+
+To use this current _RJMCMCNucleosomes_ version, the use of the Rcpp package is mandatory. This implies having GSL library installed.
+## Authors ##
+
+[Arnaud Droit Lab](http://bioinformatique.ulaval.ca/home/ "Arnaud Droit Lab") 
 
 
 ## Maintainer ##
