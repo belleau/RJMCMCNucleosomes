@@ -324,3 +324,77 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
               resultRJMCMC, extendingSize, chrLength))
 }
 
+
+#' @title Generate a graph of nucleosome position
+#'
+#' @description Generate a graph for
+#' a list of nucleosomes
+#'
+#' @param nucleosomesPosition a list of \code{numeric}, the nucleosome positions
+#'
+#' @param reads an \code{IRanges} containing all the reads
+#'
+#' @param xlab a \code{character} string containing the label of the x-axis
+#'
+#' @param ylab a \code{character} string containing the label of the y-axis
+#'
+#' @return a graph containing the nucleosome position and the read coverage
+#'
+#' @examples
+#'
+#' ## Generate a synthetic sample with 10 well-positioned nucleosomes, 2 fuzzy
+#' ## nucleosomes and 2 deleted nucleosomes using a Student distribution
+#' ## with a variance of 10 for the well-positioned nucleosomes,
+#' ## a variance of 20 for the fuzzy nucleosomes
+#' library(nucleoSim)
+#' nucleosomeSample <- syntheticNucReadsFromDist(wp.num=10, wp.del=2,
+#' wp.var=10, fuz.num=2, fuz.var=20, max.cover=100, dist="Student",
+#' nuc.len=147, len.var=12, read.len=45, lin.len=20, rnd.seed=155, offset=100)
+#'
+#' dataIP <-nucleosomeSample$dataIP
+#'
+#' forwardReads <- dataIP[dataIP$strand == "+",]$start
+#' reverseReads <- dataIP[dataIP$strand == "-",]$end
+#'
+#' result <- rjmcmc(startPosForwardReads = forwardReads,
+#'          startPosReverseReads = reverseReads,
+#'          nbrIterations = 4000, lambda = 2, kMax = 30,
+#'          minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10213)
+#'
+#' reads <-IRanges(start = dataIP$start, end=dataIP$end)
+#'
+#' ## Create graph using the synthetic map
+#' plotNucleosomes(nucleosomesPosition = result$mu, reads = reads)
+#'
+#' @author Astrid Deschenes
+#' @importFrom IRanges coverage
+#' @importFrom graphics plot lines abline points legend polygon
+#' @export
+plotNucleosomes <- function(nucleosomesPosition, reads, xlab="position",
+                                ylab="coverage") {
+
+
+    ## Set Y axis maximum range
+    max <- max(coverage(reads), na.rm = TRUE) + 10
+
+    ## Always set Y axis minimum to zero
+    min <- 0
+
+    # Plot coverage
+    coverage <- c(0, as.integer(coverage(reads)), 0)
+    position <- c(0, 1:(length(coverage) - 1))
+    plot(position, coverage, type = "l", col = "gray",
+         ylim = c(min, max), xlab=xlab, ylab=ylab)
+    polygon(c(0, position, 0), c(0, coverage, 0), col="gray", border = "gray")
+
+
+    # Plot nucleosome positions
+    points(nucleosomesPosition, rep(0, length(nucleosomesPosition)),
+            col = "forestgreen",  pch = 19)
+
+    # Add legend
+    legend("top", c("Nucleosome Central Position", "Coverage"),
+               fill = c("forestgreen", "gray"), bty = "n",
+               horiz = TRUE)
+}
+
