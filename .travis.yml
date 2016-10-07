@@ -24,11 +24,12 @@ apt_packages:
 
 # Package dependencies from CRAN
 r_binary_packages:
-  - RUnit
-  - Rcpp
-  - knitr
-  - rmarkdown
-  - covr
+   - covr
+#  - RUnit
+#  - Rcpp
+#  - knitr
+#  - rmarkdown
+
 
 # To compile C++ code
 before_script:
