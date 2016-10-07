@@ -29,7 +29,7 @@ public:
 			gsl_rng * rng, int kMax, long nbIteration=10000);
 	virtual ~SimulationNucleoD();
 
-	bool initMu(int df = 3);
+	bool initMu(int lambda, int df = 3);
 	int kMax();
 	bool sampler();
 	void simulate();
