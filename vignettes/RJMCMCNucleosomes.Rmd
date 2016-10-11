@@ -250,7 +250,7 @@ for a single nucleosome. Although this characteristic increases the number
 of false positives, it is still beneficial for the region’s rich in 
 nucleosomes.  
 
-A function, which merges closely positioned nucleosomes, has been implemented 
+A function, that merges closely positioned nucleosomes, has been implemented 
 to rectify the over splitting and provide more conservative results.
 
 The \code{postTreatment} function must be run on the entire analyzed region to
@@ -281,6 +281,22 @@ length(resultsPostTreatment)
 
 The \code{postTreatment} function significantly reduces the number of 
 nucleosomes by merging closely positioned nucleosomes.
+
+
+## Visualisation of the predicted nucleosomes
+
+Visualisation of the predicted nucleosomes, with its associated read coverage, 
+is available in the **RJMCMCNucleosomes** package.
+
+The \code{plotNucleosomes} function needs the nucleosome positions as well as 
+the reads, in a \code{IRanges} format, to create a graph:
+
+```{r visualisation, collapse=TRUE, message=FALSE}
+## Extract reads to create an IRange
+reads <-IRanges(start = sample$dataIP$start, end=sample$dataIP$end)
+
+plotNucleosomes(resultsPostTreatment, reads)
+```
 
 
 # Session info
