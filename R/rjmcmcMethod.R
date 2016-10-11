@@ -369,31 +369,37 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' @author Astrid Deschenes
 #' @importFrom IRanges coverage
 #' @importFrom graphics plot lines abline points legend polygon
+#' @importFrom stats start end
 #' @export
 plotNucleosomes <- function(nucleosomesPosition, reads, xlab="position",
                                 ylab="coverage") {
 
 
     ## Set Y axis maximum range
-    max <- max(coverage(reads), na.rm = TRUE) + 10
+    y_max <- max(coverage(reads), na.rm = TRUE) + 10
 
     ## Always set Y axis minimum to zero
-    min <- 0
+    y_min <- 0
+
+    ## Set X axis minimum ans maximum
+    x_min <- min(nucleosomesPosition, start(reads), end(reads))
+    x_min <- floor(x_min)
+    x_max <- max(nucleosomesPosition, start(reads), end(reads))
+    x_max <- ceiling(x_max)
 
     # Plot coverage
     coverage <- c(0, as.integer(coverage(reads)), 0)
-    position <- c(0, 1:(length(coverage) - 1))
+    position <- c(x_min, 1:(length(coverage) - 1))
     plot(position, coverage, type = "l", col = "gray",
-         ylim = c(min, max), xlab=xlab, ylab=ylab)
-    polygon(c(0, position, 0), c(0, coverage, 0), col="gray", border = "gray")
-
+         ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab=xlab, ylab=ylab)
+    polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray", border = "gray")
 
     # Plot nucleosome positions
     points(nucleosomesPosition, rep(0, length(nucleosomesPosition)),
             col = "forestgreen",  pch = 19)
 
     # Add legend
-    legend("top", c("Nucleosome Central Position", "Coverage"),
+    legend("top", c("Nucleosome", "Coverage"),
                fill = c("forestgreen", "gray"), bty = "n",
                horiz = TRUE)
 }
