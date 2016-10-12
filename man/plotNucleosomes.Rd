@@ -8,7 +8,9 @@ plotNucleosomes(nucleosomesPosition, reads, xlab = "position",
   ylab = "coverage")
 }
 \arguments{
-\item{nucleosomesPosition}{a list of \code{numeric}, the nucleosome positions}
+\item{nucleosomesPosition}{a \code{list} or a \code{vector} of
+\code{numeric}, the nucleosome positions for one or
+multiples results obtained using the same reads. TODO}
 
 \item{reads}{an \code{IRanges} containing all the reads}
 
@@ -21,7 +23,7 @@ a graph containing the nucleosome position and the read coverage
 }
 \description{
 Generate a graph for
-a list of nucleosomes
+a list or a vector of nucleosome positions. TODO
 }
 \examples{
 

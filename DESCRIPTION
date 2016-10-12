@@ -32,7 +32,8 @@ Imports:
     S4Vectors,
     stats,
     graphics,
-    methods
+    methods,
+    grDevices
 Suggests:
     BiocGenerics,
     BiocStyle,

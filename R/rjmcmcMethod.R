@@ -328,9 +328,11 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' @title Generate a graph of nucleosome position
 #'
 #' @description Generate a graph for
-#' a list of nucleosomes
+#' a list or a vector of nucleosome positions. TODO
 #'
-#' @param nucleosomesPosition a list of \code{numeric}, the nucleosome positions
+#' @param nucleosomesPosition a \code{list} or a \code{vector} of
+#' \code{numeric}, the nucleosome positions for one or
+#' multiples results obtained using the same reads. TODO
 #'
 #' @param reads an \code{IRanges} containing all the reads
 #'
@@ -369,38 +371,63 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' @author Astrid Deschenes
 #' @importFrom IRanges coverage
 #' @importFrom graphics plot lines abline points legend polygon
+#' @importFrom grDevices rainbow
 #' @importFrom stats start end
 #' @export
-plotNucleosomes <- function(nucleosomesPosition, reads, xlab="position",
-                                ylab="coverage") {
+plotNucleosomes <- function(nucleosomesPosition, reads, xlab = "position",
+                                ylab = "coverage") {
 
+    ## Set variables differently if vector or list
+    if (!is.atomic(nucleosomesPosition)) {
+        nbrItems <-length(nucleosomesPosition)
+        posColors <- c(rainbow(nbrItems), "gray")
+        posNames <- c(names(nucleosomesPosition), "Coverage")
+    } else {
+        nbrItems <-1
+        posColors <- c("green", "gray")
+        posNames <- c("Nucleosome", "Coverage")
+    }
 
     ## Set Y axis maximum range
     y_max <- max(coverage(reads), na.rm = TRUE) + 10
 
+    ## Step in between each result, when more than one result
+    step = ceiling(y_max / 100)
+
     ## Always set Y axis minimum to zero
-    y_min <- 0
+    y_min <- -1 - (step*nbrItems)
 
     ## Set X axis minimum ans maximum
-    x_min <- min(nucleosomesPosition, start(reads), end(reads))
+    x_min <- min(unlist(nucleosomesPosition), start(reads), end(reads))
     x_min <- floor(x_min)
-    x_max <- max(nucleosomesPosition, start(reads), end(reads))
+    x_max <- max(unlist(nucleosomesPosition), start(reads), end(reads))
     x_max <- ceiling(x_max)
 
     # Plot coverage
     coverage <- c(0, as.integer(coverage(reads)), 0)
     position <- c(x_min, 1:(length(coverage) - 1))
     plot(position, coverage, type = "l", col = "gray",
-         ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab=xlab, ylab=ylab)
-    polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray", border = "gray")
+         ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab = xlab,
+         ylab = ylab)
+    polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray",
+            border = "gray")
 
     # Plot nucleosome positions
-    points(nucleosomesPosition, rep(0, length(nucleosomesPosition)),
-            col = "forestgreen",  pch = 19)
+    if (nbrItems > 1) {
+        for (i in 1:nbrItems) {
+            y_pos = (-(step)) * i
+            nucl <- nucleosomesPosition[[i]]
+            points(nucl, rep(y_pos, length(nucl)),
+                col = posColors[i], pch = 19)
+        }
+    } else {
+        points(nucleosomesPosition, rep(-(step), length(nucleosomesPosition)),
+               col = posColors[1], pch = 19)
+    }
 
     # Add legend
-    legend("top", c("Nucleosome", "Coverage"),
-               fill = c("forestgreen", "gray"), bty = "n",
+    legend("top", posNames,
+               fill = posColors, bty = "n",
                horiz = TRUE)
 }
 
