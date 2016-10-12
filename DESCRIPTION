@@ -28,13 +28,14 @@ Depends:
 Imports:
     Rcpp (>= 0.12.5),
     consensusSeekeR,
+    BiocGenerics,
     GenomeInfoDb,
     S4Vectors,
     stats,
     graphics,
-    methods
+    methods,
+    grDevices
 Suggests:
-    BiocGenerics,
     BiocStyle,
     knitr,
     rmarkdown,

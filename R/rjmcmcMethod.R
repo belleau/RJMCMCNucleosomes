@@ -328,9 +328,11 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' @title Generate a graph of nucleosome position
 #'
 #' @description Generate a graph for
-#' a list of nucleosomes
+#' a list or a vector of nucleosome positions. TODO
 #'
-#' @param nucleosomesPosition a list of \code{numeric}, the nucleosome positions
+#' @param nucleosomePositions a \code{list} or a \code{vector} of
+#' \code{numeric}, the nucleosome positions for one or
+#' multiples results obtained using the same reads. TODO
 #'
 #' @param reads an \code{IRanges} containing all the reads
 #'
@@ -364,43 +366,67 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' reads <-IRanges(start = dataIP$start, end=dataIP$end)
 #'
 #' ## Create graph using the synthetic map
-#' plotNucleosomes(nucleosomesPosition = result$mu, reads = reads)
+#' plotNucleosomes(nucleosomePositions = result$mu, reads = reads)
 #'
-#' @author Astrid Deschenes
+#' @author Astrid Deschênes
 #' @importFrom IRanges coverage
 #' @importFrom graphics plot lines abline points legend polygon
-#' @importFrom stats start end
+#' @importFrom grDevices rainbow
+#' @importFrom BiocGenerics start end
 #' @export
-plotNucleosomes <- function(nucleosomesPosition, reads, xlab="position",
-                                ylab="coverage") {
+plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
+                                ylab = "coverage") {
 
+    ## Set variables differently if vector or list
+    if (!is.atomic(nucleosomePositions)) {
+        nbrItems <-length(nucleosomePositions)
+        posColors <- c(rainbow(nbrItems), "gray")
+        posNames <- c(names(nucleosomePositions), "Coverage")
+    } else {
+        nbrItems <-1
+        posColors <- c("green", "gray")
+        posNames <- c("Nucleosome", "Coverage")
+    }
 
     ## Set Y axis maximum range
     y_max <- max(coverage(reads), na.rm = TRUE) + 10
 
+    ## Step in between each result, when more than one result
+    step = ceiling(y_max / 80)
+
     ## Always set Y axis minimum to zero
-    y_min <- 0
+    y_min <- -1 - (step*nbrItems)
 
     ## Set X axis minimum ans maximum
-    x_min <- min(nucleosomesPosition, start(reads), end(reads))
+    x_min <- min(c(unlist(nucleosomePositions), start(reads), end(reads)))
     x_min <- floor(x_min)
-    x_max <- max(nucleosomesPosition, start(reads), end(reads))
+    x_max <- max(c(unlist(nucleosomePositions), start(reads), end(reads)))
     x_max <- ceiling(x_max)
 
     # Plot coverage
     coverage <- c(0, as.integer(coverage(reads)), 0)
-    position <- c(x_min, 1:(length(coverage) - 1))
-    plot(position, coverage, type = "l", col = "gray",
-         ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab=xlab, ylab=ylab)
-    polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray", border = "gray")
+    position <- c(0, 1:(length(coverage) - 1))
+    plot(coverage(reads), type = "l", col = "gray",
+         ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab = xlab,
+         ylab = ylab)
+    polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray",
+            border = "gray", ylim = c(y_min, y_max), xlim = c(x_min, x_max))
 
     # Plot nucleosome positions
-    points(nucleosomesPosition, rep(0, length(nucleosomesPosition)),
-            col = "forestgreen",  pch = 19)
+    if (nbrItems > 1) {
+        for (i in 1:nbrItems) {
+            y_pos = (-(step)) * i
+            nucl <- nucleosomePositions[[i]]
+            points(nucl, rep(y_pos, length(nucl)), ylim = c(y_min, y_max),
+                   xlim = c(x_min, x_max), col = posColors[i], pch = 19)
+        }
+    } else {
+        points(nucleosomePositions, rep(-(step), length(nucleosomePositions)),
+               ylim = c(y_min, y_max), xlim = c(x_min, x_max),
+               col = posColors[1], pch = 19)
+    }
 
     # Add legend
-    legend("top", c("Nucleosome", "Coverage"),
-               fill = c("forestgreen", "gray"), bty = "n",
-               horiz = TRUE)
+    legend("top", posNames, fill = posColors, bty = "n", horiz = TRUE)
 }
 

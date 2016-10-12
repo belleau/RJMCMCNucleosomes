@@ -4,11 +4,13 @@
 \alias{plotNucleosomes}
 \title{Generate a graph of nucleosome position}
 \usage{
-plotNucleosomes(nucleosomesPosition, reads, xlab = "position",
+plotNucleosomes(nucleosomePositions, reads, xlab = "position",
   ylab = "coverage")
 }
 \arguments{
-\item{nucleosomesPosition}{a list of \code{numeric}, the nucleosome positions}
+\item{nucleosomePositions}{a \code{list} or a \code{vector} of
+\code{numeric}, the nucleosome positions for one or
+multiples results obtained using the same reads. TODO}
 
 \item{reads}{an \code{IRanges} containing all the reads}
 
@@ -21,7 +23,7 @@ a graph containing the nucleosome position and the read coverage
 }
 \description{
 Generate a graph for
-a list of nucleosomes
+a list or a vector of nucleosome positions. TODO
 }
 \examples{
 
@@ -47,7 +49,7 @@ result <- rjmcmc(startPosForwardReads = forwardReads,
 reads <-IRanges(start = dataIP$start, end=dataIP$end)
 
 ## Create graph using the synthetic map
-plotNucleosomes(nucleosomesPosition = result$mu, reads = reads)
+plotNucleosomes(nucleosomePositions = result$mu, reads = reads)
 
 }
 \author{
