@@ -405,12 +405,12 @@ plotNucleosomes <- function(nucleosomesPosition, reads, xlab = "position",
 
     # Plot coverage
     coverage <- c(0, as.integer(coverage(reads)), 0)
-    position <- c(x_min, 1:(length(coverage) - 1))
-    plot(position, coverage, type = "l", col = "gray",
+    position <- c(0, 1:(length(coverage) - 1))
+    plot(coverage(reads), type = "l", col = "gray",
          ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab = xlab,
          ylab = ylab)
     polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray",
-            border = "gray")
+            border = "gray", ylim = c(y_min, y_max), xlim = c(x_min, x_max))
 
     # Plot nucleosome positions
     if (nbrItems > 1) {

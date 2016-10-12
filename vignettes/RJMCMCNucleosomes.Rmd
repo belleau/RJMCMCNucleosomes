@@ -295,7 +295,12 @@ the reads, in a \code{IRanges} format, to create a graph:
 ## Extract reads to create an IRange
 reads <-IRanges(start = sample$dataIP$start, end=sample$dataIP$end)
 
-plotNucleosomes(resultsPostTreatment, reads)
+## Merge results before post-treatment and after post-treatment in a list
+## so that both results will be shown in graph
+resultsBeforeAndAfter <- list(BeforePostTreatment=resultsAllMerged$mu, 
+                              AfterPostTreatment=resultsPostTreatment)
+
+plotNucleosomes(resultsBeforeAndAfter, reads)
 ```
 
 
