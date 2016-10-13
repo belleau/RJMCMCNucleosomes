@@ -305,7 +305,7 @@ resultsBeforeAndAfter <- list(BeforePostTreatment=resultsAllMerged$mu,
                               AfterPostTreatment=resultsPostTreatment)
 
 ## Create graph using nucleosome positions and reads
-plotNucleosomes(resultsBeforeAndAfter, reads)
+plotNucleosomes(resultsBeforeAndAfter, reads, names=c("Before", "After"))
 ```
 
 
