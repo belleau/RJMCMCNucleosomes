@@ -167,7 +167,7 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
 #' maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
@@ -268,7 +268,7 @@ validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
 #' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_100, file_101))
 #'
 #' @importFrom methods is
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @keywords internal
 #'
 mergeAllRDSFiles <- function(arrayOfFiles) {
@@ -334,7 +334,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #' ## Testing using a real file
 #' RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @keywords internal
 #'
 validateRDSFilesParameters <- function(RDSFiles) {
@@ -375,7 +375,7 @@ validateRDSFilesParameters <- function(RDSFiles) {
 #' ## Testing using a real directory
 #' RJMCMCNucleosomes:::validateDirectoryParameters(directory)
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @keywords internal
 #'
 validateDirectoryParameters <- function(directory) {
@@ -439,7 +439,7 @@ validateDirectoryParameters <- function(directory) {
 #' 72431, 72428, 72429, 72426), startPosReverseReads = c(72522, 72531, 72528,
 #' 72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @importFrom GenomeInfoDb Seqinfo
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
@@ -539,7 +539,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' #nucleosomePositions = nucleosomes, reads = reads, xlab = "position",
 #' #ylab = "coverage", names = c("test_one", "test_false"))}
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @keywords internal
 #'
 validatePlotNucleosomesParameters <- function(nucleosomePositions, reads,
@@ -652,7 +652,7 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions, reads,
 #' ## Results after post-treatment
 #' postResult
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom consensusSeekeR findConsensusPeakRegions
 #' @importFrom GenomicRanges GRanges findOverlaps
 #' @importFrom IRanges IRanges
