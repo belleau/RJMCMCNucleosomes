@@ -290,11 +290,6 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' @examples
 #'
-#' ## TODO : A faire
-#'
-#' ## Fix seed
-#' set.seed(1132)
-#'
 #' ## Loading dataset
 #' data(reads_demo)
 #'
@@ -302,15 +297,19 @@ mergeRDSFiles <- function(RDSFiles) {
 #' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
 #'          startPosReverseReads = reads_demo$readsReverse,
 #'          nbrIterations = 1000, lambda = 2, kMax = 30,
-#'          minInterval = 146, maxInterval = 292, minReads = 5)
+#'          minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
+#'
+#' ## Before post-treatment
+#' result
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' ##postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-#' ##         startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
+#' postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
+#'          startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
 #'
-#' ##postResult
+#' ## After post-treatment
+#' postResult
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @export
 postTreatment <- function(startPosForwardReads, startPosReverseReads,
                            resultRJMCMC, extendingSize = 74L, chrLength) {
