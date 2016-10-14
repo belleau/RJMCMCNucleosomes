@@ -69,6 +69,6 @@ plotNucleosomes(nucleosomePositions = result$mu, reads = reads)
 
 }
 \author{
-Astrid Deschênes
+Astrid Deschenes
 }
 

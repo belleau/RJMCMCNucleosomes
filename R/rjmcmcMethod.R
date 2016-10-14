@@ -77,7 +77,7 @@
 #' ## process
 #' result$k_max
 #'
-#' @author Rawane Samb, Pascal Belleau, Astrid Deschênes
+#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @importFrom stats aggregate
 #' @export
 rjmcmc <- function(startPosForwardReads, startPosReverseReads,
@@ -186,7 +186,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' class(result)
 #'
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @export
 mergeAllRDSFilesFromDirectory <- function(directory) {
 
@@ -243,7 +243,7 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #' class(result)
 #'
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @export
 mergeRDSFiles <- function(RDSFiles) {
 
@@ -383,7 +383,7 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' ## Create graph using the synthetic map
 #' plotNucleosomes(nucleosomePositions = result$mu, reads = reads)
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @importFrom IRanges coverage
 #' @importFrom graphics plot lines abline points legend polygon
 #' @importFrom grDevices rainbow

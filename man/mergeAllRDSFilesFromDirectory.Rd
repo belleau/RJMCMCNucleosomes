@@ -57,6 +57,6 @@ class(result)
 
 }
 \author{
-Pascal Belleau, Astrid Deschênes
+Pascal Belleau, Astrid Deschenes
 }
 
