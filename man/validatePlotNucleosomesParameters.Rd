@@ -58,7 +58,7 @@ names = c("test"))
 
 }
 \author{
-Astrid Deschênes
+Astrid Deschenes
 }
 \keyword{internal}
 

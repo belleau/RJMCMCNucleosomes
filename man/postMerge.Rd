@@ -67,7 +67,7 @@ postResult
 
 }
 \author{
-Pascal Belleau, Astrid Deschênes
+Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
 

@@ -47,7 +47,7 @@ result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_100, file_101))
 
 }
 \author{
-Pascal Belleau, Astrid Deschênes
+Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
 
