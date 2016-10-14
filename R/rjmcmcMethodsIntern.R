@@ -489,6 +489,111 @@ validatePrepMergeParameters <- function(startPosForwardReads,
     return(0)
 }
 
+
+#' @title Parameters validation for the \code{\link{plotNucleosomes}} function
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{plotNucleosomes}} function.
+#'
+#' @param nucleosomePositions a \code{list} or a \code{vector} of
+#' \code{numeric}, the nucleosome positions for one or
+#' multiples predictions are obtained using the same reads. In presence of
+#' only one prediction (with multiples nucleosome positions), a \code{vector}
+#' is used. In presence of more thant one predictions (as example, before and
+#' after post-treatment or results from different software), a \code{list} with
+#' one entry per prediction is used.
+#'
+#' @param reads an \code{IRanges} containing all the reads.
+#'
+#' @param xlab a \code{character} string containing the label of the x-axis.
+#'
+#' @param ylab a \code{character} string containing the label of the y-axis.
+#'
+#' @param names a \code{vector} of a \code{character} string containing the
+#' label of each prediction set. The \code{vector} must be the same length of
+#' the \code{nucleosomePositions} \code{list} or 1 in presence of a
+#' \code{vector}.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @examples
+#'
+#' ## Create a IRanges object with 2 reads
+#' reads <- IRanges(start=c(950, 969), end=c(1020, 1022))
+#'
+#' ## Create a vector containing nucleosome positions
+#' nucleosomes <- c(1001)
+#'
+#' ## The function returns 0 when all parameters are valid
+#' RJMCMCNucleosomes:::validatePlotNucleosomesParameters(nucleosomePositions =
+#' nucleosomes, reads = reads, xlab = "position", ylab = "coverage",
+#' names = c("test"))
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+#' #nucleosomePositions = c("hi"), reads = reads, xlab = "position",
+#' #ylab = "coverage", names = c("test"))}
+#'
+#' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+#' #nucleosomePositions = nucleosomes, reads = reads, xlab = "position",
+#' #ylab = "coverage", names = c("test_one", "test_false"))}
+#'
+#' @author Astrid Deschênes
+#' @keywords internal
+#'
+validatePlotNucleosomesParameters <- function(nucleosomePositions, reads,
+                                                xlab, ylab, names) {
+
+    ## Validate that nucleosomePositions is a vector
+    if (!is.vector(nucleosomePositions)) {
+        stop(paste0("nucleosomePositions must be a \'list\' or a \'vector\' ",
+                    "of numeric values"))
+    }
+
+    ## Validate that nucleosomePositions contains numeric values
+    if (!is.numeric(unlist(nucleosomePositions))) {
+        stop("nucleosomePositions can only contain numerical values")
+    }
+
+    ## Validate that reads is a IRanges object
+    if (!(class(reads) == "IRanges")) {
+        stop("reads must be an object of class \'IRanges\'")
+    }
+
+    ## Validate that xlab is a IRanges object
+    if (!is.character(xlab)) {
+        stop("xlab must be a character string")
+    }
+
+    ## Validate that ylab is a IRanges object
+    if (!is.character(ylab)) {
+        stop("ylab must be a character string")
+    }
+
+    ## Validate that names is a vector of character strings with
+    ## length corresponding to nucleosomePositions
+    if (!is.null(names)) {
+        if (!is.vector(names)) {
+            stop("names must be a vector or a list of character strings")
+        }
+        if (!is.list(nucleosomePositions)) {
+            if(!(length(names) == 1) || !is.character(names)) {
+                stop("names must be a vector of one character string")
+            }
+        } else {
+            if(!(length(names) == length(nucleosomePositions))) {
+                stop(paste0("names must be a vector containing the same ",
+                    "number of character string as the number of entries ",
+                    "in nucleosomesPositions list"))
+            }
+        }
+    }
+
+    return(0)
+}
+
+
 #' @title A internal post treatment function to merge closely positioned
 #' nucleosomes, from the same chromosome,
 #' identified by the \code{\link{rjmcmc}} function

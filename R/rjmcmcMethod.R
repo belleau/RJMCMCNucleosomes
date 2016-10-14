@@ -393,24 +393,29 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
                                 ylab = "coverage", names=NULL) {
 
+    validatePlotNucleosomesParameters(nucleosomePositions, reads, xlab,
+                                      ylab, names)
+
     ## Set variables differently if vector or list
     if (!is.atomic(nucleosomePositions)) {
         nbrItems <-length(nucleosomePositions)
         posColors <- c(rainbow(nbrItems), "gray")
         if (is.null(names)) {
-            posNames <- c(names(nucleosomePositions), "Coverage")
+            extraNames <- names(nucleosomePositions)
         } else {
-            posNames <- c(names, "Coverage")
+            extraNames <- names
         }
     } else {
         nbrItems <-1
         posColors <- c("green", "gray")
         if (is.null(names)) {
-            posNames <- c("Nucleosome", "Coverage")
+            extraNames <- "Nucleosome"
         } else {
-            posNames <- c(names, "Coverage")
+            extraNames <- names
         }
     }
+
+    posNames <- c(extraNames, "Coverage")
 
     ## Set Y axis maximum range
     y_max <- max(coverage(reads), na.rm = TRUE) + 10
