@@ -62,7 +62,7 @@ reversible jump Markov chain Monte Carlo (RJMCMC) simulation technique
 (see for instance @Green1995 and @Richardson1997). 
 
 Detailed information about the model can be found in the article 
-mentioned in the precedent section.
+mentioned in the citing section.
 
 # Loading the RJMCMC package
 
@@ -91,22 +91,23 @@ predictions.
 
 A synthetic nucleosome sample containing 100 nucleosomes (80 
 well-positioned + 20 fuzzy) has been created using the 
-Bioconductor package `r Biocpkg("nucleoSim")`.
+Bioconductor package `r Biocpkg("nucleoSim")`. This synthetic sample will be 
+used throughout this analysis.
 
 ```{r createSample, collapse=TRUE, message=FALSE}
 ## Load nucleoSim package
 library(nucleoSim)
 
-val.num       <- 100  ### Number of well-positioned nucleosomes
-val.del       <- 20   ### Number of well-positioned nucleosomes to delete
-val.var       <- 30   ### variance associated to the well-positioned nucleosomes
-val.fuz       <- 20   ### Number of fuzzy nucleosomes
-val.fuz.var   <- 50   ### variance associated to the fuzzy nucleosomes
-val.max.cover <- 70   ### Maximum coverage for one nucleosome
-val.nuc.len   <- 147  ### Distance between nucleosomes
-val.len.var   <- 10   ### Variance associated to the length of the reads
-val.lin.len   <- 20   ### The length of the DNA linker
-val.rnd.seed  <- 100  ### Set seed when result needs to be reproducible
+val.num       <- 100    ### Number of well-positioned nucleosomes
+val.del       <- 20     ### Number of well-positioned nucleosomes to delete
+val.var       <- 30     ### variance associated to the well-positioned nucleosomes
+val.fuz       <- 20     ### Number of fuzzy nucleosomes
+val.fuz.var   <- 50     ### variance associated to the fuzzy nucleosomes
+val.max.cover <- 70     ### Maximum coverage for one nucleosome
+val.nuc.len   <- 147    ### Distance between nucleosomes
+val.len.var   <- 10     ### Variance associated to the length of the reads
+val.lin.len   <- 20     ### The length of the DNA linker
+val.rnd.seed  <- 100    ### Set seed when result needs to be reproducible
 val.offset    <- 10000  ### The number of bases used to offset all nucleosomes and reads
 
 ## Create sample using a Normal distribution
@@ -182,25 +183,6 @@ resultSegment01 <- rjmcmc(startPosForwardReads = readsForward,
 
 ## Print the predicted nucleosomes for the first segment
 resultSegment01
-
-## TODO: Add info
-
-## More information is available from the output, such as
-## The variance of the forward reads for each nucleosome
-##resultSegment01$sigmaf
-
-## The variance of the reverse reads for each nucleosome
-##resultSegment01$sigmar
-
-## The distance between the maxima of the forward and reverse reads 
-## position densities for each nucleosome
-##resultSegment01$delta
-
-## The degrees of freedom for each nucleosome
-##resultSegment01$df
-
-## The weight for each nucleosome
-##resultSegment01$w
 ```
 
 
@@ -209,9 +191,9 @@ resultSegment01
 Once all segments have been analyzed, the predicted nucleosomes can be merged 
 together. Two functions are available to facilitate the merging process:
 
-* \code{mergeRDSFiles} function: An array containing the name of all RDS files
+* *mergeRDSFiles* function: An array containing the name of all RDS files
 to merge is passed to it
-* \code{mergeAllRDSFilesFromDirectory} function: the name of the directory 
+* *mergeAllRDSFilesFromDirectory* function: the name of the directory 
 (relative or absolute path) containing all RDS files to merge is passed to it
 
 The segments of the sample created sooner have all been processed (using 
@@ -229,17 +211,17 @@ resultsAllMerged
 
 ## More information is available from the output, such as
 ## The variance of the forward reads for each nucleosome
-resultsAllMerged$sigmaf
+## resultsAllMerged$sigmaf
 
 ## The variance of the reverse reads for each nucleosome
-resultsAllMerged$sigmar
+## resultsAllMerged$sigmar
 
 ## The distance between the maxima of the forward and reverse reads 
 ## position densities for each nucleosome
-resultsAllMerged$delta
+## resultsAllMerged$delta
 
 ## The degrees of freedom for each nucleosome
-resultsAllMerged$df
+## resultsAllMerged$df
 ```
 
 
@@ -250,7 +232,7 @@ for a single nucleosome. Although this characteristic increases the number
 of false positives, it is still beneficial for the region’s rich in 
 nucleosomes.  
 
-A function, which merges closely positioned nucleosomes, has been implemented 
+A function, that merges closely positioned nucleosomes, has been implemented 
 to rectify the over splitting and provide more conservative results.
 
 The \code{postTreatment} function must be run on the entire analyzed region to
@@ -279,8 +261,33 @@ length(resultsPostTreatment)
 
 ```
 
-The \code{postTreatment} function significantly reduces the number of 
+The \code{postTreatment} function can significantly reduces the number of 
 nucleosomes by merging closely positioned nucleosomes.
+
+
+## Visualisation of the predicted nucleosomes
+
+Visualisation of the predicted nucleosomes, with its associated read coverage, 
+is available in the **RJMCMCNucleosomes** package.
+
+The \code{plotNucleosomes} function needs the nucleosome positions as well as 
+the reads, in a \code{IRanges} format, to create a graph. When reads are used 
+to predict more than one set of nucleosome positions (as example, before and
+after post-treatment or results from different software), the predictions can
+be merged in a \code{list} so that all predictions can be plot simultaneously.
+
+```{r visualisation, collapse=TRUE, message=FALSE, fig.height=6.5}
+## Extract reads to create an IRange
+reads <-IRanges(start = sample$dataIP$start, end=sample$dataIP$end)
+
+## Merge predictions from before post-treatment and after post-treatment in 
+## a list so that both results will be shown in graph
+resultsBeforeAndAfter <- list(BeforePostTreatment=resultsAllMerged$mu, 
+                              AfterPostTreatment=resultsPostTreatment)
+
+## Create graph using nucleosome positions and reads
+plotNucleosomes(resultsBeforeAndAfter, reads, names=c("Before", "After"))
+```
 
 
 # Session info

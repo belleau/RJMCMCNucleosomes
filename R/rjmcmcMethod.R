@@ -77,7 +77,7 @@
 #' ## process
 #' result$k_max
 #'
-#' @author Rawane Samb, Pascal Belleau, Astrid Deschênes
+#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @importFrom stats aggregate
 #' @export
 rjmcmc <- function(startPosForwardReads, startPosReverseReads,
@@ -186,7 +186,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' class(result)
 #'
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @export
 mergeAllRDSFilesFromDirectory <- function(directory) {
 
@@ -243,7 +243,7 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #' class(result)
 #'
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @export
 mergeRDSFiles <- function(RDSFiles) {
 
@@ -290,11 +290,6 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' @examples
 #'
-#' ## TODO : A faire
-#'
-#' ## Fix seed
-#' set.seed(1132)
-#'
 #' ## Loading dataset
 #' data(reads_demo)
 #'
@@ -302,15 +297,19 @@ mergeRDSFiles <- function(RDSFiles) {
 #' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
 #'          startPosReverseReads = reads_demo$readsReverse,
 #'          nbrIterations = 1000, lambda = 2, kMax = 30,
-#'          minInterval = 146, maxInterval = 292, minReads = 5)
+#'          minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
+#'
+#' ## Before post-treatment
+#' result
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' ##postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-#' ##         startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
+#' postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
+#'          startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
 #'
-#' ##postResult
+#' ## After post-treatment
+#' postResult
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @export
 postTreatment <- function(startPosForwardReads, startPosReverseReads,
                            resultRJMCMC, extendingSize = 74L, chrLength) {
@@ -325,18 +324,36 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 }
 
 
-#' @title Generate a graph of nucleosome position
+#' @title Generate a graph of nucleosome positions with read coverage
 #'
 #' @description Generate a graph for
-#' a list of nucleosomes
+#' a \code{list} or a \code{vector} of nucleosome positions. In presence of
+#' only one prediction (with multiples nucleosome positions), a \code{vector}
+#' is used. In presence of more thant one predictions (as example, before and
+#' after post-treatment or results from different software), a \code{list} with
+#' one entry per prediction is used. All predictions must have been obtained
+#' using the same reads.
 #'
-#' @param nucleosomesPosition a list of \code{numeric}, the nucleosome positions
+#' @param nucleosomePositions a \code{list} or a \code{vector} of
+#' \code{numeric}, the nucleosome positions for one or
+#' multiples predictions are obtained using the same reads. In presence of
+#' only one prediction (with multiples nucleosome positions), a \code{vector}
+#' is used. In presence of more thant one predictions (as example, before and
+#' after post-treatment or results from different software), a \code{list} with
+#' one entry per prediction is used.
 #'
-#' @param reads an \code{IRanges} containing all the reads
+#' @param reads an \code{IRanges} containing all the reads.
 #'
-#' @param xlab a \code{character} string containing the label of the x-axis
+#' @param xlab a \code{character} string containing the label of the x-axis.
 #'
-#' @param ylab a \code{character} string containing the label of the y-axis
+#' @param ylab a \code{character} string containing the label of the y-axis.
+#'
+#' @param names a \code{vector} of a \code{character} string containing the
+#' label of each prediction set. The \code{vector} must be the same length of
+#' the \code{nucleosomePositions} \code{list} or 1 in presence of a
+#' \code{vector}. When \code{NULL}, the name of the elements of the \code{list}
+#' are used or the string "Nucleosome" for a \code{vector} are used.
+#' Default: \code{NULL}.
 #'
 #' @return a graph containing the nucleosome position and the read coverage
 #'
@@ -364,38 +381,81 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' reads <-IRanges(start = dataIP$start, end=dataIP$end)
 #'
 #' ## Create graph using the synthetic map
-#' plotNucleosomes(nucleosomesPosition = result$mu, reads = reads)
+#' plotNucleosomes(nucleosomePositions = result$mu, reads = reads)
 #'
 #' @author Astrid Deschenes
 #' @importFrom IRanges coverage
 #' @importFrom graphics plot lines abline points legend polygon
+#' @importFrom grDevices rainbow
+#' @importFrom BiocGenerics start end
 #' @export
-plotNucleosomes <- function(nucleosomesPosition, reads, xlab="position",
-                                ylab="coverage") {
+plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
+                                ylab = "coverage", names=NULL) {
 
+    validatePlotNucleosomesParameters(nucleosomePositions, reads, xlab,
+                                      ylab, names)
+
+    ## Set variables differently if vector or list
+    if (!is.atomic(nucleosomePositions)) {
+        nbrItems <-length(nucleosomePositions)
+        posColors <- c(rainbow(nbrItems), "gray")
+        if (is.null(names)) {
+            extraNames <- names(nucleosomePositions)
+        } else {
+            extraNames <- names
+        }
+    } else {
+        nbrItems <-1
+        posColors <- c("green", "gray")
+        if (is.null(names)) {
+            extraNames <- "Nucleosome"
+        } else {
+            extraNames <- names
+        }
+    }
+
+    posNames <- c(extraNames, "Coverage")
 
     ## Set Y axis maximum range
-    max <- max(coverage(reads), na.rm = TRUE) + 10
+    y_max <- max(coverage(reads), na.rm = TRUE) + 10
+
+    ## Step in between each result, when more than one result
+    step = ceiling(y_max / 80)
 
     ## Always set Y axis minimum to zero
-    min <- 0
+    y_min <- -1 - (step*nbrItems)
+
+    ## Set X axis minimum ans maximum
+    x_min <- min(c(unlist(nucleosomePositions), start(reads), end(reads)))
+    x_min <- floor(x_min)
+    x_max <- max(c(unlist(nucleosomePositions), start(reads), end(reads)))
+    x_max <- ceiling(x_max)
 
     # Plot coverage
     coverage <- c(0, as.integer(coverage(reads)), 0)
     position <- c(0, 1:(length(coverage) - 1))
-    plot(position, coverage, type = "l", col = "gray",
-         ylim = c(min, max), xlab=xlab, ylab=ylab)
-    polygon(c(0, position, 0), c(0, coverage, 0), col="gray", border = "gray")
-
+    plot(coverage(reads), type = "l", col = "gray",
+         ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab = xlab,
+         ylab = ylab)
+    polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray",
+            border = "gray", ylim = c(y_min, y_max), xlim = c(x_min, x_max))
 
     # Plot nucleosome positions
-    points(nucleosomesPosition, rep(0, length(nucleosomesPosition)),
-            col = "forestgreen",  pch = 19)
+    if (nbrItems > 1) {
+        for (i in 1:nbrItems) {
+            y_pos = (-(step)) * i
+            nucl <- nucleosomePositions[[i]]
+            points(nucl, rep(y_pos, length(nucl)), ylim = c(y_min, y_max),
+                   xlim = c(x_min, x_max), col = posColors[i], pch = 19)
+        }
+    } else {
+        points(nucleosomePositions, rep(-(step), length(nucleosomePositions)),
+               ylim = c(y_min, y_max), xlim = c(x_min, x_max),
+               col = posColors[1], pch = 19)
+    }
 
     # Add legend
-    legend("top", c("Nucleosome Central Position", "Coverage"),
-               fill = c("forestgreen", "gray"), bty = "n",
-               horiz = TRUE)
+    legend("top", posNames, fill = posColors, bty = "n", horiz = TRUE)
 }
 
 #' @title Split a \code{GRange} of reads in a list of smaller segments for \code{rjmcmc}.

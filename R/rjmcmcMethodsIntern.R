@@ -167,7 +167,7 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
 #' maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
@@ -268,7 +268,7 @@ validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
 #' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_100, file_101))
 #'
 #' @importFrom methods is
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @keywords internal
 #'
 mergeAllRDSFiles <- function(arrayOfFiles) {
@@ -334,7 +334,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #' ## Testing using a real file
 #' RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @keywords internal
 #'
 validateRDSFilesParameters <- function(RDSFiles) {
@@ -375,7 +375,7 @@ validateRDSFilesParameters <- function(RDSFiles) {
 #' ## Testing using a real directory
 #' RJMCMCNucleosomes:::validateDirectoryParameters(directory)
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @keywords internal
 #'
 validateDirectoryParameters <- function(directory) {
@@ -439,7 +439,7 @@ validateDirectoryParameters <- function(directory) {
 #' 72431, 72428, 72429, 72426), startPosReverseReads = c(72522, 72531, 72528,
 #' 72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 #'
-#' @author Astrid Deschênes
+#' @author Astrid Deschenes
 #' @importFrom GenomeInfoDb Seqinfo
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
@@ -488,6 +488,111 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 
     return(0)
 }
+
+
+#' @title Parameters validation for the \code{\link{plotNucleosomes}} function
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{plotNucleosomes}} function.
+#'
+#' @param nucleosomePositions a \code{list} or a \code{vector} of
+#' \code{numeric}, the nucleosome positions for one or
+#' multiples predictions are obtained using the same reads. In presence of
+#' only one prediction (with multiples nucleosome positions), a \code{vector}
+#' is used. In presence of more thant one predictions (as example, before and
+#' after post-treatment or results from different software), a \code{list} with
+#' one entry per prediction is used.
+#'
+#' @param reads an \code{IRanges} containing all the reads.
+#'
+#' @param xlab a \code{character} string containing the label of the x-axis.
+#'
+#' @param ylab a \code{character} string containing the label of the y-axis.
+#'
+#' @param names a \code{vector} of a \code{character} string containing the
+#' label of each prediction set. The \code{vector} must be the same length of
+#' the \code{nucleosomePositions} \code{list} or 1 in presence of a
+#' \code{vector}.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @examples
+#'
+#' ## Create a IRanges object with 2 reads
+#' reads <- IRanges(start=c(950, 969), end=c(1020, 1022))
+#'
+#' ## Create a vector containing nucleosome positions
+#' nucleosomes <- c(1001)
+#'
+#' ## The function returns 0 when all parameters are valid
+#' RJMCMCNucleosomes:::validatePlotNucleosomesParameters(nucleosomePositions =
+#' nucleosomes, reads = reads, xlab = "position", ylab = "coverage",
+#' names = c("test"))
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+#' #nucleosomePositions = c("hi"), reads = reads, xlab = "position",
+#' #ylab = "coverage", names = c("test"))}
+#'
+#' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+#' #nucleosomePositions = nucleosomes, reads = reads, xlab = "position",
+#' #ylab = "coverage", names = c("test_one", "test_false"))}
+#'
+#' @author Astrid Deschenes
+#' @keywords internal
+#'
+validatePlotNucleosomesParameters <- function(nucleosomePositions, reads,
+                                                xlab, ylab, names) {
+
+    ## Validate that nucleosomePositions is a vector
+    if (!is.vector(nucleosomePositions)) {
+        stop(paste0("nucleosomePositions must be a \'list\' or a \'vector\' ",
+                    "of numeric values"))
+    }
+
+    ## Validate that nucleosomePositions contains numeric values
+    if (!is.numeric(unlist(nucleosomePositions))) {
+        stop("nucleosomePositions can only contain numerical values")
+    }
+
+    ## Validate that reads is a IRanges object
+    if (!(class(reads) == "IRanges")) {
+        stop("reads must be an object of class \'IRanges\'")
+    }
+
+    ## Validate that xlab is a IRanges object
+    if (!is.character(xlab)) {
+        stop("xlab must be a character string")
+    }
+
+    ## Validate that ylab is a IRanges object
+    if (!is.character(ylab)) {
+        stop("ylab must be a character string")
+    }
+
+    ## Validate that names is a vector of character strings with
+    ## length corresponding to nucleosomePositions
+    if (!is.null(names)) {
+        if (!is.vector(names)) {
+            stop("names must be a vector or a list of character strings")
+        }
+        if (!is.list(nucleosomePositions)) {
+            if(!(length(names) == 1) || !is.character(names)) {
+                stop("names must be a vector of one character string")
+            }
+        } else {
+            if(!(length(names) == length(nucleosomePositions))) {
+                stop(paste0("names must be a vector containing the same ",
+                    "number of character string as the number of entries ",
+                    "in nucleosomesPositions list"))
+            }
+        }
+    }
+
+    return(0)
+}
+
 
 #' @title A internal post treatment function to merge closely positioned
 #' nucleosomes, from the same chromosome,
@@ -547,7 +652,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' ## Results after post-treatment
 #' postResult
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom consensusSeekeR findConsensusPeakRegions
 #' @importFrom GenomicRanges GRanges findOverlaps
 #' @importFrom IRanges IRanges

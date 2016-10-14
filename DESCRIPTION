@@ -6,7 +6,7 @@ Title: Bayesian hierarchical model for genome-wide nucleosome
 Description: This package does nucleosome positioning using informative
     Multinomial-Dirichlet prior in a t-mixture with reversible jump
     estimation of nucleosome positions for genome-wide profiling.
-Author: Rawane Samb, Khader Khadraoui, Pascal Belleau, Astrid Deschenes,
+Author: Rawane Samb, Khader Khadraoui, Pascal Belleau, Astrid Deschênes,
     Lajmi Lakhal-Chaieb and Arnaud Droit
 Author@R: c(person("Rawane", "Samb",
     email="rawane.samb.1@ulaval.ca", role=c("cre", "aut")),
@@ -28,13 +28,14 @@ Depends:
 Imports:
     Rcpp (>= 0.12.5),
     consensusSeekeR,
+    BiocGenerics,
     GenomeInfoDb,
     S4Vectors,
     stats,
     graphics,
-    methods
+    methods,
+    grDevices
 Suggests:
-    BiocGenerics,
     BiocStyle,
     knitr,
     rmarkdown,
