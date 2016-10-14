@@ -129,20 +129,18 @@ plot(sample)
 ```
 
 
-## Segment the analyzed region into candidate regions
+## Split the analyzed region into segments
 
-It is suggested, in order to accelerate the learning process, to segment the 
-analyzed region into candidate regions to accelerate the analysis. Moreover, 
+It is suggested, in order to accelerate the learning process, to split the 
+analyzed region into segments to accelerate the analysis. Moreover, 
 it is mandatory to analyse each chromosome separately since the 
 \code{rjmcmc} function can only analyze one chromosome at the time.
 
-Region segmentation can be done using the `segmentPING()` function 
-from the Bioconductor `r Biocpkg("PING")` package.
+Region segmentation can be done using the \code{segmentation} function.
 
 ```{r segment01, warning=FALSE, collapse=TRUE, message=FALSE} 
 ## Load needed packages
-library("PING")
-library("GenomicRanges")
+library(GenomicRanges)
 
 
 ## Transform sample dataset into GRanges object
@@ -152,26 +150,25 @@ sampleGRanges <- GRanges(seqnames = sample$dataIP$chr,
                           strand = sample$dataIP$strand)
 
 ## Segment sample into candidate regions
-sampleSegmented <- PING::segmentPING(sampleGRanges)
+sampleSegmented <- segmentation(dataIP = sampleGRanges, zeta = 147, 
+                                delta = 40, maxLength = 4000)
 
 ## Number of segments created
-length(slot(sampleSegmented, "List"))
+length(sampleSegmented)
 ```
 
 
 ## Run RJMCMCNucleosomes
 
-The RJMCMC function must be run on each candidate region. As an example, the 
+The \code{rjmcmc} function must be run on each candidate region. As an example, the 
 first candidate region is processed using a very low number of iterations. On
 real data, the number of iterations should be higher.
 
 ```{r runRJMCMC01 , warning=FALSE, collapse=TRUE} 
 ## Extract forward and reverse reads associated to the first segment
-readsForward <- slot(slot(sampleSegmented, "List")[[1]], "yF")
-readsReverse <- slot(slot(sampleSegmented, "List")[[1]], "yR")
-
-## Fix seed to enable replication of the results
-set.seed(2221)
+segment01 <- sampleSegmented[[1]]
+readsForward <- start(segment01[strand(segment01) == "+"])
+readsReverse <- end(segment01[strand(segment01) == "-"])
 
 ## Run RJMCMC analysis
 ## A higher number of iterations is recommanded for real analysis
