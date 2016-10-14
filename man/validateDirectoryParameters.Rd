@@ -29,7 +29,7 @@ RJMCMCNucleosomes:::validateDirectoryParameters(directory)
 
 }
 \author{
-Astrid Deschênes
+Astrid Deschenes
 }
 \keyword{internal}
 

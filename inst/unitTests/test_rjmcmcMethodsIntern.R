@@ -635,6 +635,159 @@ test.validateRDSFilesParameters_RDSFiles_empty_array <- function() {
 
 
 #########################################################
+## validatePlotNucleosomesParameters() function
+#########################################################
+
+## Test the result when nucleosomePositions is NA
+test.validatePlotNucleosomesParameters_nucleosomePositions_NA <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = NA, reads = IRanges(start=c(950, 969),
+        end=c(1020, 1022)), xlab = "x", ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- "nucleosomePositions can only contain numerical values"
+    message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_NA() ",
+                      "- NA for nucleosomePositions did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when nucleosomesParameters is empty vector
+test.validatePlotNucleosomesParameters_nucleosomePositions_empty_vector <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = c(), reads = IRanges(start=c(950, 969),
+        end=c(1020, 1022)), xlab = "x", ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- "nucleosomePositions must be a \'list\' or a \'vector\' of numeric values"
+    message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_empty_vector() ",
+                      "- Empty vector for nucleosomePositions did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when nucleosomesParameters is not numerical
+test.validatePlotNucleosomesParameters_nucleosomePositions_not_numerical <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = c("hi", "test"), reads = IRanges(start=c(950, 969),
+        end=c(1020, 1022)), xlab = "x", ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- "nucleosomePositions can only contain numerical values"
+    message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_not_numerical() ",
+                      "- Not numeric for nucleosomePositions did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when nucleosomesParameters is not a list of numerical
+test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = c(a=c(1, 3), b=c("hi", "test")), reads = IRanges(start=c(950, 969),
+        end=c(1020, 1022)), xlab = "x", ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- "nucleosomePositions can only contain numerical values"
+    message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical() ",
+                      "- Not list of numeric for nucleosomePositions did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when reads is null
+test.validatePlotNucleosomesParameters_reads_null <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = c(1001, 1003), reads = NULL, xlab = "x",
+        ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- "reads must be an object of class \'IRanges\'"
+    message <- paste0(" test.validatePlotNucleosomesParameters_reads_null() ",
+                      "- Not list of numeric for reads did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when reads is not IRanges
+test.validatePlotNucleosomesParameters_reads_not_IRanges <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = c(1001, 1003), reads = c(100,200), xlab = "x",
+        ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- "reads must be an object of class \'IRanges\'"
+    message <- paste0(" test.validatePlotNucleosomesParameters_reads_not_IRanges() ",
+                      "- Not IRanges for reads did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when xlab is not a character string
+test.validatePlotNucleosomesParameters_xlab_not_string <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = c(1001, 1003), reads = IRanges(start=c(950, 969),
+        end=c(1020, 1022)), xlab = 33,
+        ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- "xlab must be a character string"
+    message <- paste0(" test.validatePlotNucleosomesParameters_xlab_not_string() ",
+                      "- Not character string for xlab did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when ylab is not a character string
+test.validatePlotNucleosomesParameters_ylab_not_string <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = c(1001, 1003), reads = IRanges(start=c(950, 969),
+        end=c(1020, 1022)), xlab = "x",
+        ylab = c(44,33), names=c("test")),
+        error=conditionMessage)
+    exp <- "ylab must be a character string"
+    message <- paste0(" test.validatePlotNucleosomesParameters_xylab_not_string() ",
+                      "- Not character string for xlab did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when names is not a character string
+test.validatePlotNucleosomesParameters_names_not_string <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = c(1001, 1003), reads = IRanges(start=c(950, 969),
+                                                             end=c(1020, 1022)), xlab = "x",
+        ylab = "y", names=c(33)),
+        error=conditionMessage)
+    exp <- "names must be a vector of one character string"
+    message <- paste0(" test.validatePlotNucleosomesParameters_names_not_string() ",
+                      "- Not character string for names did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when names length does not fit nucleosomePositions entries
+test.validatePlotNucleosomesParameters_names_not_good_length_01 <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = list(a=c(1001), b=c(1003)),
+        reads = IRanges(start=c(950, 969), end=c(1020, 1022)), xlab = "x",
+        ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- "names must be a vector containing the same number of character string as the number of entries in nucleosomesPositions list"
+    message <- paste0(" test.validatePlotNucleosomesParameters_names_not_good_length_01
+                      () ",
+                      "- Not good length for names did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when names length does not fit nucleosomePositions entries
+test.validatePlotNucleosomesParameters_names_not_good_length_02 <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = list(a=c(1001)),
+        reads = IRanges(start=c(950, 969), end=c(1020, 1022)), xlab = "x",
+        ylab = "y", names=c("test", "test02")),
+        error=conditionMessage)
+    exp <- "names must be a vector containing the same number of character string as the number of entries in nucleosomesPositions list"
+    message <- paste0(" test.validatePlotNucleosomesParameters_names_not_good_length_02() ",
+                      "- Not good length for names did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+#########################################################
 ## postMerge() function
 #########################################################
 

@@ -183,25 +183,6 @@ resultSegment01 <- rjmcmc(startPosForwardReads = readsForward,
 
 ## Print the predicted nucleosomes for the first segment
 resultSegment01
-
-## TODO: Add info
-
-## More information is available from the output, such as
-## The variance of the forward reads for each nucleosome
-##resultSegment01$sigmaf
-
-## The variance of the reverse reads for each nucleosome
-##resultSegment01$sigmar
-
-## The distance between the maxima of the forward and reverse reads 
-## position densities for each nucleosome
-##resultSegment01$delta
-
-## The degrees of freedom for each nucleosome
-##resultSegment01$df
-
-## The weight for each nucleosome
-##resultSegment01$w
 ```
 
 
@@ -305,7 +286,7 @@ resultsBeforeAndAfter <- list(BeforePostTreatment=resultsAllMerged$mu,
                               AfterPostTreatment=resultsPostTreatment)
 
 ## Create graph using nucleosome positions and reads
-plotNucleosomes(resultsBeforeAndAfter, reads)
+plotNucleosomes(resultsBeforeAndAfter, reads, names=c("Before", "After"))
 ```
 
 

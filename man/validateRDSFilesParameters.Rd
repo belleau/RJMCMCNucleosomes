@@ -31,7 +31,7 @@ RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
 
 }
 \author{
-Astrid Deschênes
+Astrid Deschenes
 }
 \keyword{internal}
 

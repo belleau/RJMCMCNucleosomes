@@ -2,28 +2,44 @@
 % Please edit documentation in R/rjmcmcMethod.R
 \name{plotNucleosomes}
 \alias{plotNucleosomes}
-\title{Generate a graph of nucleosome position}
+\title{Generate a graph of nucleosome positions with read coverage}
 \usage{
 plotNucleosomes(nucleosomePositions, reads, xlab = "position",
-  ylab = "coverage")
+  ylab = "coverage", names = NULL)
 }
 \arguments{
 \item{nucleosomePositions}{a \code{list} or a \code{vector} of
 \code{numeric}, the nucleosome positions for one or
-multiples results obtained using the same reads. TODO}
+multiples predictions are obtained using the same reads. In presence of
+only one prediction (with multiples nucleosome positions), a \code{vector}
+is used. In presence of more thant one predictions (as example, before and
+after post-treatment or results from different software), a \code{list} with
+one entry per prediction is used.}
 
-\item{reads}{an \code{IRanges} containing all the reads}
+\item{reads}{an \code{IRanges} containing all the reads.}
 
-\item{xlab}{a \code{character} string containing the label of the x-axis}
+\item{xlab}{a \code{character} string containing the label of the x-axis.}
 
-\item{ylab}{a \code{character} string containing the label of the y-axis}
+\item{ylab}{a \code{character} string containing the label of the y-axis.}
+
+\item{names}{a \code{vector} of a \code{character} string containing the
+label of each prediction set. The \code{vector} must be the same length of
+the \code{nucleosomePositions} \code{list} or 1 in presence of a
+\code{vector}. When \code{NULL}, the name of the elements of the \code{list}
+are used or the string "Nucleosome" for a \code{vector} are used.
+Default: \code{NULL}.}
 }
 \value{
 a graph containing the nucleosome position and the read coverage
 }
 \description{
 Generate a graph for
-a list or a vector of nucleosome positions. TODO
+a \code{list} or a \code{vector} of nucleosome positions. In presence of
+only one prediction (with multiples nucleosome positions), a \code{vector}
+is used. In presence of more thant one predictions (as example, before and
+after post-treatment or results from different software), a \code{list} with
+one entry per prediction is used. All predictions must have been obtained
+using the same reads.
 }
 \examples{
 
