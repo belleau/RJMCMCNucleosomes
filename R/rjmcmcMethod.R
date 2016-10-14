@@ -458,3 +458,42 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
     legend("top", posNames, fill = posColors, bty = "n", horiz = TRUE)
 }
 
+#' @title Split a \code{GRange} of reads in a list of smaller segments for \code{rjmcmc}.
+#'
+#' @description Split a \code{GRange} of reads (the reads from a chromosome for exemple) in
+#' a \code{list} of small \code{GRange} of reads
+#'
+#' @param dataIP a \code{GRange}
+#'
+#' @param zeta a \code{numeric}
+#'
+#'
+#' @param delta a \code{numeric}
+#'
+#'
+#' @param maxLentgth \code{numeric}
+#'
+#'
+#' @return a \code{list} of \code{GRanges}, the list Grange of segments.
+#'
+#' @examples
+#'
+#' ## TODO : A faire
+#'
+#' @author Pascal Belleau, Astrid Deschênes
+#' @export
+segmentSimple <- function(dataIP, zeta, delta, maxLength){
+    # dataIP should be GRanges
+
+    if(!is(dataIP,"GRanges"))
+    {
+        stop("dataIP must be 'GRanges' object.")
+    }
+    posMin <- min(start(dataIP))
+    posMax <- max(end(dataIP))
+
+    lapply(seq(posMin, posMax, by = (maxLength - (zeta + delta))), function(x, dataIP, zeta, delta, maxLength){
+        dataIP[start(dataIP) >= x & start(dataIP) <= (x + maxLength)]
+    }, dataIP=dataIP, zeta=zeta, delta=delta, maxL = maxLength)
+
+}
