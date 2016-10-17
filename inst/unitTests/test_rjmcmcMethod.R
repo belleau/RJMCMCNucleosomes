@@ -19,6 +19,7 @@ if(FALSE) {
 data(reads_demo)
 data(reads_demo_02)
 data(RJMCMC_result)
+data(syntheticNucleosomeReads)
 
 DIRECTORY <- system.file("extdata", package = "RJMCMCNucleosomes")
 
@@ -279,7 +280,7 @@ test.postTreatment_good_01 <- function() {
                 73146.59089970112836454064)
 
     message <- paste0(" test.postTreatment_good_01() ",
-                      "- posTreatment() did not generated expected message.")
+                      "- posTreatment() did not generated expected result.")
 
     checkEquals(obs, exp, msg = message)
 }
@@ -296,7 +297,68 @@ test.postTreatment_good_02 <- function() {
              73146.59089970112836454064)
 
     message <- paste0(" test.postTreatment_good_02() ",
-                      "- posTreatment() did not generated expected message.")
+                      "- posTreatment() did not generated expected result.")
 
     checkEquals(obs, exp, msg = message)
 }
+
+
+###########################################################
+## segmentation() function
+###########################################################
+
+test.segmentation_good_01 <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                    ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                    end = syntheticNucleosomeReads$dataIP$end),
+                    strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- segmentation(sampleGRanges, zeta =  147, delta = 20, maxLength = 20000)
+
+    message <- paste0(" test.segmentation_good_01() ",
+                      "- segmentation() did not generated expected result.")
+
+    exp.len = 3
+    exp.01.len = 10504
+    exp.02.len = 11818
+    exp.03.len = 9686
+
+    checkTrue(is.list(obs), ms = message)
+    checkEquals(length(obs), exp.len, ms = message)
+    checkEquals(length(obs[[1]]), exp.01.len, ms = message)
+    checkTrue(is(obs[[1]],"GRanges"), ms = message)
+    checkEquals(length(obs[[2]]), exp.02.len, ms = message)
+    checkTrue(is(obs[[2]],"GRanges"), ms = message)
+    checkEquals(length(obs[[3]]), exp.03.len, ms = message)
+    checkTrue(is(obs[[3]],"GRanges"), ms = message)
+}
+
+test.segmentation_good_02  <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- segmentation(sampleGRanges, zeta =  142, delta = 40, maxLength = 15000)
+
+    message <- paste0(" test.segmentation_good_02() ",
+                      "- segmentation() did not generated expected result.")
+
+    exp.len = 4
+    exp.01.len = 7972
+    exp.02.len = 8496
+    exp.03.len = 9362
+    exp.04.len = 6390
+
+    checkTrue(is.list(obs), ms = message)
+    checkEquals(length(obs), exp.len, ms = message)
+    checkEquals(length(obs[[1]]), exp.01.len, ms = message)
+    checkTrue(is(obs[[1]],"GRanges"), ms = message)
+    checkEquals(length(obs[[2]]), exp.02.len, ms = message)
+    checkTrue(is(obs[[2]],"GRanges"), ms = message)
+    checkEquals(length(obs[[3]]), exp.03.len, ms = message)
+    checkTrue(is(obs[[3]],"GRanges"), ms = message)
+}
+

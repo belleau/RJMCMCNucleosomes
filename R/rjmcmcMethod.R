@@ -506,7 +506,7 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
     # Segment GRanges
     lapply(seq(posMin, posMax, by = (maxLength - (zeta + delta))),
             function(x, dataIP, zeta, delta, maxLength){
-            dataIP[start(dataIP) >= x & start(dataIP) <= (x + maxLength)]
+                dataIP[start(dataIP) >= x & start(dataIP) <= (x + maxLength)]
             },
             dataIP=dataIP, zeta=zeta, delta=delta, maxL = maxLength)
 }
