@@ -142,7 +142,6 @@ Region segmentation can be done using the \code{segmentation} function.
 ## Load needed packages
 library(GenomicRanges)
 
-
 ## Transform sample dataset into GRanges object
 sampleGRanges <- GRanges(seqnames = sample$dataIP$chr, 
                           ranges = IRanges(start = sample$dataIP$start, 
