@@ -458,42 +458,55 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
     legend("top", posNames, fill = posColors, bty = "n", horiz = TRUE)
 }
 
-#' @title Split a \code{GRange} of reads in a list of smaller segments for \code{rjmcmc}.
+#' @title Split a \code{GRanges} containing reads in a list of smaller
+#' segments for the \code{rjmcmc} function.
 #'
-#' @description Split a \code{GRange} of reads (the reads from a chromosome for exemple) in
-#' a \code{list} of small \code{GRange} of reads
+#' @description Split a \code{GRanges} of reads (as example, the reads from
+#' a chromosome) in a \code{list} of smaller \code{GRanges} sot that the
+#' \code{rjmcmc} function can be run on each segments.
 #'
-#' @param dataIP a \code{GRange}
+#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
 #'
-#' @param zeta a \code{numeric}
+#' @param zeta a positive \code{integer} or \code{numeric}, the length
+#' of the nucleosomes. Default: 147.
 #'
+#' @param delta a positive \code{integer} or \code{numeric}, the accepted
+#' range of overlapping section between segments. The overlapping section
+#' being \code{zeta} + \code{delta}.
 #'
-#' @param delta a \code{numeric}
+#' @param maxLength a positive \code{integer} or \code{numeric}, the
+#' length of each segment.
 #'
-#'
-#' @param maxLentgth \code{numeric}
-#'
-#'
-#' @return a \code{list} of \code{GRanges}, the list Grange of segments.
+#' @return a \code{list} of \code{GRanges}, the list of segments.
 #'
 #' @examples
 #'
-#' ## TODO : A faire
+#' ## Load synthetic dataset of reads
+#' data(syntheticNucleosomeReads)
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' ## Use dataset of reads to create GRanges object
+#' sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+#' ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+#' end = syntheticNucleosomeReads$dataIP$end),
+#' strand = syntheticNucleosomeReads$dataIP$strand)
+#'
+#' # Segmentation of the reads
+#' segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 10000)
+#'
+#' @author Pascal Belleau, Astrid Deschenes
 #' @export
-segmentSimple <- function(dataIP, zeta, delta, maxLength){
-    # dataIP should be GRanges
+segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 
-    if(!is(dataIP,"GRanges"))
-    {
-        stop("dataIP must be 'GRanges' object.")
-    }
+    validateSegmentationParameters(dataIP, zeta, delta, maxLength)
+
+    # Set min and max position
     posMin <- min(start(dataIP))
     posMax <- max(end(dataIP))
 
-    lapply(seq(posMin, posMax, by = (maxLength - (zeta + delta))), function(x, dataIP, zeta, delta, maxLength){
-        dataIP[start(dataIP) >= x & start(dataIP) <= (x + maxLength)]
-    }, dataIP=dataIP, zeta=zeta, delta=delta, maxL = maxLength)
-
+    # Segment GRanges
+    lapply(seq(posMin, posMax, by = (maxLength - (zeta + delta))),
+            function(x, dataIP, zeta, delta, maxLength){
+            dataIP[start(dataIP) >= x & start(dataIP) <= (x + maxLength)]
+            },
+            dataIP=dataIP, zeta=zeta, delta=delta, maxL = maxLength)
 }

@@ -25,7 +25,7 @@ data_002 <- readRDS(file_002)
 
 data(RJMCMC_result)
 data(reads_demo)
-
+data(syntheticNucleosomeReads)
 
 #########################################################
 ## validatePrepMergeParameters() function
@@ -783,6 +783,239 @@ test.validatePlotNucleosomesParameters_names_not_good_length_02 <- function() {
     exp <- "names must be a vector containing the same number of character string as the number of entries in nucleosomesPositions list"
     message <- paste0(" test.validatePlotNucleosomesParameters_names_not_good_length_02() ",
                       "- Not good length for names did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test tha all valid parameters return zero
+test.validatePlotNucleosomesParameters_all_good  <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = list(a=c(1001)),
+        reads = IRanges(start=c(950, 969), end=c(1020, 1022)), xlab = "x",
+        ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- 0
+    message <- paste0(" test.validatePlotNucleosomesParameters_all_good() ",
+                      "- All good parameters did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+
+#########################################################
+## validateSegmentationParameters() function
+#########################################################
+
+## Test the result when dataIP is NA
+test.validateSegmentationParameters_dataIP_NA <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = NA, zeta = 147, delta = 12, maxLength = 20000),
+        error=conditionMessage)
+    exp <- "dataIP must be \'GRanges\' object."
+    message <- paste0(" test.validateSegmentationParameters_dataIP_NA() ",
+                      "- NA for dataIP did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when dataIP is not GRanges
+test.validateSegmentationParameters_dataIP_not_GRanges <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = c(1, 3, 2), zeta = 147, delta = 12, maxLength = 20000),
+        error=conditionMessage)
+    exp <- "dataIP must be \'GRanges\' object."
+    message <- paste0(" test.validateSegmentationParameters_dataIP_not_GRanges() ",
+                      "- Not GRanges for dataIP did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when zeta a vector of numeric
+test.validateSegmentationParameters_zeta_vector <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+        ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+        end = syntheticNucleosomeReads$dataIP$end),
+        strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = c(147, 12), delta = 12,
+        maxLength = 20000),
+        error=conditionMessage)
+    exp <- "zeta must be a positive integer or numeric"
+    message <- paste0(" test.validateSegmentationParameters_zeta_vector() ",
+                      "- Vector for zeta did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when zeta is zero
+test.validateSegmentationParameters_zeta_zero <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = 0, delta = 12,
+        maxLength = 20000),
+        error=conditionMessage)
+    exp <- "zeta must be a positive integer or numeric"
+    message <- paste0(" test.validateSegmentationParameters_zeta_zero() ",
+                      "- Zero value for zeta did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when zeta is negative
+test.validateSegmentationParameters_zeta_negative <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = -1, delta = 12,
+        maxLength = 20000),
+        error=conditionMessage)
+    exp <- "zeta must be a positive integer or numeric"
+    message <- paste0(" test.validateSegmentationParameters_zeta_negative() ",
+                      "- Negative value for zeta did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when delta a vector of numeric
+test.validateSegmentationParameters_delta_vector <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = 147, delta = c(11, 21),
+        maxLength = 20000),
+        error=conditionMessage)
+    exp <- "delta must be a positive integer or numeric"
+    message <- paste0(" test.validateSegmentationParameters_delta_vector() ",
+                      "- Vector for delta did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when delta is zero
+test.validateSegmentationParameters_delta_zero <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = 147, delta = 0,
+        maxLength = 20000),
+        error=conditionMessage)
+    exp <- "delta must be a positive integer or numeric"
+    message <- paste0(" test.validateSegmentationParameters_delta_zero() ",
+                      "- Zero value for delta did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when delta is negative
+test.validateSegmentationParameters_delta_negative <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = 147, delta = -1,
+        maxLength = 20000),
+        error=conditionMessage)
+    exp <- "delta must be a positive integer or numeric"
+    message <- paste0(" test.validateSegmentationParameters_delta_negative() ",
+                      "- Negative value for delta did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when maxLength a vector of numeric
+test.validateSegmentationParameters_maxLength_vector <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = 147, delta = 12,
+        maxLength = c(10, 20)),
+        error=conditionMessage)
+    exp <- "maxLength must be a positive integer or numeric"
+    message <- paste0(" test.validateSegmentationParameters_maxLength_vector() ",
+                      "- Vector for maxLength did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when maxLength is zero
+test.validateSegmentationParameters_maxLength_zero <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = 147, delta = 12,
+        maxLength = 0),
+        error=conditionMessage)
+    exp <- "maxLength must be a positive integer or numeric"
+    message <- paste0(" test.validateSegmentationParameters_maxLength_zero() ",
+                      "- Zero value for maxLength did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when maxLength is negative
+test.validateSegmentationParameters_maxLength_negative <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = 147, delta = 12,
+        maxLength = -1),
+        error=conditionMessage)
+    exp <- "maxLength must be a positive integer or numeric"
+    message <- paste0(" test.validateSegmentationParameters_maxLength_negative() ",
+                      "- Negative value for maxLength did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test when all parameters are valids
+test.validateSegmentationParameters_all_valid <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = sampleGRanges, zeta = 147, delta = 12,
+        maxLength = 2000),
+        error=conditionMessage)
+    exp <- 0
+    message <- paste0(" test.validateSegmentationParameters_all_valid() ",
+                      "- All valid parameters did not  ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }

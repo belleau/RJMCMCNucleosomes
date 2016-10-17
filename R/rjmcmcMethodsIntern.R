@@ -593,6 +593,80 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions, reads,
     return(0)
 }
 
+#' @title Parameters validation for the \code{\link{segmentation}} function
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{segmentation}} function.
+#'
+#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#'
+#' @param zeta a positive \code{integer} or \code{numeric}, the length
+#' of the nucleosomes. Default: 147.
+#'
+#' @param delta a positive \code{integer} or \code{numeric}, the accepted
+#' range of overlapping section between segments. The overlapping section
+#' being \code{zeta} + \code{delta}.
+#'
+#' @param maxLength a positive \code{integer} or \code{numeric}, the
+#' length of each segment.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @examples
+#'
+#' ## Load synthetic dataset of reads
+#' data(syntheticNucleosomeReads)
+#'
+#' ## Use dataset of reads to create GRanges object
+#' sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+#' ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+#' end = syntheticNucleosomeReads$dataIP$end),
+#' strand = syntheticNucleosomeReads$dataIP$strand)
+#'
+#' ## The function returns 0 when all parameters are valid
+#' RJMCMCNucleosomes:::validateSegmentationParameters(dataIP = sampleGRanges,
+#' zeta = 147, delta = 30, maxLength = 12000)
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
+#' #dataIP = c(100), zeta = 147, delta = 30, maxLength = 12000)}
+#'
+#' #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
+#' #dataIP = sampleGRanges, zeta = "hi", delta = 30, maxLength = 12000)}
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @importFrom S4Vectors isSingleInteger isSingleNumber
+#' @keywords internal
+#'
+validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
+                                            maxLength) {
+    # Validate that dataIP is a GRanges
+    if(!is(dataIP,"GRanges"))
+    {
+        stop("dataIP must be \'GRanges\' object.")
+    }
+
+    ## Validate the zeta parameter
+    if (!(isSingleInteger(zeta) || isSingleNumber(zeta)) ||
+        as.integer(zeta) < 1) {
+        stop("zeta must be a positive integer or numeric")
+    }
+
+    ## Validate the delta parameter
+    if (!(isSingleInteger(delta) || isSingleNumber(delta)) ||
+        as.integer(delta) < 1) {
+        stop("delta must be a positive integer or numeric")
+    }
+
+    ## Validate the maxLength parameter
+    if (!(isSingleInteger(maxLength) || isSingleNumber(maxLength)) ||
+        as.integer(maxLength) < 1) {
+        stop("maxLength must be a positive integer or numeric")
+    }
+
+    return(0)
+}
 
 #' @title A internal post treatment function to merge closely positioned
 #' nucleosomes, from the same chromosome,
