@@ -787,6 +787,50 @@ test.validatePlotNucleosomesParameters_names_not_good_length_02 <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
+## Test tha all valid parameters return zero
+test.validatePlotNucleosomesParameters_all_good  <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = list(a=c(1001)),
+        reads = IRanges(start=c(950, 969), end=c(1020, 1022)), xlab = "x",
+        ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- 0
+    message <- paste0(" test.validatePlotNucleosomesParameters_all_good() ",
+                      "- All good parameters did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+
+#########################################################
+## validateSegmentationParameters() function
+#########################################################
+
+## Test the result when dataIP is NA
+test.validateSegmentationParameters_dataIP_NA <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = NA, zeta = 147, delta = 12, maxLength = 20000),
+        error=conditionMessage)
+    exp <- "dataIP must be \'GRanges\' object."
+    message <- paste0(" test.validateSegmentationParameters_dataIP_NA() ",
+                      "- NA for dataIP did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when dataIP is not GRanges
+test.validateSegmentationParameters_dataIP_not_GRanges <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
+        dataIP = c(1, 3, 2), zeta = 147, delta = 12, maxLength = 20000),
+        error=conditionMessage)
+    exp <- "dataIP must be \'GRanges\' object."
+    message <- paste0(" test.validateSegmentationParameters_dataIP_not_GRanges() ",
+                      "- Not GRanges for dataIP did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+
 #########################################################
 ## postMerge() function
 #########################################################
