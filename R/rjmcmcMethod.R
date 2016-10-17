@@ -43,6 +43,10 @@
 #' needed. When a value inferior or equal to zero is given, a random integer
 #' is used. Default: -1.
 #'
+#' @param saveAsRDS a \code{logical}. When \code{TRUE}, a RDS file containing
+#' the complete output of the c++ rjmcmc() function is created.
+#' Default : \code{FALSE}.
+#'
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomes" containing:
 #' \itemize{
 #' \item \code{call} the matched call.
@@ -63,9 +67,10 @@
 #'
 #' ## Nucleosome positioning, running both merge and split functions
 #' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse,
-#'          nbrIterations = 1000, lambda = 2, kMax = 30,
-#'          minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10113)
+#'             startPosReverseReads = reads_demo$readsReverse,
+#'             nbrIterations = 1000, lambda = 2, kMax = 30,
+#'             minInterval = 146, maxInterval = 292, minReads = 5,
+#'             vSeed = 10113, saveAsRDS = FALSE)
 #'
 #' ## Print the final estimation of the number of nucleosomes
 #' result$k
@@ -83,7 +88,8 @@
 rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda = 3,
                     minInterval, maxInterval, minReads = 5,
-                    adaptIterationsToReads = TRUE, vSeed = -1) {
+                    adaptIterationsToReads = TRUE, vSeed = -1,
+                    saveAsRDS = FALSE) {
 
     # Get call information
     cl <- match.call()
@@ -102,9 +108,18 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 
     # Find nucleosome positions
     resultRJMCMC <- rjmcmcNucleo(startPosForwardReads, startPosReverseReads,
-                                 nbrIterations, kMax, lambda,
-                                 minInterval, maxInterval, minReads,
-                                 adaptIterationsToReads, vSeed)
+                                    nbrIterations, kMax, lambda,
+                                    minInterval, maxInterval, minReads,
+                                    adaptIterationsToReads, vSeed)
+
+    # Save output in a RDS file
+    if (saveAsRDS) {
+        options(digits.secs = 2)
+        file_name <- gsub(Sys.time(), pattern = "[:. ]", replacement = "_",
+                            perl = TRUE)
+        saveRDS(object = resultRJMCMC,
+                file = paste0("RJMCMCNucleosomes_output_", file_name, ".RDS"))
+    }
 
     if (is.null(resultRJMCMC)) {
         ## Set values when no nucleosome can be found
@@ -114,8 +129,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     } else {
         ## Set values when no nucleosome can be found
         # Find k value with the maximum of iterations
-        iterPerK <- data.frame(k=resultRJMCMC$k, it=resultRJMCMC$it)
-        sumIterPerK <- aggregate(it ~ k, data=iterPerK, sum)
+        iterPerK <- data.frame(k = resultRJMCMC$k, it = resultRJMCMC$it)
+        sumIterPerK <- aggregate(it ~ k, data = iterPerK, sum)
         maxRow <- which.max( sumIterPerK[,"it"])
         k <- sumIterPerK$k[maxRow]
         # Find mu values associated to the k value
@@ -171,7 +186,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' @examples
 #'
 #' ## Use a directory present in the RJMCMC package
-#' directoryWithRDSFiles <- system.file("extdata", package = "RJMCMCNucleosomes")
+#' directoryWithRDSFiles <- system.file("extdata",
+#' package = "RJMCMCNucleosomes")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
 #' ## It is assumed that all files present in the directory are nucleosomes
@@ -195,7 +211,7 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 
     ## Get the list of all RDS files present in the directory
     fileList <- dir(directory, pattern = ".rds", full.names = TRUE,
-                     ignore.case = TRUE)
+                        ignore.case = TRUE)
 
     ## Extract information from each file
     return(mergeAllRDSFiles(fileList))
@@ -295,16 +311,17 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' ## Nucleosome positioning, running both merge and split functions
 #' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse,
-#'          nbrIterations = 1000, lambda = 2, kMax = 30,
-#'          minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
+#'             startPosReverseReads = reads_demo$readsReverse,
+#'             nbrIterations = 1000, lambda = 2, kMax = 30,
+#'             minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
 #'
 #' ## Before post-treatment
 #' result
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
 #' postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
+#'             startPosReverseReads = reads_demo$readsReverse,
+#'             result, 74, 73500)
 #'
 #' ## After post-treatment
 #' postResult
@@ -374,9 +391,9 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' reverseReads <- dataIP[dataIP$strand == "-",]$end
 #'
 #' result <- rjmcmc(startPosForwardReads = forwardReads,
-#'          startPosReverseReads = reverseReads,
-#'          nbrIterations = 4000, lambda = 2, kMax = 30,
-#'          minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10213)
+#'             startPosReverseReads = reverseReads,
+#'             nbrIterations = 4000, lambda = 2, kMax = 30,
+#'             minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10213)
 #'
 #' reads <-IRanges(start = dataIP$start, end=dataIP$end)
 #'
@@ -435,8 +452,8 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
     coverage <- c(0, as.integer(coverage(reads)), 0)
     position <- c(0, 1:(length(coverage) - 1))
     plot(coverage(reads), type = "l", col = "gray",
-         ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab = xlab,
-         ylab = ylab)
+            ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab = xlab,
+            ylab = ylab)
     polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray",
             border = "gray", ylim = c(y_min, y_max), xlim = c(x_min, x_max))
 
@@ -446,7 +463,7 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
             y_pos = (-(step)) * i
             nucl <- nucleosomePositions[[i]]
             points(nucl, rep(y_pos, length(nucl)), ylim = c(y_min, y_max),
-                   xlim = c(x_min, x_max), col = posColors[i], pch = 19)
+                    xlim = c(x_min, x_max), col = posColors[i], pch = 19)
         }
     } else {
         points(nucleosomePositions, rep(-(step), length(nucleosomePositions)),
@@ -486,9 +503,9 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
 #'
 #' ## Use dataset of reads to create GRanges object
 #' sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-#' ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-#' end = syntheticNucleosomeReads$dataIP$end),
-#' strand = syntheticNucleosomeReads$dataIP$strand)
+#'     ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+#'     end = syntheticNucleosomeReads$dataIP$end),
+#'     strand = syntheticNucleosomeReads$dataIP$strand)
 #'
 #' # Segmentation of the reads
 #' segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 10000)

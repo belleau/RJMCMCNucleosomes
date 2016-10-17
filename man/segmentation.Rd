@@ -35,9 +35,9 @@ data(syntheticNucleosomeReads)
 
 ## Use dataset of reads to create GRanges object
 sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-end = syntheticNucleosomeReads$dataIP$end),
-strand = syntheticNucleosomeReads$dataIP$strand)
+    ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+    end = syntheticNucleosomeReads$dataIP$end),
+    strand = syntheticNucleosomeReads$dataIP$strand)
 
 # Segmentation of the reads
 segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 10000)

@@ -170,10 +170,11 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
-validateRJMCMCParameters <- function(startPosForwardReads, startPosReverseReads,
-                                    nbrIterations, kMax, lambda,
-                                    minInterval, maxInterval, minReads,
-                                    adaptIterationsToReads, vSeed) {
+validateRJMCMCParameters <- function(startPosForwardReads,
+                                        startPosReverseReads,
+                                        nbrIterations, kMax, lambda,
+                                        minInterval, maxInterval, minReads,
+                                        adaptIterationsToReads, vSeed) {
     ## Validate the nbrIterations parameter
     if (!(isSingleInteger(nbrIterations) || isSingleNumber(nbrIterations)) ||
             as.integer(nbrIterations) < 1) {
@@ -735,7 +736,7 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #' @keywords internal
 #'
 postMerge <- function(startPosForwardReads, startPosReverseReads,
-                                resultRJMCMC, extendingSize, chrLength, minReads = 5)
+                        resultRJMCMC, extendingSize, chrLength, minReads = 5)
 {
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
@@ -787,19 +788,18 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
             b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
 
             if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                    segReads$yF <= (b - minLimit)]) >= minReads &
+                            segReads$yF <= (b - minLimit)]) >= minReads &
                 length(segReads$yR[segReads$yR >= (a + minLimit) &
-                                    segReads$yR <= (b + maxLimit)]) >= minReads) {
+                            segReads$yR <= (b + maxLimit)]) >= minReads) {
                 ## Calculate the new position of the nucleosome
                 newMu[cpt] <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                    segReads$yF <= (b - minLimit)]) +
+                                segReads$yF <= (b - minLimit)]) +
                             (mean(segReads$yR[segReads$yR >= (a + minLimit) &
-                                    segReads$yR <= (b + maxLimit)]) -
+                                segReads$yR <= (b + maxLimit)]) -
                             mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                    segReads$yF <= (b - minLimit) ]))/2)
+                                segReads$yF <= (b - minLimit) ]))/2)
                 cpt <- cpt + 1L
             }
-
             ## Nucleosomes not respecting the condition are flushed
         } else {
             newMu[cpt] <- resultRJMCMC$mu[current]
