@@ -244,29 +244,22 @@ validateRJMCMCParameters <- function(startPosForwardReads,
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric} of length
 #' \code{k}, the positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
 #' }
 #'
 #' @examples
 #'
 #' ## Loading two files containing nucleosomes informations for two sections of
 #' ## the same chromosome
-#' file_100 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#'                 pattern = "yeastRes_Chr1_Seg_100.rds",
+#' file_1 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+#'                 pattern = "newSeg_1.rds",
 #'                 full.names = TRUE)
 #'
-#' file_101 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#'                 pattern = "yeastRes_Chr1_Seg_101.rds",
+#' file_2 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+#'                 pattern = "newSeg_2.rds",
 #'                 full.names = TRUE)
 #'
 #' ## Merging nucleosomes informations from the two files
-#' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_100, file_101))
+#' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
 #'
 #' @importFrom methods is
 #' @author Pascal Belleau, Astrid Deschenes
@@ -278,10 +271,6 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     result        <- list()
     result$k      <- 0
     result$mu     <- array(dim = c(0))
-    result$sigmaf <- array(dim = c(0))
-    result$sigmar <- array(dim = c(0))
-    result$delta  <- array(dim = c(0))
-    result$df     <- array(dim = c(0))
 
     ## Extract information from each file
     for (fileName in arrayOfFiles) {
@@ -291,20 +280,12 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
                 is(data, "rjmcmcNucleosomes")) {
             result$k      <- result$k + data$k
             result$mu     <- c(result$mu, data$mu)
-            result$sigmaf <- c(result$sigmaf, data$sigmaf)
-            result$sigmar <- c(result$sigmar, data$sigmar)
-            result$delta  <- c(result$delta, data$delta)
-            result$df     <- c(result$df, data$df)
         }
     }
 
     ## Ensure that all values are ordered in ascending order of mu
     newOrder      <- order(result$mu)
     result$mu     <- result$mu[newOrder]
-    result$sigmaf <- result$sigmaf[newOrder]
-    result$sigmar <- result$sigmar[newOrder]
-    result$delta  <- result$delta[newOrder]
-    result$df     <- result$df[newOrder]
 
     ## Assign class type to list
     class(result)<-"rjmcmcNucleosomesMerge"
@@ -330,7 +311,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #'
 #' ## Loading a file
 #' file_test <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+#' pattern = "newSeg_2.rds", full.names = TRUE)
 #'
 #' ## Testing using a real file
 #' RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
@@ -427,7 +408,7 @@ validateDirectoryParameters <- function(directory) {
 #'
 #' ## Load dataset containing nucleosome information
 #' file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+#' pattern = "newSeg_2.rds", full.names = TRUE)
 #' nucleosome_info <- readRDS(file_002)
 #'
 #' ## The function returns 0 when all parameters are valid

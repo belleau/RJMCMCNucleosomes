@@ -18,7 +18,7 @@ if(FALSE) {
 
 
 file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                pattern = "yeastRes_Chr1_Seg_002.rds",
+                pattern = "newSeg_2.rds",
                 full.names = TRUE)
 
 data_002 <- readRDS(file_002)
