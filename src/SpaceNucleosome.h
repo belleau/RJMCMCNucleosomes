@@ -24,132 +24,94 @@ template<typename NucleoClass>    /***** BEWARE NucleoClass Must inherit from Nu
 class SpaceNucleosome {
     typedef std::list<NucleoClass*> containerNucleo;
     typedef typename containerNucleo::iterator itNucleo;
+    typedef std::vector<itNucleo> vecItNucleo;
+    typedef typename vecItNucleo::iterator itItVNucleo;
+
     typedef std::vector<NucleoClass*> vecNucleo;
 	typedef typename vecNucleo::iterator itVNucleo;
-	typedef std::vector<itNucleo> vecItNucleo;
-	typedef typename vecItNucleo::iterator itItVNucleo;
+
+    vecNucleo d_modNucleo;
+    vecItNucleo d_addNucleo;
 
     SegmentSeq const &d_segSeq;
 	containerNucleo d_nucleosomes; /* List of nucleosomes */
 
-	vecNucleo d_modNucleo;
-	vecItNucleo d_addNucleo;
+
 
 	int d_valK;            // Number of nucleosome
 	gsl_rng *d_rng;       // random number generator
 	long d_iteration;     // Number of iteration not accept
 
 public:
+	SpaceNucleosome(SegmentSeq const &segSeq);
 
+	SpaceNucleosome(SegmentSeq const &segSeq, int seed);
 
-	SpaceNucleosome(SegmentSeq const &segSeq):
-		d_segSeq(segSeq), d_valK(0), d_iteration(0){
-		setRNG();
-	};// Finir la cascade
-
-	SpaceNucleosome(SegmentSeq const &segSeq, int seed):
-			d_segSeq(segSeq), d_valK(0), d_iteration(0){
-			setRNG(seed);
-		};// Finir la cascade
-
-	SpaceNucleosome(SegmentSeq const &segSeq, gsl_rng * rng):
-		d_segSeq(segSeq), d_valK(0), d_rng(rng), d_iteration(0){
-
-	}
+	SpaceNucleosome(SegmentSeq const &segSeq, gsl_rng * rng);
 
 
 	virtual ~SpaceNucleosome(){};
 
-	int size(){
-		return(d_nucleosomes.size());
-	};
+	int size();
 
-	bool empty(){
-		return(d_nucleosomes.empty());
-	};
+	bool empty();
 
-	void pushNucleo(NucleoClass *u){
-		d_nucleosomes.push_back(u);
-		d_valK++;
-	};
+	void pushNucleo(NucleoClass *u);
 
-	void insertNucleo(itNucleo it, NucleoClass *u){
-		d_nucleosomes.insert(it, u);
-		d_valK++;
-	};
-/*	void setDeltaMin(int deltaMin){
-		d_segSeq.setDeltaMin(deltaMin);
-	};
-	void setDeltaMax(int deltaMax){
-		d_segSeq.setDeltaMax(deltaMax);
-	};*/
+	void insertNucleo(itNucleo it, NucleoClass *u);
 
-	void setRng(gsl_rng *rng){
-		d_rng = rng;
-	};
+	void setRng(gsl_rng *rng);
 
-	int valK(){
-		return(d_valK);
-	};
+	int valK();
 
-	double minPos(){
-		return(d_segSeq.minPos());
-	};
+	double minPos();
 
-	double maxPos(){
-		return(d_segSeq.maxPos());
-	};
+	double maxPos();
 
-	long sizeFReads(){
-		return(d_segSeq.sizeFReads());
-	}
+	long sizeFReads();
 
-	long sizeRReads(){
-		return(d_segSeq.sizeRReads());
-	}
+	long sizeRReads();
 
-	void displayMu(){
-		std::cout << "Mu";
-		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
-			std::cout << " " << (*it)->mu();
-			std::cout << " : " << (*it)->avg();
-		}
-		std::cout << "\n";
-	}
+	void displayMu();
 
-	std::vector<double> mu(){
-		//Rcpp::NumericVector mu = Rcpp::NumericVector(valK());
-		std::vector<double> mu(valK(), 0.0);
-		int i = 0;
-		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
-			mu[i++] = (*it)->mu();
-		}
-		return(mu);
-	}
+	std::vector<double> mu();
 
-	void eraseNucleo(itNucleo it){ //itNucleo it
-		d_nucleosomes.erase(it);
-		d_valK--;
-		//d_nucleosomes.erase(d_nucleosomes.begin());
-	}
+	void eraseNucleo(itNucleo it);
 
-	void addIteration(){
-		d_iteration++;
-	};
+	void addIteration();
 
-	long iteration(){
-		return(d_iteration);
-	}
+	long iteration();
 
 protected:
-	gsl_rng * rng(){
-		return(d_rng);
-	};
+	gsl_rng * rng();
 
-	SegmentSeq const &segSeq(){
-		return(d_segSeq);
-	};
+	SegmentSeq const &segSeq();
 
+	void pushModNucleo(NucleoClass *u);
+
+	void pushAddNucleo(itNucleo &u);
+
+	void resetNucleo();
+
+	void resetMod();
+
+	void resetAdd();
+
+	void clearAdd();
+
+	containerNucleo &nucleosomes();
+
+	void setNucleosomes(containerNucleo &nucleosomes);
+
+	void setValK(int k);
+private:
+
+	void setRNG();
+
+	void setRNG(int seed);
+
+
+protected:
 	itNucleo nucleoBegin(){
 		return(d_nucleosomes.begin());
 	};
@@ -169,17 +131,144 @@ protected:
 		return(itPos);
 	};
 
+}; /* Class SpaceNucleosome */
 
+/*******************************************************************
+ * Implementaton
+ *******************************************************************/
 
-	void pushModNucleo(NucleoClass *u){
+	//template<typename NucleoClass>
+	//SpaceNucleosome<NucleoClass>::
+
+	template<typename NucleoClass>
+	SpaceNucleosome<NucleoClass>::SpaceNucleosome(SegmentSeq const &segSeq):
+		d_segSeq(segSeq), d_valK(0), d_iteration(0){
+		setRNG();
+	}
+
+	template<typename NucleoClass>
+	SpaceNucleosome<NucleoClass>::SpaceNucleosome(SegmentSeq const &segSeq, int seed):
+		d_segSeq(segSeq), d_valK(0), d_iteration(0){
+		setRNG(seed);
+	}
+
+	template<typename NucleoClass>
+	SpaceNucleosome<NucleoClass>::SpaceNucleosome(SegmentSeq const &segSeq, gsl_rng * rng):
+		d_segSeq(segSeq), d_valK(0), d_rng(rng), d_iteration(0){
+	}
+
+	template<typename NucleoClass>
+	int SpaceNucleosome<NucleoClass>::size(){
+		return(d_nucleosomes.size());
+	}
+
+	template<typename NucleoClass>
+	bool SpaceNucleosome<NucleoClass>::empty(){
+		return(d_nucleosomes.empty());
+	}
+
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::pushNucleo(NucleoClass *u){
+		d_nucleosomes.push_back(u);
+		d_valK++;
+	}
+
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::insertNucleo(itNucleo it, NucleoClass *u){
+		d_nucleosomes.insert(it, u);
+		d_valK++;
+	}
+
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::setRng(gsl_rng *rng){
+		d_rng = rng;
+	}
+
+	template<typename NucleoClass>
+	int SpaceNucleosome<NucleoClass>::valK(){
+		return(d_valK);
+	}
+
+	template<typename NucleoClass>
+	double SpaceNucleosome<NucleoClass>::minPos(){
+		return(d_segSeq.minPos());
+	}
+
+	template<typename NucleoClass>
+	double SpaceNucleosome<NucleoClass>::maxPos(){
+		return(d_segSeq.maxPos());
+	}
+
+	template<typename NucleoClass>
+	long SpaceNucleosome<NucleoClass>::sizeFReads(){
+		return(d_segSeq.sizeFReads());
+	}
+
+	template<typename NucleoClass>
+	long SpaceNucleosome<NucleoClass>::sizeRReads(){
+		return(d_segSeq.sizeRReads());
+	}
+
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::displayMu(){
+		std::cout << "Mu";
+		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
+			std::cout << " " << (*it)->mu();
+			std::cout << " : " << (*it)->avg();
+		}
+		std::cout << "\n";
+	}
+
+	template<typename NucleoClass>
+	std::vector<double> SpaceNucleosome<NucleoClass>::mu(){
+		//Rcpp::NumericVector mu = Rcpp::NumericVector(valK());
+		std::vector<double> mu(valK(), 0.0);
+		int i = 0;
+		for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
+			mu[i++] = (*it)->mu();
+		}
+		return(mu);
+	}
+
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::eraseNucleo(itNucleo it){ //itNucleo it
+		d_nucleosomes.erase(it);
+		d_valK--;
+		//d_nucleosomes.erase(d_nucleosomes.begin());
+	}
+
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::addIteration(){
+		d_iteration++;
+	}
+
+	template<typename NucleoClass>
+	long SpaceNucleosome<NucleoClass>::iteration(){
+		return(d_iteration);
+	}
+
+	template<typename NucleoClass>
+    gsl_rng * SpaceNucleosome<NucleoClass>::rng(){
+    	return(d_rng);
+	}
+
+	template<typename NucleoClass>
+    SegmentSeq const &SpaceNucleosome<NucleoClass>::segSeq(){
+		return(d_segSeq);
+	}
+
+    template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::pushModNucleo(NucleoClass *u){
 		d_modNucleo.push_back(u);
-	};
+	}
 
-	void pushAddNucleo(itNucleo &u){
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::pushAddNucleo(itNucleo &u){
 		d_addNucleo.push_back(u);
-	};
+	}
 
-	void resetNucleo(){
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::resetNucleo(){
 		for(itNucleo it = d_nucleosomes.begin(); it != d_nucleosomes.end();it++){
 			if(*it != NULL){
 				delete *it;
@@ -187,23 +276,15 @@ protected:
 			}
 		}
 		d_nucleosomes.clear();
-	};
+	}
 
-	void resetMod(){
-
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::resetMod(){
 		d_modNucleo.clear();
-	};
-	void displayMod(){
+	}
 
-		std::cout << "Mod ";
-		for(itVNucleo it = d_modNucleo.begin(); it != d_modNucleo.end();it++){
-			std::cout << " M " << (*it)->mu();
-		}
-		std::cout << "\n";
-		d_modNucleo.clear();
-	};
-
-	void resetAdd(){
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::resetAdd(){
 
 		for(itItVNucleo it = d_addNucleo.begin(); it != d_addNucleo.end();it++){
 			if(**it != NULL){
@@ -212,27 +293,31 @@ protected:
 			}
 		}
 		d_addNucleo.clear();
-	};
+	}
 
-	void clearAdd(){
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::clearAdd(){
 		d_addNucleo.clear();
 	}
 
-	containerNucleo &nucleosomes(){
+	template<typename NucleoClass>
+	std::list<NucleoClass*> &SpaceNucleosome<NucleoClass>::nucleosomes(){
 		return(d_nucleosomes);
-	};
+	}
 
-	void setNucleosomes(containerNucleo &nucleosomes){
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::setNucleosomes(containerNucleo &nucleosomes){
 
 		d_nucleosomes = nucleosomes;
-	};
+	}
 
-	void setValK(int k){
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::setValK(int k){
 		d_valK= k;
 	}
-private:
 
-	void setRNG(){
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::setRNG(){
 		const gsl_rng_type * T;
 		long seed;
 
@@ -241,9 +326,10 @@ private:
 		d_rng = gsl_rng_alloc (T);     // pick random number generator
 		seed = time (NULL) * getpid();
 		gsl_rng_set (d_rng, seed);                  // set seed
-	};
+	}
 
-	void setRNG(int seed){
+	template<typename NucleoClass>
+	void SpaceNucleosome<NucleoClass>::setRNG(int seed){
 		const gsl_rng_type * T;
 
 		T = gsl_rng_default;
@@ -251,25 +337,8 @@ private:
 		d_rng = gsl_rng_alloc (T);     // pick random number generator
 
 		gsl_rng_set (d_rng, seed);                  // set seed
-	};
+	}
 
-
-/*	long sizeFReads(){
-		return(d_sizeFReads);
-	};
-	long sizeRReads(){
-		return(d_sizeRReads);
-	};
-protected:
-	std::vector<double> const  startFReads(){
-		return(d_startFReads);
-	};
-
-	std::vector<double> const  startRReads(){
-		return(d_startRReads);
-	};*/
-
-}; /* Class SpaceNucleosome */
 
 } /* namespace space_process */
 

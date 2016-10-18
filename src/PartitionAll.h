@@ -15,92 +15,177 @@ namespace space_process {
 
 template <typename NucleoD>    /***** BEWARE NucleoD Must inherit from SpaceNucleosomeD *****/
 class PartitionAll: public SpaceNucleosomeD<NucleoD> {
-
     typedef PartitionAll<NucleoD> NucleoSpace;
     typedef std::list<NucleoD*> containerNucleo;
     typedef typename containerNucleo::iterator iteratorNucleo;
 
-//    typedef typename std::vector<double> containerD;
-//    typedef typename containerD::const_iterator iteratorD;
-
     std::vector<double> *d_y;
     long d_ySize;
-	//std::vector<double> &d_y;
+
 public:
 
-	PartitionAll(SegmentSeq const &segSeq)
-		:SpaceNucleosomeD<NucleoD>(segSeq), d_y(new std::vector<double>){ //
-        //d_y = new std::vector<double>;
-        //d_y->push_back(1.0);
+	PartitionAll(SegmentSeq const &segSeq);
 
-		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
-		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
+	PartitionAll(SegmentSeq const &segSeq, int seed);
 
-		std::sort(d_y->begin(),d_y->end());
-		d_ySize = (*d_y).size();
-	};
+	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng);
 
-	PartitionAll(SegmentSeq const &segSeq, int seed)
-		:SpaceNucleosomeD<NucleoD>(segSeq,seed), d_y(new std::vector<double>){ //
-		//d_y = new std::vector<double>;
-		//d_y->push_back(1.0);
+	PartitionAll(SegmentSeq const &segSeq, int seed
+			, std::vector<double> *y, long ySize);
 
-		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
-		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
+	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng
+			, std::vector<double> *y, long ySize);
 
-		std::sort(d_y->begin(),d_y->end());
-		d_ySize = (*d_y).size();
-	};
-	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng)
-		:SpaceNucleosomeD<NucleoD>(segSeq,rng), d_y(new std::vector<double>){ //
-		//d_y = new std::vector<double>;
-		//d_y->push_back(1.0);
+	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, int dfMax);
 
-		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
-		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
+	PartitionAll(SegmentSeq const &segSeq, int seed
+			, std::vector<double> *y, long ySize, int dfMax);
 
-		std::sort(d_y->begin(),d_y->end());
-		d_ySize = (*d_y).size();
-	};
-
-	PartitionAll(SegmentSeq const &segSeq, int seed, std::vector<double> *y, long ySize)
-		:SpaceNucleosomeD<NucleoD>(segSeq, seed), d_y(y){ //
-
-	};
-
-	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, std::vector<double> *y, long ySize)
-		:SpaceNucleosomeD<NucleoD>(segSeq, rng), d_y(y), d_ySize(ySize){ //
-
-	};
-
-	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, int dfMax)
-		:SpaceNucleosomeD<NucleoD>(segSeq,rng, dfMax), d_y(new std::vector<double>){ //
-		//d_y = new std::vector<double>;
-		//d_y->push_back(1.0);
-
-		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
-		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
-
-		std::sort(d_y->begin(),d_y->end());
-		d_ySize = (*d_y).size();
-	};
-
-	PartitionAll(SegmentSeq const &segSeq, int seed, std::vector<double> *y, long ySize, int dfMax)
-		:SpaceNucleosomeD<NucleoD>(segSeq, seed, dfMax), d_y(y){ //
-
-	};
-
-	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, std::vector<double> *y, long ySize, int dfMax)
-		:SpaceNucleosomeD<NucleoD>(segSeq, rng, dfMax), d_y(y), d_ySize(ySize){ //
-
-	};
+	PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng
+			, std::vector<double> *y, long ySize, int dfMax);
 
 	virtual ~PartitionAll(){};
 
+	bool initMu(int df);
+
+	bool initMu1(int df);
+
+	long setFoward(std::vector<double>::const_iterator fStart
+			, std::vector<double>::const_iterator fEnd
+			, double start, double end, NucleoD &u);
 
 
+	long setReverse(std::vector<double>::const_iterator rStart
+			, std::vector<double>::const_iterator rEnd
+			, double start, double end, NucleoD &u);
 
-	bool initMu(int df){
+	NucleoSpace * clone();
+
+	bool setNucleoD(NucleoD *u, double aF, double aR);
+
+	bool setNucleoDR(NucleoD *u, double aF, double aR, NucleoD *old);
+
+	bool birth();
+
+	bool birthR();
+
+	bool death();
+
+	bool deathR();
+
+	bool mh();
+
+	bool mhR();
+
+	void prepSpace();
+
+	void delCurrent();
+
+	void delMod();
+
+	void reset();
+
+	void reject();
+
+private:
+	int getLimit(double start, double end
+			, std::vector<double>::const_iterator &startIt
+			, std::vector<double>::const_iterator &endIt
+			, long &l, bool excEnd = false);
+
+	inline bool yEmpty(){
+	    	return((*d_y).empty());
+	};
+
+    inline bool ySize(){
+        	return(d_ySize);
+	};
+
+	inline std::vector<double>::iterator yBegin(){
+		return((*d_y).begin());
+	};
+
+	inline std::vector<double>::iterator yEnd(){
+		return((*d_y).end());
+	};
+
+	inline double y(int i){
+		return((*d_y)[i]);
+	};
+
+
+};
+
+/*******************************************************************
+ * Implementaton
+ *******************************************************************/
+
+	template <typename NucleoD>
+	PartitionAll<NucleoD>::PartitionAll(SegmentSeq const &segSeq)
+		:SpaceNucleosomeD<NucleoD>(segSeq), d_y(new std::vector<double>){
+
+		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
+		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
+
+		std::sort(d_y->begin(),d_y->end());
+		d_ySize = (*d_y).size();
+	}
+
+	template <typename NucleoD>
+	PartitionAll<NucleoD>::PartitionAll(SegmentSeq const &segSeq, int seed)
+		:SpaceNucleosomeD<NucleoD>(segSeq,seed), d_y(new std::vector<double>){
+		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
+		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
+
+		std::sort(d_y->begin(),d_y->end());
+		d_ySize = (*d_y).size();
+	}
+
+	template <typename NucleoD>
+	PartitionAll<NucleoD>::PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng)
+		:SpaceNucleosomeD<NucleoD>(segSeq,rng), d_y(new std::vector<double>){
+		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
+		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
+
+		std::sort(d_y->begin(),d_y->end());
+		d_ySize = (*d_y).size();
+	}
+
+	template <typename NucleoD>
+	PartitionAll<NucleoD>::PartitionAll(SegmentSeq const &segSeq, int seed, std::vector<double> *y, long ySize)
+		:SpaceNucleosomeD<NucleoD>(segSeq, seed), d_y(y){ //
+
+	}
+
+	template <typename NucleoD>
+	PartitionAll<NucleoD>::PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, std::vector<double> *y, long ySize)
+		:SpaceNucleosomeD<NucleoD>(segSeq, rng), d_y(y), d_ySize(ySize){
+
+	}
+
+	template <typename NucleoD>
+	PartitionAll<NucleoD>::PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, int dfMax)
+		:SpaceNucleosomeD<NucleoD>(segSeq,rng, dfMax), d_y(new std::vector<double>){
+		d_y->insert(yEnd(), segSeq.beginFR(), segSeq.endFR());
+		d_y->insert(yEnd(), segSeq.beginRR(), segSeq.endRR());
+
+		std::sort(d_y->begin(),d_y->end());
+		d_ySize = (*d_y).size();
+	}
+
+	template <typename NucleoD>
+	PartitionAll<NucleoD>::PartitionAll(SegmentSeq const &segSeq, int seed, std::vector<double> *y, long ySize, int dfMax)
+		:SpaceNucleosomeD<NucleoD>(segSeq, seed, dfMax), d_y(y){
+	}
+
+	template <typename NucleoD>
+	PartitionAll<NucleoD>::PartitionAll(SegmentSeq const &segSeq, gsl_rng * rng, std::vector<double> *y, long ySize, int dfMax)
+		:SpaceNucleosomeD<NucleoD>(segSeq, rng, dfMax), d_y(y), d_ySize(ySize){
+	}
+
+
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::initMu(int df){
 
 		bool flag = true;
 		NucleoD *u;
@@ -116,13 +201,13 @@ public:
 					cpt++;
 					double end = this->maxPos();
 					flag = setNucleoD(u, y(0), end); //
-                    if(flag) // Not enough read foward or reverse
-                	{
-                    	this->pushNucleo(u);
-            		}
-                    else{
-                    	delete u;
-                    }
+					if(flag) // Not enough read foward or reverse
+					{
+						this->pushNucleo(u);
+					}
+					else{
+						delete u;
+					}
 
 				}while(!(flag) && cpt == 1000);
 				if(!(flag)){
@@ -137,10 +222,9 @@ public:
 		}
 
 		return(flag);
-	};
-
-
-	bool initMu1(int df){
+	}
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::initMu1(int df){
 
 		bool flag = true;
 		NucleoD *u;
@@ -174,33 +258,37 @@ public:
 		}
 
 		return(flag);
-	};
+	}
 
-
-
-	long setFoward(std::vector<double>::const_iterator fStart, std::vector<double>::const_iterator fEnd, double start, double end, NucleoD &u){
+	template <typename NucleoD>
+	long PartitionAll<NucleoD>::setFoward(std::vector<double>::const_iterator fStart
+						, std::vector<double>::const_iterator fEnd
+						, double start, double end, NucleoD &u){
 		long l = 0;
 		int cpt = getLimit(start,end, fStart, fEnd, l);
 		//std::cout << "Start " << start << " End " << end << " Diff " << (end - start) <<"\n";
 		u.setFStartPos(fStart, fEnd, cpt);
 		return(l);
-	};
+	}
 
-
-	long setReverse(std::vector<double>::const_iterator rStart, std::vector<double>::const_iterator rEnd, double start, double end, NucleoD &u){
+	template <typename NucleoD>
+	long PartitionAll<NucleoD>::setReverse(std::vector<double>::const_iterator rStart
+			, std::vector<double>::const_iterator rEnd
+			, double start, double end, NucleoD &u){
 
 		long l = 0;
 		int cpt = getLimit(start,end, rStart, rEnd, l);
 
 		u.setRStartPos(rStart, rEnd, cpt);
 		return(l);
-	};
+	}
 
+	template <typename NucleoD>
+	PartitionAll<NucleoD> * PartitionAll<NucleoD>::clone(){
 
-
-	NucleoSpace * clone(){
-
-		NucleoSpace *a = new NucleoSpace(this->segSeq(), this->rng(), d_y, ySize(), this->dfMax());
+		NucleoSpace *a = new NucleoSpace(this->segSeq()
+								, this->rng(), d_y, ySize()
+								, this->dfMax());
 
 		a->setValK(this->valK());
 		a->setNucleosomes(this->nucleosomes());
@@ -210,43 +298,45 @@ public:
 		a->setCMuDensity(this->cMuDensity());
 
         return(a);
-	};
+	}
 
-	bool setNucleoD(NucleoD *u, double aF, double aR){
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::setNucleoD(NucleoD *u, double aF, double aR){
 
-			bool flag = false;
-			long l;
-			std::vector<double>::const_iterator startIt, endIt;
-			int dimNucleo = getLimit( aF, aR, startIt, endIt, l, true);
-			(*u).setDimN(dimNucleo);
-			if(l > 1){
+		bool flag = false;
+		long l;
+		std::vector<double>::const_iterator startIt, endIt;
+		int dimNucleo = getLimit( aF, aR, startIt, endIt, l, true);
+		(*u).setDimN(dimNucleo);
+		if(l > 1){
 
-				(*u).setAvg(accumulate( startIt, endIt, 0.0)/ ((double) dimNucleo));
+			(*u).setAvg(accumulate( startIt, endIt, 0.0)/ ((double) dimNucleo));
 
-				if(setFoward(startIt, endIt, aF, (*u).avg(), *u) > 1){
+			if(setFoward(startIt, endIt, aF, (*u).avg(), *u) > 1){
 
-					if(setReverse(startIt, endIt, (*u).avg(), aR, *u) > 1){
+				if(setReverse(startIt, endIt, (*u).avg(), aR, *u) > 1){
 
-						(*u).evalSigmaF();
-						(*u).evalSigmaR();
-						if((*u).sigmaF() > 0.000001 && (*u).sigmaR() > 0.000001){
-							(*u).evalDelta();
-							(*u).evalBF();
-							(*u).evalBR();
-							(*u).setAF(aF);
-							(*u).setAR(aR);
-							flag = true;
+					(*u).evalSigmaF();
+					(*u).evalSigmaR();
+					if((*u).sigmaF() > 0.000001 && (*u).sigmaR() > 0.000001){
+						(*u).evalDelta();
+						(*u).evalBF();
+						(*u).evalBR();
+						(*u).setAF(aF);
+						(*u).setAR(aR);
+						flag = true;
 
-						}
 					}
-
 				}
+
 			}
-			return(flag);
-		};
+		}
+		return(flag);
+	}
 
-
-	bool setNucleoDR(NucleoD *u, double aF, double aR, NucleoD *old){
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::setNucleoDR(NucleoD *u, double aF
+										, double aR, NucleoD *old){
 
 		bool flag = true;
 		long l;
@@ -272,9 +362,10 @@ public:
 
 		}
 		return(flag);
-	};
+	}
 
-	bool birth(){
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::birth(){
 		int cpt = 0;
 		bool flag = false;
 		iteratorNucleo it1, it2;
@@ -411,9 +502,10 @@ public:
 		    flag = true;
 		}
 		return(!(flag));
-	};
+	}
 
-	bool birthR(){
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::birthR(){
 		int cpt = 0;
 		bool flag = false;
 		iteratorNucleo it1, it2;
@@ -553,8 +645,8 @@ public:
 		return(!(flag));
 	}
 
-
-	bool death(){
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::death(){
 		int cpt = 0;
 		bool flag = false;
 		iteratorNucleo it1, it2, it3;
@@ -671,121 +763,123 @@ public:
 			flag = true; // k <= 1
 		}
 		return(!(flag));
-	};
+	}
 
-	bool deathR(){
-			int cpt = 0;
-			bool flag = false;
-			iteratorNucleo it1, it2, it3;
-			NucleoD *uBef, *uNext;
-			double muBef, muNext, vNext;
-			int k = this->valK();
-			int i = 0;
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::deathR(){
+		int cpt = 0;
+		bool flag = false;
+		iteratorNucleo it1, it2, it3;
+		NucleoD *uBef, *uNext;
+		double muBef, muNext, vNext;
+		int k = this->valK();
+		int i = 0;
 
-			if(k > 1){ // Don't remove the last one
-				try{
-					do{
-						uBef = NULL;
-						uNext = NULL;
-						double a = this->maxPos() + 1;
-						flag = false;
-						cpt++;
-						i = (int) gsl_ran_flat (this->rng(), 0, k);
-						this->setTB(i);
-						it2 = this->nucleosomes(this->nucleoBegin(), 0, i);
+		if(k > 1){ // Don't remove the last one
+			try{
+				do{
+					uBef = NULL;
+					uNext = NULL;
+					double a = this->maxPos() + 1;
+					flag = false;
+					cpt++;
+					i = (int) gsl_ran_flat (this->rng(), 0, k);
+					this->setTB(i);
+					it2 = this->nucleosomes(this->nucleoBegin(), 0, i);
 
-						if( i > 0){ // Update nucleo before
-							it1 = it2; // go to the position i-1
-							it1--;
-							muBef = (*it1)->mu();
+					if( i > 0){ // Update nucleo before
+						it1 = it2; // go to the position i-1
+						it1--;
+						muBef = (*it1)->mu();
 
-
-						}
-						else{
-							muBef = this->minPos();
-						}
-
-						if( i < (k-1) ){ // Update nucleo after
-							it3 = it2;
-							it3++; // go to the position i+1
-							muNext = (*it3)->mu();
-
-						}
-						else{
-							muNext = this->maxPos();
-						}
-
-
-						if(i > 0){
-
-							a = (*it1)->aR();
-
-						}
-						else{
-							a = this->minPos();
-						}
-						if(i < (k-1)){ // Modify nucleosome i+1
-
-							uNext = new  NucleoD(muNext, (*it3)->df(), this->segSeq(), this->rng()); // New i+1
-							// Enough reads between a and (*it3)->aR()
-							flag = !(setNucleoDR(uNext, a, (*it3)->aR(), *it3));
-
-
-						}
-						else{ // i == k-1
-
-							uBef = new  NucleoD(muBef, (*it1)->df(), this->segSeq(), this->rng());
-
-							// Enough reads between a and (*it3)->aR()
-							//flag = !(setNucleoDR(uBef, (*it1)->aF(), this->maxPos(), *it1));
-							setNucleoDR(uBef, (*it1)->aF(), this->maxPos(), *it1);
-						}
-						if(flag){
-							delete uBef;
-							uBef = NULL;
-							delete uNext;
-							uNext = NULL;
-						}
-
-					}while(flag && cpt < 1000);
-
-					if(!(flag))
-					{
-						this->setQalloc(muNext - muBef);
-
-
-						if(i < (k-1)){
-
-							this->pushModNucleo(*it3);
-							*it3 = uNext;
-							this->pushAddNucleo(it3);
-						}
-						else{
-							this->pushModNucleo(*it1);
-							*it1 = uBef;
-							this->pushAddNucleo(it1);
-						}
-
-						this->pushModNucleo(*it2);
-
-						this->eraseNucleo(it2);
 
 					}
-				}
-				catch(std::bad_alloc&) {
-					std::cout << "Memory problem\n";
-					std::cerr << "Memory problem\n";
-					flag = true;
-				}
-			}
-			else{
-				flag = true; // k <= 1
-			}
-			return(!(flag));
-		};
+					else{
+						muBef = this->minPos();
+					}
+
+					if( i < (k-1) ){ // Update nucleo after
+						it3 = it2;
+						it3++; // go to the position i+1
+						muNext = (*it3)->mu();
+
+					}
+					else{
+						muNext = this->maxPos();
+					}
 
 
-	bool mh(){
+					if(i > 0){
+
+						a = (*it1)->aR();
+
+					}
+					else{
+						a = this->minPos();
+					}
+					if(i < (k-1)){ // Modify nucleosome i+1
+
+						uNext = new  NucleoD(muNext, (*it3)->df(), this->segSeq(), this->rng()); // New i+1
+						// Enough reads between a and (*it3)->aR()
+						flag = !(setNucleoDR(uNext, a, (*it3)->aR(), *it3));
+
+
+					}
+					else{ // i == k-1
+
+						uBef = new  NucleoD(muBef, (*it1)->df(), this->segSeq(), this->rng());
+
+						// Enough reads between a and (*it3)->aR()
+						//flag = !(setNucleoDR(uBef, (*it1)->aF(), this->maxPos(), *it1));
+						setNucleoDR(uBef, (*it1)->aF(), this->maxPos(), *it1);
+					}
+					if(flag){
+						delete uBef;
+						uBef = NULL;
+						delete uNext;
+						uNext = NULL;
+					}
+
+				}while(flag && cpt < 1000);
+
+				if(!(flag))
+				{
+					this->setQalloc(muNext - muBef);
+
+
+					if(i < (k-1)){
+
+						this->pushModNucleo(*it3);
+						*it3 = uNext;
+						this->pushAddNucleo(it3);
+					}
+					else{
+						this->pushModNucleo(*it1);
+						*it1 = uBef;
+						this->pushAddNucleo(it1);
+					}
+
+					this->pushModNucleo(*it2);
+
+					this->eraseNucleo(it2);
+
+				}
+			}
+			catch(std::bad_alloc&) {
+				std::cout << "Memory problem\n";
+				std::cerr << "Memory problem\n";
+				flag = true;
+			}
+		}
+		else{
+			flag = true; // k <= 1
+		}
+		return(!(flag));
+	}
+
+
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::mh(){
 		int cpt = 0;
 		bool flag = false;
 		iteratorNucleo it1, it2, it3;
@@ -893,9 +987,10 @@ public:
 			flag = true;
 		}
 		return(!(flag));
-	};
+	}
 
-	bool mhR(){
+	template <typename NucleoD>
+	bool PartitionAll<NucleoD>::mhR(){
 		int cpt = 0;
 		bool flag = false;
 		iteratorNucleo it1, it2, it3;
@@ -904,7 +999,6 @@ public:
 		double aF, aR;
 		int k = this->valK();
 		int i = 0;
-
 
 		try{
 			do{
@@ -924,7 +1018,7 @@ public:
 				}
 				this->setTB(i);
 
-				//std::cout << "Aye " << (*it2)->mu() << "\n";
+
 				// go to the position i-1 exists
 				// because  i > 0
 				if(i>0){
@@ -936,9 +1030,6 @@ public:
 				{
 					muBef = this->minPos();
 				}
-
-
-
 
 				if( i < (k-1) ){ // Update nucleo after
 					it3 = it2;
@@ -1022,9 +1113,10 @@ public:
 			flag = true;
 		}
 		return(!(flag));
-	};
+	}
 
-	void prepSpace(){
+	template <typename NucleoD>
+	void PartitionAll<NucleoD>::prepSpace(){
 		this->evalW();
 		this->evalKdDim();
 		this->evalPriorMuDensity();
@@ -1032,7 +1124,8 @@ public:
 
 	}
 
-	void delCurrent(){
+	template <typename NucleoD>
+	void PartitionAll<NucleoD>::delCurrent(){
 
 		this->delCurrentD();
 		this->resetAdd();
@@ -1041,14 +1134,16 @@ public:
 		reset();
 	}
 
-	void delMod(){
+	template <typename NucleoD>
+	void PartitionAll<NucleoD>::delMod(){
 		this->delCurrentD();
 		this->resetAdd();
 		this->resetMod();
 		//reset();
 	}
 
-	void reset(){
+	template <typename NucleoD>
+	void PartitionAll<NucleoD>::reset(){
 		delete d_y;
 		d_y = NULL;
 		this->resetNucleo();
@@ -1056,18 +1151,16 @@ public:
 
 	}
 
-	void accept(){
-		//this->displayMod();
-		//this->resetMod();
-		//this->clearAdd();
-	}
-	void reject(){
-
+	template <typename NucleoD>
+	void PartitionAll<NucleoD>::reject(){
 		this->resetAdd();
 	}
 
-private:
-	int getLimit(double start, double end, std::vector<double>::const_iterator &startIt, std::vector<double>::const_iterator &endIt, long &l, bool excEnd = false){
+	template <typename NucleoD>
+	int PartitionAll<NucleoD>::getLimit(double start, double end
+			, std::vector<double>::const_iterator &startIt
+			, std::vector<double>::const_iterator &endIt
+			, long &l, bool excEnd){
 
 		std::vector<double>::const_iterator it=yBegin();
 		bool flag=1;
@@ -1098,30 +1191,8 @@ private:
 		}
 
 		return(cpt);
-	};
+	}
 
-	inline bool yEmpty(){
-	    	return((*d_y).empty());
-	};
-
-    inline bool ySize(){
-        	return(d_ySize);
-	};
-
-	inline std::vector<double>::iterator yBegin(){
-		return((*d_y).begin());
-	};
-
-	inline std::vector<double>::iterator yEnd(){
-		return((*d_y).end());
-	};
-
-	inline double y(int i){
-		return((*d_y)[i]);
-	};
-
-
-};
 
 } /* namespace space_process */
 
