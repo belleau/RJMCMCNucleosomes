@@ -18,7 +18,7 @@
 #' zero.
 #'
 #' @param kMax a positive \code{integer} or \code{numeric}, the maximum number
-#' of nucleosomes per region. Non-integer values
+#' of degrees of freedom per region. Non-integer values
 #' of \code{kMax} will be casted to \code{integer} and truncated towards zero.
 #'
 #' @param lambda a positive \code{numeric}, the theorical mean
@@ -510,4 +510,77 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
                 dataIP[start(dataIP) >= x & start(dataIP) <= (x + maxLength)]
             },
             dataIP=dataIP, zeta=zeta, delta=delta, maxL = maxLength)
+}
+
+#' @title Start rjmcmc in c core after Split a \code{GRanges} containing reads in a list of smaller
+#' segments for the \code{rjmcmc} function.
+#'
+#' @description Split a \code{GRanges} of reads (as example, the reads from
+#' a chromosome) in a \code{list} of smaller \code{GRanges} sot that the
+#' \code{rjmcmc} function can be run on each segments.
+#'
+#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#'
+#' @param zeta a positive \code{integer} or \code{numeric}, the length
+#' of the nucleosomes. Default: 147.
+#'
+#' @param delta a positive \code{integer} or \code{numeric}, the accepted
+#' range of overlapping section between segments. The overlapping section
+#' being \code{zeta} + \code{delta}.
+#'
+#' @param maxLength a positive \code{integer} or \code{numeric}, the
+#' length of each segment.
+#'
+#' @return a \code{list} of \code{GRanges}, the list of segments.
+#'
+#' @examples
+#'
+#' ## Load synthetic dataset of reads
+#' data(syntheticNucleosomeReads)
+#'
+#' ## Use dataset of reads to create GRanges object
+#' sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+#'     ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+#'     end = syntheticNucleosomeReads$dataIP$end),
+#'     strand = syntheticNucleosomeReads$dataIP$strand)
+#'
+#' # Segmentation of the reads
+#' segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 10000)
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @export
+
+rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
+                      nbrIterations, kMax, lambda = 3,
+                      minInterval, maxInterval, minReads = 5,
+                      adaptIterationsToReads = TRUE, vSeed = -1,
+                      nbCores = 1,
+                      saveAsRDS = FALSE, saveSEG = TRUE){
+
+    if(!file.exists("results")){
+        dir.create("results")
+    }
+    if(!file.exists("done")){
+        dir.create("done")
+    }
+
+    seg <- segmentation(dataIP, zeta, delta, maxLength)
+
+    nbSeg <- length(seg)
+
+    a <- mclapply(1:nbSeg, FUN=NP, seg, niter=nbrIterations,
+                  kmax=kmax, lambda=lambda, ecartmin=ecartmin, ecartmax=ecartmax,
+                  minReads=minReads,
+                  adaptNbrIterations=adaptIterationsToReads, mc.cores=nbCores,
+                  mc.preschedule = FALSE)
+
+    results <- mergeAllRDSFilesFromDirectory("results")
+    allReadsForward <- start(dataIP[strand(dataIP) == "+"])
+    allReadsReverse <- end(dataIP[strand(dataIP) == "-"])
+    resultPostTreatement <- postTreatment(startPosForwardReads=allReadsForward , startPosReverseReads=allReadsReverse,
+                                           results, chrLength=max(allReadsForward,
+                                                                 allReadsReverse))
+
+     results$muPost <- resultPostTreatement
+     return(results)
 }
