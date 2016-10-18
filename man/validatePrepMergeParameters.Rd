@@ -45,7 +45,7 @@ data(reads_demo)
 
 ## Load dataset containing nucleosome information
 file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+pattern = "newSeg_2.rds", full.names = TRUE)
 nucleosome_info <- readRDS(file_002)
 
 ## The function returns 0 when all parameters are valid

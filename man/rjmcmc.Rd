@@ -6,7 +6,7 @@
 \usage{
 rjmcmc(startPosForwardReads, startPosReverseReads, nbrIterations, kMax,
   lambda = 3, minInterval, maxInterval, minReads = 5,
-  adaptIterationsToReads = TRUE, vSeed = -1)
+  adaptIterationsToReads = TRUE, vSeed = -1, saveAsRDS = FALSE)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
@@ -46,6 +46,10 @@ Default: \code{TRUE}.}
 \item{vSeed}{a \code{integer}. A seed used when reproducible results are
 needed. When a value inferior or equal to zero is given, a random integer
 is used. Default: -1.}
+
+\item{saveAsRDS}{a \code{logical}. When \code{TRUE}, a RDS file containing
+the complete output of the c++ rjmcmc() function is created.
+Default : \code{FALSE}.}
 }
 \value{
 a \code{list} of \code{class} "rjmcmcNucleosomes" containing:
@@ -74,9 +78,10 @@ data(reads_demo)
 
 ## Nucleosome positioning, running both merge and split functions
 result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-         startPosReverseReads = reads_demo$readsReverse,
-         nbrIterations = 1000, lambda = 2, kMax = 30,
-         minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10113)
+            startPosReverseReads = reads_demo$readsReverse,
+            nbrIterations = 1000, lambda = 2, kMax = 30,
+            minInterval = 146, maxInterval = 292, minReads = 5,
+            vSeed = 10113, saveAsRDS = FALSE)
 
 ## Print the final estimation of the number of nucleosomes
 result$k

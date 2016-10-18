@@ -16,13 +16,6 @@ a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
     \item k a \code{integer}, the number of nucleosomes.
     \item mu a \code{vector} of \code{numeric} of length
 \code{k}, the positions of the nucleosomes.
-    \item sigmaf a \code{vector} of \code{numeric} of length
-\code{k}, the variance of the forward reads for each nucleosome.
-    \item sigmar a \code{vector} of \code{numeric} of length
-\code{k}, the variance of the reverse reads for each nucleosome.
-    \item delta a \code{vector} of \code{numeric} of length
-\code{k}, the distance between the maxima of the forward and
-reverse reads position densities for each nucleosome.
 }
 }
 \description{
@@ -34,16 +27,16 @@ TODO: to modify when new format will be set.
 
 ## Loading two files containing nucleosomes informations for two sections of
 ## the same chromosome
-file_100 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                pattern = "yeastRes_Chr1_Seg_100.rds",
+file_1 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+                pattern = "newSeg_1.rds",
                 full.names = TRUE)
 
-file_101 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                pattern = "yeastRes_Chr1_Seg_101.rds",
+file_2 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+                pattern = "newSeg_2.rds",
                 full.names = TRUE)
 
 ## Merging nucleosomes informations from the two files
-result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_100, file_101))
+result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
 
 }
 \author{

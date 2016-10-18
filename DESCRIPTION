@@ -39,7 +39,6 @@ Suggests:
     BiocStyle,
     knitr,
     rmarkdown,
-    PING,
     nucleoSim,
     RUnit
 LinkingTo: Rcpp

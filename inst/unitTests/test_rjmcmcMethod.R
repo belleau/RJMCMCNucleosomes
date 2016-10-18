@@ -19,20 +19,21 @@ if(FALSE) {
 data(reads_demo)
 data(reads_demo_02)
 data(RJMCMC_result)
+data(syntheticNucleosomeReads)
 
 DIRECTORY <- system.file("extdata", package = "RJMCMCNucleosomes")
 
-file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                        pattern = "yeastRes_Chr1_Seg_002.rds",
+file_001 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+                        pattern = "newSeg_1.rds",
                         full.names = TRUE)
 
-file_101 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                pattern = "yeastRes_Chr1_Seg_101.rds",
-                full.names = TRUE)
+file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+                        pattern = "newSeg_2.rds",
+                        full.names = TRUE)
 
-file_100 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                pattern = "yeastRes_Chr1_Seg_100.rds",
-                full.names = TRUE)
+file_003 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+                        pattern = "newSeg_3.rds",
+                        full.names = TRUE)
 
 
 ###########################################################
@@ -178,20 +179,15 @@ test.mergeAllRDSFilesFromDirectory_good <- function() {
 
     obs <- mergeAllRDSFilesFromDirectory(DIRECTORY)
     exp <- list()
-    exp$k <- 12
-    exp$mu <- c(65495.93096152, 65635.15873971, 65667.09919056, 65731.46018451,
-                65821.77378456, 65849.37480950, 65877.86273165, 66073.60889425,
-                66121.93114271, 66262.62007435, 66339.89317112, 66409.08499401)
-    exp$sigmaf <- c(1327.56410971, 8.26040846, 1910.63319069, 255.22104538,
-                    37.99635976, 758.69274593, 45.74932385, 3535.27508195,
-                    127.77101262, 1059.08821048, 47.90158118, 252.71961235)
-    exp$sigmar <- c(1220.14774153, 56.00340185, 1908.17853436, 71.47109077,
-                    43.89666079, 263.40271305, 74.05517743, 1542.90232618,
-                    114.08280263, 1197.75017003, 51.42856782, 83.87224549)
-    exp$delta  <- c(146.80383296, 145.21285124, 151.95220401, 145.59756968,
-                    145.64481509, 145.84496473, 145.80370401, 143.37237392,
-                    145.68833105, 147.52411842, 147.44254377, 150.25053506)
-    exp$df <- c(3, 15, 3, 3, 3, 3, 6, 3, 14, 3, 8, 3)
+    exp$k <- 16
+    exp$mu <- c(10092.474777629515302, 10242.340786347993344,
+                10410.315021756090573, 10546.628207912892321,
+                11134.263941022001745, 11244.139414670189581,
+                11380.302471258171863, 11412.657313642583176,
+                11578.516646129490255, 11868.408425173787691,
+                12058.054137626086231, 12235.422415610730241,
+                12276.903444548192056, 12412.604063330700228,
+                12473.443670263422973, 12585.175197400152683)
 
     class(exp) <- "rjmcmcNucleosomesMerge"
 
@@ -233,24 +229,19 @@ test.mergeRDSFiles_notExisting <- function() {
 
 test.mergeRDSFiles_good <- function() {
 
-    files <- c(file_002, file_101, file_100)
+    files <- c(file_001, file_002, file_003)
 
     obs <- mergeRDSFiles(files)
     exp <- list()
-    exp$k <- 12
-    exp$mu <- c(65495.93096152, 65635.15873971, 65667.09919056, 65731.46018451,
-                65821.77378456, 65849.37480950, 65877.86273165, 66073.60889425,
-                66121.93114271, 66262.62007435, 66339.89317112, 66409.08499401)
-    exp$sigmaf <- c(1327.56410971, 8.26040846, 1910.63319069, 255.22104538,
-                    37.99635976, 758.69274593, 45.74932385, 3535.27508195,
-                    127.77101262, 1059.08821048, 47.90158118, 252.71961235)
-    exp$sigmar <- c(1220.14774153, 56.00340185, 1908.17853436, 71.47109077,
-                    43.89666079, 263.40271305, 74.05517743, 1542.90232618,
-                    114.08280263, 1197.75017003, 51.42856782, 83.87224549)
-    exp$delta  <- c(146.80383296, 145.21285124, 151.95220401, 145.59756968,
-                    145.64481509, 145.84496473, 145.80370401, 143.37237392,
-                    145.68833105, 147.52411842, 147.44254377, 150.25053506)
-    exp$df <- c(3, 15, 3, 3, 3, 3, 6, 3, 14, 3, 8, 3)
+    exp$k <- 16
+    exp$mu <- c(10092.474777629515302, 10242.340786347993344,
+                10410.315021756090573, 10546.628207912892321,
+                11134.263941022001745, 11244.139414670189581,
+                11380.302471258171863, 11412.657313642583176,
+                11578.516646129490255, 11868.408425173787691,
+                12058.054137626086231, 12235.422415610730241,
+                12276.903444548192056, 12412.604063330700228,
+                12473.443670263422973, 12585.175197400152683)
 
     class(exp) <- "rjmcmcNucleosomesMerge"
 
@@ -279,7 +270,7 @@ test.postTreatment_good_01 <- function() {
                 73146.59089970112836454064)
 
     message <- paste0(" test.postTreatment_good_01() ",
-                      "- posTreatment() did not generated expected message.")
+                      "- posTreatment() did not generated expected result.")
 
     checkEquals(obs, exp, msg = message)
 }
@@ -296,7 +287,68 @@ test.postTreatment_good_02 <- function() {
              73146.59089970112836454064)
 
     message <- paste0(" test.postTreatment_good_02() ",
-                      "- posTreatment() did not generated expected message.")
+                      "- posTreatment() did not generated expected result.")
 
     checkEquals(obs, exp, msg = message)
 }
+
+
+###########################################################
+## segmentation() function
+###########################################################
+
+test.segmentation_good_01 <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                    ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                    end = syntheticNucleosomeReads$dataIP$end),
+                    strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- segmentation(sampleGRanges, zeta =  147, delta = 20, maxLength = 20000)
+
+    message <- paste0(" test.segmentation_good_01() ",
+                      "- segmentation() did not generated expected result.")
+
+    exp.len = 3
+    exp.01.len = 10504
+    exp.02.len = 11818
+    exp.03.len = 9686
+
+    checkTrue(is.list(obs), ms = message)
+    checkEquals(length(obs), exp.len, ms = message)
+    checkEquals(length(obs[[1]]), exp.01.len, ms = message)
+    checkTrue(is(obs[[1]],"GRanges"), ms = message)
+    checkEquals(length(obs[[2]]), exp.02.len, ms = message)
+    checkTrue(is(obs[[2]],"GRanges"), ms = message)
+    checkEquals(length(obs[[3]]), exp.03.len, ms = message)
+    checkTrue(is(obs[[3]],"GRanges"), ms = message)
+}
+
+test.segmentation_good_02  <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                              end = syntheticNucleosomeReads$dataIP$end),
+                             strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- segmentation(sampleGRanges, zeta =  142, delta = 40, maxLength = 15000)
+
+    message <- paste0(" test.segmentation_good_02() ",
+                      "- segmentation() did not generated expected result.")
+
+    exp.len = 4
+    exp.01.len = 7972
+    exp.02.len = 8496
+    exp.03.len = 9362
+    exp.04.len = 6390
+
+    checkTrue(is.list(obs), ms = message)
+    checkEquals(length(obs), exp.len, ms = message)
+    checkEquals(length(obs[[1]]), exp.01.len, ms = message)
+    checkTrue(is(obs[[1]],"GRanges"), ms = message)
+    checkEquals(length(obs[[2]]), exp.02.len, ms = message)
+    checkTrue(is(obs[[2]],"GRanges"), ms = message)
+    checkEquals(length(obs[[3]]), exp.03.len, ms = message)
+    checkTrue(is(obs[[3]],"GRanges"), ms = message)
+}
+

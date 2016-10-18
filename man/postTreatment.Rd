@@ -48,16 +48,17 @@ data(reads_demo)
 
 ## Nucleosome positioning, running both merge and split functions
 result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-         startPosReverseReads = reads_demo$readsReverse,
-         nbrIterations = 1000, lambda = 2, kMax = 30,
-         minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
+            startPosReverseReads = reads_demo$readsReverse,
+            nbrIterations = 1000, lambda = 2, kMax = 30,
+            minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
 
 ## Before post-treatment
 result
 
 ## Post-treatment function which merged closely positioned nucleosomes
 postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-         startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
+            startPosReverseReads = reads_demo$readsReverse,
+            result, 74, 73500)
 
 ## After post-treatment
 postResult

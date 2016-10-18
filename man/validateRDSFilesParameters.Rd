@@ -24,7 +24,7 @@ Validation of all parameters needed by the public
 
 ## Loading a file
 file_test <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+pattern = "newSeg_2.rds", full.names = TRUE)
 
 ## Testing using a real file
 RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
