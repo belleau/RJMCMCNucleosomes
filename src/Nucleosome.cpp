@@ -13,13 +13,11 @@ namespace space_process {
 
 Nucleosome::Nucleosome(double pos, SegmentSeq const &segSeq, gsl_rng *rng)
 	:d_segSeq(segSeq){
-	// TODO Auto-generated constructor stub
 	d_mu = pos;
 	d_rng = rng;
 }
 
 Nucleosome::~Nucleosome() {
-	// TODO Auto-generated destructor stub
 }
 
 void Nucleosome::setFStartPos(std::vector<double>::const_iterator fStart, std::vector<double>::const_iterator fEnd, int n){
