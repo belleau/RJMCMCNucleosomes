@@ -6,10 +6,7 @@
  */
 
 #include "NucleoDirichletPA.h"
-#include <iostream>
 
-
-using namespace std;
 
 namespace space_process {
 
