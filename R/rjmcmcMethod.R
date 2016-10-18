@@ -157,8 +157,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' in a same directory. Beware that only nucleosome information from same
 #' chromosome should be merged together.
 #'
-#' TODO : A faire pour nouveau format
-#'
 #' @description Merge nucleosome information, from all RDS files present
 #' in a same directory, into one object
 #' of \code{class} "rjmcmcNucleosomesMerge".
@@ -174,13 +172,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric} of length
 #' \code{k}, the positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
 #' }
 #'
 #' @examples
@@ -233,13 +224,6 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric} of length
 #' \code{k}, the positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
 #' }
 #'
 #' @examples
@@ -271,7 +255,7 @@ mergeRDSFiles <- function(RDSFiles) {
 }
 
 
-#' @title A post treatment function to merge closely positioned nucleosomes,
+#' @title A post-treatment function to merge closely positioned nucleosomes,
 #' from the same chromosome, identified by the \code{\link{rjmcmc}} function.
 #'
 #' @description A helper function which merges closely positioned nucleosomes

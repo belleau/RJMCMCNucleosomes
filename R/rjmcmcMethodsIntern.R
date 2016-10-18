@@ -234,8 +234,6 @@ validateRJMCMCParameters <- function(startPosForwardReads,
 #'
 #' @description Merge nucleosome information present in multiple RDS files.
 #'
-#' TODO: to modify when new format will be set.
-#'
 #' @param arrayOfFiles a \code{array}, the name of each file that must be
 #' used to merge nucleosome information.
 #'
