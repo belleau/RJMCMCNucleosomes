@@ -21,7 +21,6 @@ NucleoDirichlet::NucleoDirichlet(double mu, SegmentSeq const &segSeq, gsl_rng *r
 }
 
 NucleoDirichlet::~NucleoDirichlet() {
-	// TODO Auto-generated destructor stub
 }
 
 

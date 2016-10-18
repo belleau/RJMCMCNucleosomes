@@ -51,8 +51,6 @@ namespace space_process {
 			gsl_rng * rng, int kMax, long nbIteration):
 		SimulationNucleo<NucleoSpace>(segSeq, rng, nbIteration),
 		d_kMax(kMax), d_resStat(R_NilValue) {
-		// TODO Auto-generated constructor stub
-
 	}
 
 	template< typename NucleoSpace>

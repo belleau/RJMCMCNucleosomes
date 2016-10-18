@@ -30,7 +30,6 @@ SegmentSeq::SegmentSeq(std::vector<double> const &fReads,
 }
 
 SegmentSeq::~SegmentSeq() {
-	// TODO Auto-generated destructor stub
 }
 
 void SegmentSeq::setMinMax(){
