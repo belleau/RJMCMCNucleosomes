@@ -20,8 +20,6 @@ a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
 }
 \description{
 Merge nucleosome information present in multiple RDS files.
-
-TODO: to modify when new format will be set.
 }
 \examples{
 

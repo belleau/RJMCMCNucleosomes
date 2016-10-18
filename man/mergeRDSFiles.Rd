@@ -18,13 +18,6 @@ a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
     \item k a \code{integer}, the number of nucleosomes.
     \item mu a \code{vector} of \code{numeric} of length
 \code{k}, the positions of the nucleosomes.
-    \item sigmaf a \code{vector} of \code{numeric} of length
-\code{k}, the variance of the forward reads for each nucleosome.
-    \item sigmar a \code{vector} of \code{numeric} of length
-\code{k}, the variance of the reverse reads for each nucleosome.
-    \item delta a \code{vector} of \code{numeric} of length
-\code{k}, the distance between the maxima of the forward and
-reverse reads position densities for each nucleosome.
 }
 }
 \description{
