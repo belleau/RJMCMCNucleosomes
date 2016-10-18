@@ -5,8 +5,6 @@
  *      Author: belleau
  */
 
-using namespace Rcpp;
-using namespace std;
 
 template< typename NucleoSpace>
 SimulationNucleoD<NucleoSpace>::SimulationNucleoD(SegmentSeq const &segSeq,

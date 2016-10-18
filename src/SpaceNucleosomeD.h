@@ -183,7 +183,8 @@ namespace space_process{
 				if(this->valK() > 2)
 				{
 					/* matrix multiplication t(mu) Omega mu */
-					double v [3] = {(**nucleoIt++).mu() - m, (**nucleoIt++).mu()  - m, 0};
+					double v [3] = {(**nucleoIt++).mu() - m, 0, 0};
+					v[1] = (**nucleoIt++).mu()  - m;
 					result = (2 * v[0] -  v[1]) * v[0];
 
 					int i = 2;

@@ -13,8 +13,8 @@
 
 
 namespace space_process {
-template< typename NucleoSpace>
 
+template< typename NucleoSpace>
 class SimulationNucleo{
 	typedef std::vector<NucleoSpace *> NucleoSim;
 	typedef typename NucleoSim::iterator itState;

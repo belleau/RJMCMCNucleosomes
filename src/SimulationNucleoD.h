@@ -83,6 +83,7 @@ public:
 	Rcpp::List simRapport();
 };
 
+
 #include "SimulationNucleoD.tpp"
 } /* namespace space_process */
 
