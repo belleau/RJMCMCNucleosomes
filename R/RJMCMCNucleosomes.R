@@ -10,10 +10,10 @@
 #'
 #' @aliases RJMCMCNucleosomes-package RJMCMCNucleosomes
 #'
-#' @author  Rawane Samb,
-#' Khader Khadraoui,
-#' Pascal Belleau,
+#' @author  Pascal Belleau,
+#' Rawane Samb,
 #' Astrid Deschênes,
+#' Khader Khadraoui,
 #' Lajmi Lakhal and
 #' Arnaud Droit
 #'
