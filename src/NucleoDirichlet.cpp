@@ -40,23 +40,7 @@ void NucleoDirichlet::setDf(int df){
 int NucleoDirichlet::df(){
 	return(d_df);
 }
-/*
-void NucleoDirichlet::setBF(double bF){
-	d_bF = bF;
-}
 
-double NucleoDirichlet::bF(){
-	return(d_bF);
-}
-
-void NucleoDirichlet::setBR(double bR){
-	d_bR = bR;
-}
-
-double NucleoDirichlet::bR(){
-	return(d_bR);
-}
-*/
 void NucleoDirichlet::evalSigmaF(){
 	setSigmaF(-1.0);
 	if(d_df > 2){
@@ -120,47 +104,6 @@ double NucleoDirichlet::tP(){
 	return(d_tP);
 }
 
-void NucleoDirichlet::testF(){
-	std::cout << "tmp " << mu() + delta()/2.0 << " delta " << delta() << "\n";
-	/*cout << "Read ";
-	for(vector<double>::const_iterator it = startF(); it != endF(); it++){ //run on all seq
-		cout << ", " << (*it);
-	}
-	cout << "\n";*/
-}
-
-void NucleoDirichlet::evalBF1(){
-
-	/* reinit d_bF */
-	d_bF.clear();
-	d_bF.resize(sizeFR());
-	d_tP = 0;
-	if(sigmaF() > 0.000001)
-	{
-		double tmp = mu() - delta()/2.0;
-		double sdF = sqrt(sigmaF());
-		long i = 0;
-		//if(1/sdF > 0.5)
-		//std::cout << "tmp " << 1/sdF << " df " << df() << "\n";
-		//std::cout << "tmp ";
-		//d_tP = mu(); // + delta()/2;
-
-		d_tP = sdF;
-		//std::cout << " sigmafBF " << sigmaF() << "\n";
-		for(vector<double>::const_iterator it = beginFR(); it != endFR(); it++){ //run on all seq
-			//std::cout << " t " << ((*it - tmp ) / sdF);
-			//d_tP += ((*it - tmp ) / sdF);
-			d_bF[i++] = gsl_ran_tdist_pdf(((*it - tmp ) / sdF), df()) / sdF;
-		}
-		//d_tP /= i;
-		//std::cout << "\n";
-		//cout << "Sigma " << sigmaF() << " " << sdF << "\n";
-	}
-	else{
-		cerr << "sigmaF or sigmaR not bigger than 0\n";
-		//exit(1);
-	}
-}
 
 
 void NucleoDirichlet::setBF(std::vector<double> &bF){
