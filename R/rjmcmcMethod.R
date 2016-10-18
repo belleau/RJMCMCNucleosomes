@@ -582,5 +582,8 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
                                                                  allReadsReverse))
 
      results$muPost <- resultPostTreatement
+
+     class(result)<-"rjmcmcNucleosomesBeforeAndAfterPostTreatment"
+
      return(results)
 }
