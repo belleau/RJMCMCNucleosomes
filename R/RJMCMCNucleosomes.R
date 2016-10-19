@@ -22,11 +22,20 @@
 #'
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{rjmcmc}} { for profiling of nucleosome positions}
+#'     \item \code{\link{rjmcmc}} { for profiling of nucleosome positions for a
+#'     segment}
+#'     \item \code{\link{rjmcmcCHR}} { for profiling of nucleosome positions
+#'     for a large region. The function will take care of spliting and
+#'     merging.}
+#'     \item \code{\link{segmentation}} { for spliting a \code{GRanges}
+#'     containing reads in a list of smaller segments for
+#'     the \code{rjmcmc} function.}
 #'     \item \code{\link{postTreatment}} { for merging closely positioned
 #'     nucleosomes}
 #'     \item \code{\link{mergeRDSFiles}} { for merging nucleosome information
 #'     from selected RDS files.}
+#'     \item \code{\link{plotNucleosomes}} { for generating a graph containing
+#'     the nucleosome positions and the read coverage.}
 #' }
 #'
 #' @keywords package
@@ -165,9 +174,9 @@ NULL
 #' RJMCMC_result$mu
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postTreatment(startPosForwardReads = reads_demo_02$readsForward,
+#' postResult <- postTreatment(startPosForwardReads = reads_demo_02$readsForward,
 #' startPosReverseReads = reads_demo_02$readsReverse, extendingSize = 60,
-#' chrLength = 100000, resultRJMCMC = test)
+#' chrLength = 100000, resultRJMCMC = RJMCMC_result)
 #'
 #' ## Results after post-treatment
 #' postResult

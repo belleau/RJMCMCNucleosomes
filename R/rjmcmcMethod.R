@@ -286,7 +286,8 @@ mergeRDSFiles <- function(RDSFiles) {
 #' located inside the chromosome.
 #'
 #' @return a \code{array} of \code{numeric}, the updated values of the
-#' nucleosome positions.
+#' nucleosome positions. When no nucleosome is present, \code{NULL} is
+#' returned.
 #'
 #' @examples
 #'
@@ -356,7 +357,7 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' are used or the string "Nucleosome" for a \code{vector} are used.
 #' Default: \code{NULL}.
 #'
-#' @return a graph containing the nucleosome position and the read coverage
+#' @return a graph containing the nucleosome positions and the read coverage
 #'
 #' @examples
 #'

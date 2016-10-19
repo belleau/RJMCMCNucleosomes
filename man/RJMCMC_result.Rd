@@ -35,9 +35,9 @@ data(reads_demo_02)
 RJMCMC_result$mu
 
 ## Post-treatment function which merged closely positioned nucleosomes
-postTreatment(startPosForwardReads = reads_demo_02$readsForward,
+postResult <- postTreatment(startPosForwardReads = reads_demo_02$readsForward,
 startPosReverseReads = reads_demo_02$readsReverse, extendingSize = 60,
-chrLength = 100000, resultRJMCMC = test)
+chrLength = 100000, resultRJMCMC = RJMCMC_result)
 
 ## Results after post-treatment
 postResult
