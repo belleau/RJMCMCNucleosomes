@@ -114,10 +114,8 @@ val.offset    <- 10000  ### The number of bases used to offset all nucleosomes a
 sample <- nucleoSim::syntheticNucReadsFromDist(wp.num=val.num,
                                     wp.del=val.del, wp.var=val.var,
                                     fuz.num=val.del, fuz.var=val.fuz.var,
-                                    max.cover=val.max.cover,
-                                    nuc.len=val.nuc.len,
-                                    len.var=val.len.var,
-                                    lin.len=val.lin.len,
+                                    max.cover=val.max.cover, nuc.len=val.nuc.len,
+                                    len.var=val.len.var, lin.len=val.lin.len,
                                     rnd.seed=val.rnd.seed,
                                     distr="Normal", offset=val.offset)
 
@@ -215,7 +213,7 @@ resultsAllMerged
 In some cases the RJMCMC method tends to over split the distribution of reads 
 for a single nucleosome. Although this characteristic increases the number 
 of false positives, it is still beneficial for the region’s rich in 
-nucleosomes.  
+nucleosomes.
 
 A function, that merges closely positioned nucleosomes, has been implemented 
 to rectify the over splitting and provide more conservative results.
@@ -223,6 +221,9 @@ to rectify the over splitting and provide more conservative results.
 The \code{postTreatment} function must be run on the entire analyzed region to
 be efficient. __It should not be run on segmented results__. The function 
 needs the positions of the reads used for the RJMCMC analysis.
+
+The value of \code{extendingSize} should be kept low (bellow 20). A larger 
+value could cause the possible merge of true nucleosomes. 
 
 ```{r postProcess01, collapse=TRUE, message=FALSE}
 ## Split reads from the initial sample data into forward and reverse subsets

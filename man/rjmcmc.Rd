@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethod.R
 \name{rjmcmc}
 \alias{rjmcmc}
-\title{Nucleosome positioning mapping}
+\title{Nucleosome positioning mapping on a segment}
 \usage{
 rjmcmc(startPosForwardReads, startPosReverseReads, nbrIterations, kMax,
   lambda = 3, minInterval, maxInterval, minReads = 5,
@@ -69,7 +69,8 @@ detected.
 Use of a fully Bayesian hierarchical model for chromosome-wide
 profiling of nucleosome positions based on high-throughput short-read
 data (MNase-Seq data). Beware that for a genome-wide profiling, each
-chromosome must be treated separatly.
+chromosome must be treated separatly. This function is optimized to run
+on segments that are smaller sections of the chromosome.
 }
 \examples{
 
