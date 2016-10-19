@@ -4,7 +4,7 @@
 \name{RJMCMCNucleosomes-package}
 \alias{RJMCMCNucleosomes}
 \alias{RJMCMCNucleosomes-package}
-\title{RJMCMCNucleosomes: Bayesian hierarchical model for genome-wide profiling of nucleosome positions based on high-throughput short-read data (MNase-Seq data)}
+\title{RJMCMCNucleosomes: Bayesian hierarchical model for genome-wide nucleosome positioning with high-throughput short-read data (MNase-Seq)}
 \description{
 This package does nucleosome positioning using informative
 Multinomial-Dirichlet prior in a t-mixture with reversible jump
