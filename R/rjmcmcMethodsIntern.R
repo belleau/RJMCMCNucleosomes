@@ -200,8 +200,7 @@ validateRJMCMCParameters <- function(startPosForwardReads,
 
     ## Validate that the startPosForwardReads has at least one read
     ## and that the values are integer
-    if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads)
-        || length(startPosForwardReads) < 1)
+    if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads))
     {
         stop(paste0("startPosForwardReads must be a non-empty vector of ",
                     "numeric values."))
@@ -209,8 +208,7 @@ validateRJMCMCParameters <- function(startPosForwardReads,
 
     ## Validate that the startPosReverseReads has at least one read
     ## and that the values are integer
-    if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads)
-        || length(startPosReverseReads) < 1)
+    if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads))
     {
         stop(paste0("startPosReverseReads must be a non-empty vector of ",
                     "numeric values."))
@@ -274,8 +272,9 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     for (fileName in arrayOfFiles) {
         data <- readRDS(file = fileName)
         ## Only use data from rjmcmcNucleosomes or rjmcmcNucleosomesMerge class
-        if (is(data, "rjmcmcNucleosomesMerge") ||
-                is(data, "rjmcmcNucleosomes")) {
+        if ((is(data, "rjmcmcNucleosomesMerge") ||
+                is(data, "rjmcmcNucleosomes"))
+                & length(data$mu[is.na(data$mu)]) == 0 ) {
             result$k      <- result$k + data$k
             result$mu     <- c(result$mu, data$mu)
         }
@@ -828,27 +827,39 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
 #' @export
 
 
-NP <- function(p, seg, niter, kmax, lambda, ecartmin, ecartmax, minReads, adaptNbrIterations)
+runCHR <- function(p, seg, niter, kmax, lambda,
+                   ecartmin, ecartmax,
+                   minReads, adaptNbrIterations,
+                   dirOut="out")
 {
-    nameDone <- paste0("done/rjmcm_seg_", p, ".RData")
+    dirDone <- paste0(dirOut, "/done")
+    dirResults <- paste0(dirOut, "/results")
+    validateDirectoryParameters(dirDone)
+    validateDirectoryParameters(dirResults)
 
-    if (!file.exists(nameDone)) {
-        nameRDS  <- paste0("results/rjmcmc_seg_", p, ".rds")
+
+    nameDone <- paste0(dirDone,"/rjmcm_seg_", p, ".RData")
+
+    if (!file.exists(nameDone) ) {
+        nameRDS  <- paste0(dirResults,"/rjmcmc_seg_", p, ".rds")
         print(paste0("Doing: ", nameRDS))
         listeSeg <- rjmcmc(startPosForwardReads=start(seg[[p]][strand(seg[[p]]) == "+"]),
-                           startPosReverseReads=end(seg[[p]][strand(seg[[p]]) == "-"]), nbrIterations=niter,
-                           kMax=kmax, lambda=lambda, minInterval=ecartmin,
-                           maxInterval=ecartmax, minReads=minReads, adaptIterationsToReads=adaptNbrIterations)
+                           startPosReverseReads=end(seg[[p]][strand(seg[[p]]) == "-"]),
+                           nbrIterations=niter, kMax=kmax,
+                           lambda=lambda, minInterval=ecartmin,
+                           maxInterval=ecartmax, minReads=minReads,
+                           adaptIterationsToReads=adaptNbrIterations)
+
         if(all(is.na(listeSeg)))
         {
             print(paste0("Seg NA ", nameRDS))
-        } else {
-            saveRDS(listeSeg, nameRDS)
         }
+        saveRDS(listeSeg, nameRDS)
 
         print(paste0("Done: ", nameRDS))
         save(nameRDS, file=nameDone)
     }
+
     return(0)
 }
 
