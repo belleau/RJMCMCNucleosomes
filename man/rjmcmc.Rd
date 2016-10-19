@@ -22,7 +22,7 @@ number of iterations. Non-integer values of
 zero.}
 
 \item{kMax}{a positive \code{integer} or \code{numeric}, the maximum number
-of nucleosomes per region. Non-integer values
+of degrees of freedom per region. Non-integer values
 of \code{kMax} will be casted to \code{integer} and truncated towards zero.}
 
 \item{lambda}{a positive \code{numeric}, the theorical mean

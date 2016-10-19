@@ -948,9 +948,9 @@ test.validateSegmentationParameters_delta_negative <- function() {
 test.validateSegmentationParameters_maxLength_vector <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                                              end = syntheticNucleosomeReads$dataIP$end),
-                             strand = syntheticNucleosomeReads$dataIP$strand)
+                            ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                                        end = syntheticNucleosomeReads$dataIP$end),
+                            strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
         dataIP = sampleGRanges, zeta = 147, delta = 12,
@@ -1031,7 +1031,8 @@ test.postMerge_good_01 <- function() {
                                 startPosReverseReads = reads_demo$readsReverse,
                                 resultRJMCMC = RJMCMC_result,
                                 extendingSize = 10, chrLength = 80000)
-    exp <- c(72434.766272478853, 72544.048047704578, 73146.590899701128)
+    exp <- c(18747.497431393061561, 18891.529184734645241,
+                19447.663942274604779, 19554.286613321939512)
     message <- paste0(" test.postMerge_good_01() ",
                       "- postMerge() did not generated expected message.")
     checkEquals(obs, exp, msg = message)
@@ -1039,13 +1040,13 @@ test.postMerge_good_01 <- function() {
 
 
 ## Test the result of postMerge() function
-test.postMerge_good_02 <- function() {
+test.postMerge_good_NULL_returned <- function() {
     obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo$readsForward,
                               startPosReverseReads = reads_demo$readsReverse,
                               resultRJMCMC = RJMCMC_result,
                               extendingSize = 100, chrLength = 80000)
-    exp <- c(72452.452375092398, 73146.590899701128)
-    message <- paste0(" test.postMerge_good_02() ",
+    exp <- NULL
+    message <- paste0(" test.postMerge_good_NULL_returned() ",
                       "- postMerge() did not generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
