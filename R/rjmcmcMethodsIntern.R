@@ -200,8 +200,7 @@ validateRJMCMCParameters <- function(startPosForwardReads,
 
     ## Validate that the startPosForwardReads has at least one read
     ## and that the values are integer
-    if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads)
-        || length(startPosForwardReads) < 1)
+    if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads))
     {
         stop(paste0("startPosForwardReads must be a non-empty vector of ",
                     "numeric values."))
@@ -209,8 +208,7 @@ validateRJMCMCParameters <- function(startPosForwardReads,
 
     ## Validate that the startPosReverseReads has at least one read
     ## and that the values are integer
-    if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads)
-        || length(startPosReverseReads) < 1)
+    if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads))
     {
         stop(paste0("startPosReverseReads must be a non-empty vector of ",
                     "numeric values."))
@@ -274,8 +272,9 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     for (fileName in arrayOfFiles) {
         data <- readRDS(file = fileName)
         ## Only use data from rjmcmcNucleosomes or rjmcmcNucleosomesMerge class
-        if (is(data, "rjmcmcNucleosomesMerge") ||
-                is(data, "rjmcmcNucleosomes")) {
+        if ((is(data, "rjmcmcNucleosomesMerge") ||
+                is(data, "rjmcmcNucleosomes"))
+                & length(data$mu[is.na(data$mu)]) == 0 ) {
             result$k      <- result$k + data$k
             result$mu     <- c(result$mu, data$mu)
         }
@@ -687,8 +686,7 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #'
 #'
 #' @return a \code{array} of \code{numeric}, the updated values of the
-#' nucleosome positions. When no nucleosome is present, \code{NULL} is
-#' returned.
+#' nucleosome positions.
 #'
 #' @examples
 #'
@@ -787,34 +785,58 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
         }
     }
 
-    finalResult <- NULL
-    if (!all(is.na(newMu))) {
-        finalResult <- as.numeric(newMu[!is.na(newMu)])
-    }
-
-    return(finalResult)
+    return(as.numeric(newMu[!is.na(newMu)]))
 }
 
-#' @title Start rjmcmc on
-#' segments for the \code{rjmcmc} function.
+#' @title Start rjmcmc on the p
+#' segment for the \code{rjmcmc} function.
 #'
-#' @description Split a \code{GRanges} of reads (as example, the reads from
-#' a chromosome) in a \code{list} of smaller \code{GRanges} sot that the
-#' \code{rjmcmc} function can be run on each segments.
+#' @description run \code{\link{rjmcmc}}  on a the p segment if the file
+#' dirOut/rjmcmc_seg_p.RData don't exist. It saves the result in
+#' dirOut/rjmcmc_seg_p.rds
 #'
-#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#' @param p a \code{integer}, the segment in the list seg.
 #'
-#' @param zeta a positive \code{integer} or \code{numeric}, the length
-#' of the nucleosomes. Default: 147.
+#' @param seg a list a \code{GRanges}, one for each segment.
 #'
-#' @param delta a positive \code{integer} or \code{numeric}, the accepted
-#' range of overlapping section between segments. The overlapping section
-#' being \code{zeta} + \code{delta}.
+#' @param niter a positive \code{integer} or \code{numeric}, the
+#' number of iterations. Non-integer values of
+#' \code{nbrIterations} will be casted to \code{integer} and truncated towards
+#' zero.
+#' @param kMax a positive \code{integer} or \code{numeric}, the maximum number
+#' of degrees of freedom per region. Non-integer values
+#' of \code{kMax} will be casted to \code{integer} and truncated towards zero.
+#'
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution. Default: 3.
+#'
+#' @param minInterval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
+#'
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
+#'
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{minReads} will be casted to \code{integer} and truncated towards
+#' zero. Default: 5.
+#'
+#' @param adaptNbrIterations a \code{logical} indicating if the number
+#' of iterations must be modified in function of the number of reads.
+#' Default: \code{TRUE}.
+#'
+#' @param vSeed a \code{integer}. A seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used. Default: -1.
+#'
+#' @param saveAsRDS a \code{logical}. When \code{TRUE}, a RDS file containing
+#' the complete output of the c++ rjmcmc() function is created.
+#' Default : \code{FALSE}.
 #'
 #' @param maxLength a positive \code{integer} or \code{numeric}, the
 #' length of each segment.
 #'
-#' @return a \code{list} of \code{GRanges}, the list of segments.
+#' @return 0.
 #'
 #' @examples
 #'
@@ -828,33 +850,53 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
 #'     strand = syntheticNucleosomeReads$dataIP$strand)
 #'
 #' # Segmentation of the reads
-#' segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 10000)
+#' seg <- segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 1000)
+#' \dontrun{
+#' dir.create("out")
+#' dir.create("out/done")
+#' dir.create("out/results")
+#'
+#' runCHR(p=1, seg=seg, niter=1000, kmax=330,lambda=3,
+#'          ecartmin=147, ecartmax=297, minReads=5)}
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
 
 
-NP <- function(p, seg, niter, kmax, lambda, ecartmin, ecartmax, minReads, adaptNbrIterations)
+runCHR <- function(p, seg, niter, kmax, lambda,
+                   ecartmin, ecartmax,
+                   minReads, adaptNbrIterations,
+                   vSeed=-1, saveAsRDS=FALSE, dirOut="out")
 {
-    nameDone <- paste0("done/rjmcm_seg_", p, ".RData")
+    dirDone <- paste0(dirOut, "/done")
+    dirResults <- paste0(dirOut, "/results")
+    validateDirectoryParameters(dirDone)
+    validateDirectoryParameters(dirResults)
 
-    if (!file.exists(nameDone)) {
-        nameRDS  <- paste0("results/rjmcmc_seg_", p, ".rds")
+
+    nameDone <- paste0(dirDone,"/rjmcm_seg_", p, ".RData")
+
+    if (!file.exists(nameDone) ) {
+        nameRDS  <- paste0(dirResults,"/rjmcmc_seg_", p, ".rds")
         print(paste0("Doing: ", nameRDS))
         listeSeg <- rjmcmc(startPosForwardReads=start(seg[[p]][strand(seg[[p]]) == "+"]),
-                           startPosReverseReads=end(seg[[p]][strand(seg[[p]]) == "-"]), nbrIterations=niter,
-                           kMax=kmax, lambda=lambda, minInterval=ecartmin,
-                           maxInterval=ecartmax, minReads=minReads, adaptIterationsToReads=adaptNbrIterations)
+                           startPosReverseReads=end(seg[[p]][strand(seg[[p]]) == "-"]),
+                           nbrIterations=niter, kMax=kmax,
+                           lambda=lambda, minInterval=ecartmin,
+                           maxInterval=ecartmax, minReads=minReads,
+                           vSeed = vSeed, saveAsRDS=saveAsRDS,
+                           adaptIterationsToReads=adaptNbrIterations)
+
         if(all(is.na(listeSeg)))
         {
             print(paste0("Seg NA ", nameRDS))
-        } else {
-            saveRDS(listeSeg, nameRDS)
         }
+        saveRDS(listeSeg, nameRDS)
 
         print(paste0("Done: ", nameRDS))
         save(nameRDS, file=nameDone)
     }
+
     return(0)
 }
 
