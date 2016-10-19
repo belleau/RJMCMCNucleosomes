@@ -33,6 +33,7 @@ Imports:
     S4Vectors,
     stats,
     graphics,
+    parallel,
     methods,
     grDevices
 Suggests:
