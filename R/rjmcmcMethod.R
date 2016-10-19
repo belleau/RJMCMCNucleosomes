@@ -603,11 +603,11 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #'     strand = syntheticNucleosomeReads$dataIP$strand)
 #'
 #'
-#' result <- rjmcmcCHR(dataIP=sampleGRanges, zeta = 147,
+#' \dontrun{result <- rjmcmcCHR(dataIP=sampleGRanges, zeta = 147,
 #'              delta=50, maxLength=1200,
 #'              nbrIterations = 1000, lambda = 3, kMax = 30,
 #'              minInterval = 146, maxInterval = 292, minReads = 5,
-#'              vSeed = 10113, saveAsRDS = FALSE)
+#'              vSeed = 10113, saveAsRDS = FALSE)}
 #'
 #'
 #' @author Pascal Belleau, Astrid Deschenes
@@ -647,7 +647,7 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
     a <- mclapply(1:nbSeg, FUN=runCHR, seg, niter=nbrIterations,
                   kmax=kMax, lambda=lambda, ecartmin=minInterval, ecartmax=maxInterval,
                   minReads=minReads,
-                  adaptNbrIterations=adaptIterationsToReads, mc.cores=nbCores,
+                  adaptNbrIterations=adaptIterationsToReads, vSeed=vSeed, saveAsRDS=saveAsRDS, mc.cores=nbCores,
                   mc.preschedule = FALSE)
 
     results <- mergeAllRDSFilesFromDirectory(dirResults)
