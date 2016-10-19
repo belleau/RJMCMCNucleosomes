@@ -38,8 +38,7 @@ start position of all the forward reads.}
 }
 \value{
 a \code{array} of \code{numeric}, the updated values of the
-nucleosome positions. When no nucleosome is present, \code{NULL} is
-returned.
+nucleosome positions.
 }
 \description{
 A internal helper function which merges closely positioned
