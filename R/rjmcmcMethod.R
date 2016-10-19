@@ -663,7 +663,7 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
 
      results$muPost <- resultPostTreatement
 
-     class(result)<-"rjmcmcNucleosomesBeforeAndAfterPostTreatment"
+     class(results)<-"rjmcmcNucleosomesBeforeAndAfterPostTreatment"
 
      return(results)
 }
