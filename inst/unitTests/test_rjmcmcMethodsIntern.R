@@ -25,6 +25,7 @@ data_002 <- readRDS(file_002)
 
 data(RJMCMC_result)
 data(reads_demo)
+data(reads_demo_02)
 data(syntheticNucleosomeReads)
 
 #########################################################
@@ -1027,8 +1028,8 @@ test.validateSegmentationParameters_all_valid <- function() {
 
 ## Test the result of postMerge() function
 test.postMerge_good_01 <- function() {
-    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo$readsForward,
-                                startPosReverseReads = reads_demo$readsReverse,
+    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo_02$readsForward,
+                                startPosReverseReads = reads_demo_02$readsReverse,
                                 resultRJMCMC = RJMCMC_result,
                                 extendingSize = 10, chrLength = 80000)
     exp <- c(18747.497431393061561, 18891.529184734645241,
@@ -1041,6 +1042,7 @@ test.postMerge_good_01 <- function() {
 
 ## Test the result of postMerge() function
 test.postMerge_good_NULL_returned <- function() {
+    ## Reads are not located where the nucleosomes are
     obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo$readsForward,
                               startPosReverseReads = reads_demo$readsReverse,
                               resultRJMCMC = RJMCMC_result,
