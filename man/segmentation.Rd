@@ -40,7 +40,7 @@ sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
     strand = syntheticNucleosomeReads$dataIP$strand)
 
 # Segmentation of the reads
-segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 10000)
+segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 1000)
 
 }
 \author{
