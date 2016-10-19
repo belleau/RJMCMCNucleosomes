@@ -256,8 +256,8 @@ test.mergeRDSFiles_good <- function() {
 
 test.postTreatment_good_01 <- function() {
 
-    obs <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-                              startPosReverseReads = reads_demo$readsReverse,
+    obs <- postTreatment(startPosForwardReads = reads_demo_02$readsForward,
+                              startPosReverseReads = reads_demo_02$readsReverse,
                               resultRJMCMC = RJMCMC_result,
                               extendingSize = 20,
                               chrLength = 80000)
@@ -272,7 +272,7 @@ test.postTreatment_good_01 <- function() {
 }
 
 test.postTreatment_good_NULL_result <- function() {
-
+    ## Reads are not located where the nucleosomes are
     obs <- postTreatment(startPosForwardReads = reads_demo$readsForward,
                         startPosReverseReads = reads_demo$readsReverse,
                         resultRJMCMC = RJMCMC_result,
