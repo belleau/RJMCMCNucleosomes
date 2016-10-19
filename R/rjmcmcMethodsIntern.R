@@ -687,7 +687,8 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #'
 #'
 #' @return a \code{array} of \code{numeric}, the updated values of the
-#' nucleosome positions.
+#' nucleosome positions. When no nucleosome is present, \code{NULL} is
+#' returned.
 #'
 #' @examples
 #'
@@ -786,7 +787,12 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
         }
     }
 
-    return(as.numeric(newMu[!is.na(newMu)]))
+    finalResult <- NULL
+    if (!all(is.na(newMu))) {
+        finalResult <- as.numeric(newMu[!is.na(newMu)])
+    }
+
+    return(finalResult)
 }
 
 #' @title Start rjmcmc on

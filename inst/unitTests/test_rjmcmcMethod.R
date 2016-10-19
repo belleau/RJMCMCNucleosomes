@@ -143,12 +143,9 @@ test.rjmcmc_good_result_04 <- function() {
 }
 
 
-
-
 ###########################################################
 ## mergeAllRDSFilesFromDirectory() function
 ###########################################################
-
 
 test.mergeAllRDSFilesFromDirectory_notExisting <- function() {
     dir_01 <- "/toto1/toto2/toto3/toto4/toto5/"
@@ -265,9 +262,8 @@ test.postTreatment_good_01 <- function() {
                               extendingSize = 20,
                               chrLength = 80000)
 
-    exp <- c(72434.76627247885335236788,
-                72544.04804770457849372178,
-                73146.59089970112836454064)
+    exp <- c(18747.497431393061561, 18891.529184734645241,
+                19447.663942274604779, 19554.286613321939512)
 
     message <- paste0(" test.postTreatment_good_01() ",
                       "- posTreatment() did not generated expected result.")
@@ -275,7 +271,7 @@ test.postTreatment_good_01 <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
-test.postTreatment_good_02 <- function() {
+test.postTreatment_good_NULL_result <- function() {
 
     obs <- postTreatment(startPosForwardReads = reads_demo$readsForward,
                         startPosReverseReads = reads_demo$readsReverse,
@@ -283,10 +279,9 @@ test.postTreatment_good_02 <- function() {
                         extendingSize = 200,
                         chrLength = 80000)
 
-    exp <- c(72533.80877122777746990323,
-             73146.59089970112836454064)
+    exp <- NULL
 
-    message <- paste0(" test.postTreatment_good_02() ",
+    message <- paste0(" test.postTreatment_good_NULL_result() ",
                       "- posTreatment() did not generated expected result.")
 
     checkEquals(obs, exp, msg = message)
@@ -327,14 +322,15 @@ test.segmentation_good_01 <- function() {
 test.segmentation_good_02  <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                                              end = syntheticNucleosomeReads$dataIP$end),
-                             strand = syntheticNucleosomeReads$dataIP$strand)
+                    ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                            end = syntheticNucleosomeReads$dataIP$end),
+                            strand = syntheticNucleosomeReads$dataIP$strand)
 
-    obs <- segmentation(sampleGRanges, zeta =  142, delta = 40, maxLength = 15000)
+    obs <- segmentation(sampleGRanges, zeta =  142, delta = 40,
+                            maxLength = 15000)
 
     message <- paste0(" test.segmentation_good_02() ",
-                      "- segmentation() did not generated expected result.")
+                        "- segmentation() did not generated expected result.")
 
     exp.len = 4
     exp.01.len = 7972

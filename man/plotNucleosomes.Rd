@@ -30,7 +30,7 @@ are used or the string "Nucleosome" for a \code{vector} are used.
 Default: \code{NULL}.}
 }
 \value{
-a graph containing the nucleosome position and the read coverage
+a graph containing the nucleosome positions and the read coverage
 }
 \description{
 Generate a graph for

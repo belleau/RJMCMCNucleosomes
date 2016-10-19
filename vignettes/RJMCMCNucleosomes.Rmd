@@ -272,6 +272,10 @@ resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos, sample$fuz$nucleop
                               AfterPostTreatment = resultsPostTreatment)
 
 ## Create graph using nucleosome positions and reads
+## The plot will shows : 
+## 1. nucleosomes from the sample
+## 2. nucleosomes detected by rjmcmc() function
+## 3. nucleosomes obtained after post-treament 
 plotNucleosomes(resultsBeforeAndAfter, reads, 
                     names=c("Sample", "RJMCMC", "After Post-Treatment"))
 ```

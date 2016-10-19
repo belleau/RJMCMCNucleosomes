@@ -34,7 +34,8 @@ located inside the chromosome.}
 }
 \value{
 a \code{array} of \code{numeric}, the updated values of the
-nucleosome positions.
+nucleosome positions. When no nucleosome is present, \code{NULL} is
+returned.
 }
 \description{
 A helper function which merges closely positioned nucleosomes
