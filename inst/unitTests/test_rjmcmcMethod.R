@@ -11,7 +11,7 @@
 
 if(FALSE) {
     library( "RUnit" )
-    library( "RJMCMC" )
+    library( "RJMCMCNucleosomes" )
 }
 
 ### }}}
@@ -19,238 +19,133 @@ if(FALSE) {
 data(reads_demo)
 data(reads_demo_02)
 data(RJMCMC_result)
+data(syntheticNucleosomeReads)
 
-DIRECTORY <- system.file("extdata", package = "RJMCMC")
+DIRECTORY <- system.file("extdata", package = "RJMCMCNucleosomes")
 
-file_002 <- dir(system.file("extdata", package = "RJMCMC"),
-                        pattern = "yeastRes_Chr1_Seg_002.rds",
+file_001 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+                        pattern = "newSeg_1.rds",
                         full.names = TRUE)
 
-file_101 <- dir(system.file("extdata", package = "RJMCMC"),
-                pattern = "yeastRes_Chr1_Seg_101.rds",
-                full.names = TRUE)
+file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+                        pattern = "newSeg_2.rds",
+                        full.names = TRUE)
 
-file_100 <- dir(system.file("extdata", package = "RJMCMC"),
-                pattern = "yeastRes_Chr1_Seg_100.rds",
-                full.names = TRUE)
+file_003 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+                        pattern = "newSeg_3.rds",
+                        full.names = TRUE)
 
 
 ###########################################################
 ## RJMCMC() function
 ###########################################################
 
+test.rjmcmc_one_read_forward_and_one_read_reverse <- function() {
+
+    obs <- rjmcmc(startPosForwardReads = c(1),
+                  startPosReverseReads = c(2),
+                  nbrIterations = 210, lambda = 3, kMax = 30,
+                  minInterval = 100, maxInterval = 200, minReads = 10,
+                  vSeed = 2211)
+
+    exp.k           <- 1
+    exp.k_max       <- 1
+    exp.mu          <- c(1.017962247133255)
+
+    message     <- paste0(" test.rjmcmc_one_read_forward_and_one_read_reverse() ",
+                          "- RJMCMC did not generated expected values")
+
+    checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
+    checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+}
+
+
 test.rjmcmc_good_result_01 <- function() {
-    set.seed(101)
+
     obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                         startPosReverseReads = reads_demo$readsReverse,
                         nbrIterations = 100, lambda = 2, kMax = 30,
-                        minInterval = 146, maxInterval = 292, minReads = 5)
-    exp.k       <- 2
-    exp.mu      <- c(72669.922485424002, 72904.348062342819)
-    exp.sigmaf  <- c(21509.940563849304, 4624.834390666467)
-    exp.sigmar  <- c(12509.376406312418, 5630.799813272683)
-    exp.delta   <- c(144.376399340025, 142.578131511464)
-    exp.df      <- c(13, 4)
-    exp.w       <- c(0.620173536972, 0.379826463028)
-    exp.qmu     <- matrix(c(72669.922485424002, 72898.810781247870,
-                            72669.922485424002, 72898.810781247870),  nrow = 2)
-    exp.qsigmaf <- matrix(c(21509.940563849304, 4736.790424950710,
-                            21509.940563849304, 4736.790424950710),  nrow = 2)
-    exp.qsigmar <- matrix(c(12509.376406312418, 5617.742233704413,
-                            12509.376406312418, 5617.742233704413),  nrow = 2)
-    exp.qdelta  <- matrix(c(144.376399340025, 142.465706790323,
-                            144.376399340025, 142.465706790323),  nrow = 2)
-    exp.qdf     <- matrix(c(13.000000000000, 3.000000000000,
-                            13.000000000000, 3.000000000000),  nrow = 2)
-    exp.qw      <- matrix(c(0.617525448736, 0.382474551264, 0.617525448736,
-                            0.382474551264),  nrow = 2)
+                        minInterval = 146, maxInterval = 292, minReads = 5,
+                        vSeed = 1001)
+
+    exp.k           <- 4
+    exp.k_max       <- 5
+    exp.mu          <- c(72393.0264332128, 72457.6656495946, 72555.4429585791, 72990.7142984954)
 
     message     <- paste0(" rjmcmc_good_result_01() ",
-                      "- RJMCMC did not generated expected values")
+                       "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
     checkEqualsNumeric(obs$mu, exp.mu, msg = message)
-    checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
-    checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
-    checkEqualsNumeric(obs$delta, exp.delta, msg = message)
-    checkEqualsNumeric(obs$df, exp.df, msg = message)
-    checkEqualsNumeric(obs$w, exp.w, msg = message)
-    checkEqualsNumeric(obs$qmu, exp.qmu, msg = message)
-    checkEqualsNumeric(obs$qsigmaf, exp.qsigmaf, msg = message)
-    checkEqualsNumeric(obs$qsigmar, exp.qsigmar, msg = message)
-    checkEqualsNumeric(obs$qdelta, exp.qdelta, msg = message)
-    checkEqualsNumeric(obs$qdf, exp.qdf, msg = message)
-    checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
 
 test.rjmcmc_good_result_02 <- function() {
-    set.seed(101)
+
     obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                     startPosReverseReads = reads_demo$readsReverse,
                     nbrIterations = 200, lambda = 3, kMax = 30,
-                    minInterval = 146, maxInterval = 292, minReads = 5)
-    exp.k       <- 2
-    exp.mu      <- c(72669.9224854240, 72898.8107812479)
-    exp.sigmaf  <- c(21509.94056384930, 4736.79042495071)
-    exp.sigmar  <- c(12509.37640631242, 5617.74223370441)
-    exp.delta   <- c(144.376399340025, 142.465706790323)
-    exp.df      <- c(13, 3)
-    exp.w       <- c(0.617525448735973, 0.382474551264027)
-    exp.qmu     <- matrix(c(72669.922485424002, 72898.810781247870,
-                            72669.922485424002, 72898.810781247870),  nrow = 2)
-    exp.qsigmaf <- matrix(c(21509.940563849304, 4736.790424950710,
-                            21509.940563849304, 4736.790424950710),  nrow = 2)
-    exp.qsigmar <- matrix(c(12509.376406312418, 5617.742233704413,
-                            12509.376406312418, 5617.742233704413),  nrow = 2)
-    exp.qdelta  <- matrix(c(144.376399340025, 142.465706790323,
-                            144.376399340025, 142.465706790323),  nrow = 2)
-    exp.qdf     <- matrix(c(13.00000000000, 3.000000000000, 13.000000000000,
-                            3.000000000000),  nrow = 2)
-    exp.qw      <- matrix(c(0.617525448736, 0.382474551264,
-                            0.617525448736, 0.382474551264),  nrow = 2)
+                    minInterval = 146, maxInterval = 292, minReads = 5,
+                    vSeed = 201)
+
+    exp.k           <- 4
+    exp.k_max       <- 4
+    exp.mu          <- c(72325.7014073403, 72357.7522020026, 72678.9998565154, 72875.6569724952)
 
     message     <- paste0(" rjmcmc_good_result_02() ",
                       "- RJMCMC did not generated expected values")
 
+
     checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
     checkEqualsNumeric(obs$mu, exp.mu, msg = message)
-    checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
-    checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
-    checkEqualsNumeric(obs$delta, exp.delta, msg = message)
-    checkEqualsNumeric(obs$df, exp.df, msg = message)
-    checkEqualsNumeric(obs$w, exp.w, msg = message)
-    checkEqualsNumeric(obs$qmu, exp.qmu, msg = message)
-    checkEqualsNumeric(obs$qsigmaf, exp.qsigmaf, msg = message)
-    checkEqualsNumeric(obs$qsigmar, exp.qsigmar, msg = message)
-    checkEqualsNumeric(obs$qdelta, exp.qdelta, msg = message)
-    checkEqualsNumeric(obs$qdf, exp.qdf, msg = message)
-    checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
 
 test.rjmcmc_good_result_03 <- function() {
-    set.seed(101)
+
     obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                   startPosReverseReads = reads_demo$readsReverse,
                   nbrIterations = 110, lambda = 3, kMax = 30,
-                  minInterval = 100, maxInterval = 200, minReads = 335)
-    exp.k       <- 2
-    exp.mu      <- c(72669.9224854240, 72898.8107812479)
-    exp.sigmaf  <- c(21509.94056384930, 4736.79042495071)
-    exp.sigmar  <- c(12509.37640631242, 5617.74223370441)
-    exp.delta   <- c(144.376399340025, 142.465706790323)
-    exp.df      <- c(13, 3)
-    exp.w       <- c(0.617525448735973, 0.382474551264027)
-    exp.qmu     <- matrix(c(72669.922485424002, 72898.810781247870,
-                            72669.922485424002, 72898.810781247870), nrow = 2)
-    exp.qsigmaf <- matrix(c(21509.940563849304, 4736.790424950710,
-                            21509.940563849304, 4736.790424950710), nrow = 2)
-    exp.qsigmar <- matrix(c(12509.376406312418, 5617.742233704413,
-                            12509.376406312418, 5617.742233704413), nrow = 2)
-    exp.qdelta  <- matrix(c(144.376399340025, 142.465706790323,
-                            144.376399340025, 142.465706790323), nrow = 2)
-    exp.qdf     <- matrix(c(13.00000000000, 3.000000000000, 13.000000000000,
-                            3.000000000000),  nrow = 2)
-    exp.qw      <- matrix(c(0.617525448736, 0.382474551264, 0.617525448736,
-                            0.382474551264),  nrow = 2)
+                  minInterval = 100, maxInterval = 200, minReads = 335,
+                  vSeed = 2011)
+
+    exp.k           <- 4
+    exp.k_max       <- 4
+    exp.mu          <- c(72564.6044994216, 72863.5808919129, 72972.7389043033, 73207.8950726675)
 
     message     <- paste0(" rjmcmc_good_result_03() ",
-                          "- RJMCMC did not generated expected values")
+                           "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
     checkEqualsNumeric(obs$mu, exp.mu, msg = message)
-    checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
-    checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
-    checkEqualsNumeric(obs$delta, exp.delta, msg = message)
-    checkEqualsNumeric(obs$df, exp.df, msg = message)
-    checkEqualsNumeric(obs$w, exp.w, msg = message)
-    checkEqualsNumeric(obs$qmu, exp.qmu, msg = message)
-    checkEqualsNumeric(obs$qsigmaf, exp.qsigmaf, msg = message)
-    checkEqualsNumeric(obs$qsigmar, exp.qsigmar, msg = message)
-    checkEqualsNumeric(obs$qdelta, exp.qdelta, msg = message)
-    checkEqualsNumeric(obs$qdf, exp.qdf, msg = message)
-    checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
 
 test.rjmcmc_good_result_04 <- function() {
-    set.seed(331)
+
     obs <- rjmcmc(startPosForwardReads = reads_demo_02$readsForward,
                   startPosReverseReads = reads_demo_02$readsReverse,
                   nbrIterations = 210, lambda = 3, kMax = 30,
-                  minInterval = 100, maxInterval = 200, minReads = 10)
-    exp.k       <- 6
-    exp.mu      <- c(18830.258426897533, 19299.722102507523, 19381.662157933497,
-                     19438.522564048224, 19474.666149448600, 19661.608468284954)
-    exp.sigmaf  <- c(19360.298739977090, 1092.324045407637, 674.355821083463,
-                     384.223266693146, 295.997780079298, 396.751032236276)
-    exp.sigmar  <- c(8246.736691816854, 999.816627725857, 331.571444139750,
-                     79.62427776446, 306.565419274503, 233.932761372705)
-    exp.delta   <- c(151.637089900930, 145.218532805779, 146.316731025536,
-                     151.310459710703, 145.543765409165, 143.900213132404)
-    exp.df      <- c(3, 3, 3, 5, 11, 3)
-    exp.w       <- c(0.311173734828, 0.221181496934, 0.175512530366,
-                     0.050440609347, 0.181847532684, 0.059844095841)
-    exp.qmu     <- matrix(c(18830.258426897533, 19299.722102507523, 19381.662157933497,
-                            19438.522564048224, 19451.890925142368, 19661.608468284954,
-                            18830.258426897533, 19299.722102507523, 19381.662157933497,
-                            19438.522564048224, 19551.751524023533, 19661.608468284954),
-                          nrow = 2)
-    exp.qsigmaf <- matrix(c(19360.298739977090, 1092.324045407637,
-                            674.355821083463,   384.223266693146,
-                            159.149766899767,   396.751032236276,
-                            19360.298739977090, 1092.324045407637,
-                            674.355821083463,   384.223266693146,
-                            759.175670840787,   396.751032236276),
-                          nrow = 2)
-    exp.qsigmar <- matrix(c(8246.736691816854,  999.816627725857,
-                            331.571444139750,   79.624277764465,
-                            218.518977049937,   233.932761372705,
-                            8246.736691816854,  999.816627725857,
-                            331.571444139750,   79.624277764465,
-                            604.568762188420,   233.932761372705),
-                          nrow = 2)
-    exp.qdelta  <- matrix(c(151.637089900930, 145.218532805779,
-                            146.316731025536, 151.310459710703,
-                            143.104948985660, 143.900213132404,
-                            151.637089900930, 145.218532805779,
-                            146.316731025536, 151.310459710703,
-                            146.264324807019, 143.900213132404),
-                          nrow = 2)
-    exp.qdf     <- matrix(c(3.000000000000, 3.000000000000, 3.000000000000,
-                            3.000000000000, 3.000000000000, 3.000000000000,
-                            3.000000000000, 3.000000000000, 3.000000000000,
-                            13.000000000000, 13.000000000000, 3.000000000000),
-                          nrow = 2)
-    exp.qw      <- matrix(c(0.176647544632, 0.207703263307,
-                            0.171681803342, 0.016202988344,
-                            0.047681376154, 0.032004302325,
-                            0.350920109204, 0.266800133824,
-                            0.188478067985, 0.166321788126,
-                            0.221487533477, 0.154071089279), nrow = 2)
+                  minInterval = 100, maxInterval = 200, minReads = 10,
+                  vSeed = 2211)
+
+    exp.k           <- 5
+    exp.k_max       <- 6
+    exp.mu          <- c(18839.4528131919, 19201.6625115471, 19343.2693614808, 19415.4983810908, 19515.0250764107)
 
     message     <- paste0(" test.rjmcmc_good_result_04() ",
                           "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
     checkEqualsNumeric(obs$mu, exp.mu, msg = message)
-    checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
-    checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
-    checkEqualsNumeric(obs$delta, exp.delta, msg = message)
-    checkEqualsNumeric(obs$df, exp.df, msg = message)
-    checkEqualsNumeric(obs$w, exp.w, msg = message)
-    checkEqualsNumeric(obs$qmu, exp.qmu, msg = message)
-    checkEqualsNumeric(obs$qsigmaf, exp.qsigmaf, msg = message)
-    checkEqualsNumeric(obs$qsigmar, exp.qsigmar, msg = message)
-    checkEqualsNumeric(obs$qdelta, exp.qdelta, msg = message)
-    checkEqualsNumeric(obs$qdf, exp.qdf, msg = message)
-    checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
-
 
 
 ###########################################################
 ## mergeAllRDSFilesFromDirectory() function
 ###########################################################
-
 
 test.mergeAllRDSFilesFromDirectory_notExisting <- function() {
     dir_01 <- "/toto1/toto2/toto3/toto4/toto5/"
@@ -281,20 +176,15 @@ test.mergeAllRDSFilesFromDirectory_good <- function() {
 
     obs <- mergeAllRDSFilesFromDirectory(DIRECTORY)
     exp <- list()
-    exp$k <- 12
-    exp$mu <- c(65495.93096152, 65635.15873971, 65667.09919056, 65731.46018451,
-                65821.77378456, 65849.37480950, 65877.86273165, 66073.60889425,
-                66121.93114271, 66262.62007435, 66339.89317112, 66409.08499401)
-    exp$sigmaf <- c(1327.56410971, 8.26040846, 1910.63319069, 255.22104538,
-                    37.99635976, 758.69274593, 45.74932385, 3535.27508195,
-                    127.77101262, 1059.08821048, 47.90158118, 252.71961235)
-    exp$sigmar <- c(1220.14774153, 56.00340185, 1908.17853436, 71.47109077,
-                    43.89666079, 263.40271305, 74.05517743, 1542.90232618,
-                    114.08280263, 1197.75017003, 51.42856782, 83.87224549)
-    exp$delta  <- c(146.80383296, 145.21285124, 151.95220401, 145.59756968,
-                    145.64481509, 145.84496473, 145.80370401, 143.37237392,
-                    145.68833105, 147.52411842, 147.44254377, 150.25053506)
-    exp$df <- c(3, 15, 3, 3, 3, 3, 6, 3, 14, 3, 8, 3)
+    exp$k <- 16
+    exp$mu <- c(10092.474777629515302, 10242.340786347993344,
+                10410.315021756090573, 10546.628207912892321,
+                11134.263941022001745, 11244.139414670189581,
+                11380.302471258171863, 11412.657313642583176,
+                11578.516646129490255, 11868.408425173787691,
+                12058.054137626086231, 12235.422415610730241,
+                12276.903444548192056, 12412.604063330700228,
+                12473.443670263422973, 12585.175197400152683)
 
     class(exp) <- "rjmcmcNucleosomesMerge"
 
@@ -336,24 +226,19 @@ test.mergeRDSFiles_notExisting <- function() {
 
 test.mergeRDSFiles_good <- function() {
 
-    files <- c(file_002, file_101, file_100)
+    files <- c(file_001, file_002, file_003)
 
     obs <- mergeRDSFiles(files)
     exp <- list()
-    exp$k <- 12
-    exp$mu <- c(65495.93096152, 65635.15873971, 65667.09919056, 65731.46018451,
-                65821.77378456, 65849.37480950, 65877.86273165, 66073.60889425,
-                66121.93114271, 66262.62007435, 66339.89317112, 66409.08499401)
-    exp$sigmaf <- c(1327.56410971, 8.26040846, 1910.63319069, 255.22104538,
-                    37.99635976, 758.69274593, 45.74932385, 3535.27508195,
-                    127.77101262, 1059.08821048, 47.90158118, 252.71961235)
-    exp$sigmar <- c(1220.14774153, 56.00340185, 1908.17853436, 71.47109077,
-                    43.89666079, 263.40271305, 74.05517743, 1542.90232618,
-                    114.08280263, 1197.75017003, 51.42856782, 83.87224549)
-    exp$delta  <- c(146.80383296, 145.21285124, 151.95220401, 145.59756968,
-                    145.64481509, 145.84496473, 145.80370401, 143.37237392,
-                    145.68833105, 147.52411842, 147.44254377, 150.25053506)
-    exp$df <- c(3, 15, 3, 3, 3, 3, 6, 3, 14, 3, 8, 3)
+    exp$k <- 16
+    exp$mu <- c(10092.474777629515302, 10242.340786347993344,
+                10410.315021756090573, 10546.628207912892321,
+                11134.263941022001745, 11244.139414670189581,
+                11380.302471258171863, 11412.657313642583176,
+                11578.516646129490255, 11868.408425173787691,
+                12058.054137626086231, 12235.422415610730241,
+                12276.903444548192056, 12412.604063330700228,
+                12473.443670263422973, 12585.175197400152683)
 
     class(exp) <- "rjmcmcNucleosomesMerge"
 
@@ -371,35 +256,95 @@ test.mergeRDSFiles_good <- function() {
 
 test.postTreatment_good_01 <- function() {
 
-    obs <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-                              startPosReverseReads = reads_demo$readsReverse,
+    obs <- postTreatment(startPosForwardReads = reads_demo_02$readsForward,
+                              startPosReverseReads = reads_demo_02$readsReverse,
                               resultRJMCMC = RJMCMC_result,
                               extendingSize = 20,
                               chrLength = 80000)
 
-    exp <- c(72434.76627247885335236788,
-                72544.04804770457849372178,
-                73146.59089970112836454064)
+    exp <- c(18747.497431393061561, 18891.529184734645241,
+                19447.663942274604779, 19554.286613321939512)
 
     message <- paste0(" test.postTreatment_good_01() ",
-                      "- posTreatment() did not generated expected message.")
+                      "- posTreatment() did not generated expected result.")
 
     checkEquals(obs, exp, msg = message)
 }
 
-test.postTreatment_good_02 <- function() {
-
+test.postTreatment_good_NULL_result <- function() {
+    ## Reads are not located where the nucleosomes are
     obs <- postTreatment(startPosForwardReads = reads_demo$readsForward,
                         startPosReverseReads = reads_demo$readsReverse,
                         resultRJMCMC = RJMCMC_result,
                         extendingSize = 200,
                         chrLength = 80000)
 
-    exp <- c(72533.80877122777746990323,
-             73146.59089970112836454064)
+    exp <- NULL
 
-    message <- paste0(" test.postTreatment_good_02() ",
-                      "- posTreatment() did not generated expected message.")
+    message <- paste0(" test.postTreatment_good_NULL_result() ",
+                      "- posTreatment() did not generated expected result.")
 
     checkEquals(obs, exp, msg = message)
 }
+
+
+###########################################################
+## segmentation() function
+###########################################################
+
+test.segmentation_good_01 <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                    ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                    end = syntheticNucleosomeReads$dataIP$end),
+                    strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- segmentation(sampleGRanges, zeta =  147, delta = 20, maxLength = 20000)
+
+    message <- paste0(" test.segmentation_good_01() ",
+                      "- segmentation() did not generated expected result.")
+
+    exp.len = 3
+    exp.01.len = 10504
+    exp.02.len = 11818
+    exp.03.len = 9686
+
+    checkTrue(is.list(obs), ms = message)
+    checkEquals(length(obs), exp.len, ms = message)
+    checkEquals(length(obs[[1]]), exp.01.len, ms = message)
+    checkTrue(is(obs[[1]],"GRanges"), ms = message)
+    checkEquals(length(obs[[2]]), exp.02.len, ms = message)
+    checkTrue(is(obs[[2]],"GRanges"), ms = message)
+    checkEquals(length(obs[[3]]), exp.03.len, ms = message)
+    checkTrue(is(obs[[3]],"GRanges"), ms = message)
+}
+
+test.segmentation_good_02  <- function() {
+
+    sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+                    ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+                            end = syntheticNucleosomeReads$dataIP$end),
+                            strand = syntheticNucleosomeReads$dataIP$strand)
+
+    obs <- segmentation(sampleGRanges, zeta =  142, delta = 40,
+                            maxLength = 15000)
+
+    message <- paste0(" test.segmentation_good_02() ",
+                        "- segmentation() did not generated expected result.")
+
+    exp.len = 4
+    exp.01.len = 7972
+    exp.02.len = 8496
+    exp.03.len = 9362
+    exp.04.len = 6390
+
+    checkTrue(is.list(obs), ms = message)
+    checkEquals(length(obs), exp.len, ms = message)
+    checkEquals(length(obs[[1]]), exp.01.len, ms = message)
+    checkTrue(is(obs[[1]],"GRanges"), ms = message)
+    checkEquals(length(obs[[2]]), exp.02.len, ms = message)
+    checkTrue(is(obs[[2]],"GRanges"), ms = message)
+    checkEquals(length(obs[[3]]), exp.03.len, ms = message)
+    checkTrue(is(obs[[3]],"GRanges"), ms = message)
+}
+

@@ -11,7 +11,7 @@
 
 if(FALSE) {
     library( "RUnit" )
-    library( "RJMCMC" )
+    library( "RJMCMCNucleosomes" )
 }
 
 ### }}}
@@ -23,7 +23,7 @@ if(FALSE) {
 
 test.print_rjmcmcNucleosomesMerge_test_returned_value <- function() {
 
-    directoryWithRDSFiles <- system.file("extdata", package = "RJMCMC")
+    directoryWithRDSFiles <- system.file("extdata", package = "RJMCMCNucleosomes")
 
     resultInit <- mergeAllRDSFilesFromDirectory(directoryWithRDSFiles)
 

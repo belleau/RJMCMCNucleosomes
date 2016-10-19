@@ -38,7 +38,8 @@ start position of all the forward reads.}
 }
 \value{
 a \code{array} of \code{numeric}, the updated values of the
-nucleosome positions.
+nucleosome positions. When no nucleosome is present, \code{NULL} is
+returned.
 }
 \description{
 A internal helper function which merges closely positioned
@@ -58,7 +59,7 @@ data(reads_demo)
 RJMCMC_result$mu
 
 ## Post-treatment function which merged closely positioned nucleosomes
-postResult <- RJMCMC:::postMerge(startPosForwardReads =
+postResult <- RJMCMCNucleosomes:::postMerge(startPosForwardReads =
 reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
 resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 

@@ -1,9 +1,10 @@
-#' @title Nucleosome positioning mapping
+#' @title Nucleosome positioning mapping on a segment
 #'
 #' @description Use of a fully Bayesian hierarchical model for chromosome-wide
 #' profiling of nucleosome positions based on high-throughput short-read
 #' data (MNase-Seq data). Beware that for a genome-wide profiling, each
-#' chromosome must be treated separatly.
+#' chromosome must be treated separatly. This function is optimized to run
+#' on segments that are smaller sections of the chromosome.
 #'
 #' @param startPosForwardReads a \code{vector} of \code{numeric}, the
 #' start position of all the forward reads.
@@ -18,7 +19,7 @@
 #' zero.
 #'
 #' @param kMax a positive \code{integer} or \code{numeric}, the maximum number
-#' of nucleosomes per region. Non-integer values
+#' of degrees of freedom per region. Non-integer values
 #' of \code{kMax} will be casted to \code{integer} and truncated towards zero.
 #'
 #' @param lambda a positive \code{numeric}, the theorical mean
@@ -39,45 +40,25 @@
 #' of iterations must be modified in function of the number of reads.
 #' Default: \code{TRUE}.
 #'
+#' @param vSeed a \code{integer}. A seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used. Default: -1.
+#'
+#' @param saveAsRDS a \code{logical}. When \code{TRUE}, a RDS file containing
+#' the complete output of the c++ rjmcmc() function is created.
+#' Default : \code{FALSE}.
+#'
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomes" containing:
 #' \itemize{
 #' \item \code{call} the matched call.
-#' \item \code{K} a \code{vector} of \code{integer}, the estimation of the
-#' number of the nucleosomes for each iteration.
 #' \item \code{k} a \code{integer}, the final estimation of the number
-#' of nucleosomes.
+#' of nucleosomes. \code{0} when no nucleosome is detected.
 #' \item \code{mu} a \code{vector} of \code{numeric} of length
-#' \code{k}, the positions of the nucleosomes.
-#' \item \code{sigmaf} a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the forward reads for each nucleosome.
-#' \item \code{sigmar} a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the reverse reads for each nucleosome.
-#' \item \code{delta} a \code{vector} of \code{numeric} of length
-#' \code{k}, the distance between the maxima of the forward and reverse reads
-#' position densities for each nucleosome.
-#' \item \code{df} a \code{vector} of \code{numeric} of length
-#' \code{k}, the degrees of freedom for each nucleosome.
-#' \item \code{w} a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
-#' must be equal to \code{1}.
-#' \item \code{qmu} a \code{matrix} of \code{numerical} with a number of rows
-#' of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{mu}.
-#' \item \code{qsigmaf} a \code{matrix} of \code{numerical} with a number of
-#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the variance of the
-#' forward reads for each nucleosome.
-#' \item \code{qsigmar} a \code{matrix} of \code{numerical} with a number of
-#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the variance the
-#' reverse reads for each nucleosome.
-#' \item \code{qdelta} a \code{matrix} of \code{numerical} with a number of
-#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the distance between
-#' the maxima of the forward and reverse reads
-#' position densities for each nucleosome.
-#' \item \code{qdf} a \code{matrix} of \code{numerical} with a number of
-#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the degrees of freedom
-#' for each nucleosome.
-#' \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
-#' of \code{k}, the 2.5\% and 97.5\% quantiles of the weight for each
-#' nucleosome.
+#' \code{k}, the positions of the nucleosomes. \code{NA} when no nucleosome is
+#' detected.
+#' \item \code{k_max} a \code{integer}, the maximum number of nucleosomes
+#' obtained during the iteration process. \code{NA} when no nucleosome is
+#' detected.
 #' }
 #'
 #' @examples
@@ -87,9 +68,10 @@
 #'
 #' ## Nucleosome positioning, running both merge and split functions
 #' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse,
-#'          nbrIterations = 1000, lambda = 2, kMax = 30,
-#'          minInterval = 146, maxInterval = 292, minReads = 5)
+#'             startPosReverseReads = reads_demo$readsReverse,
+#'             nbrIterations = 1000, lambda = 2, kMax = 30,
+#'             minInterval = 146, maxInterval = 292, minReads = 5,
+#'             vSeed = 10113, saveAsRDS = FALSE)
 #'
 #' ## Print the final estimation of the number of nucleosomes
 #' result$k
@@ -97,22 +79,24 @@
 #' ## Print the position of nucleosomes
 #' result$mu
 #'
-#' @importFrom MCMCpack ddirichlet rdirichlet
-#' @importFrom stats dmultinom dpois var rmultinom dt quantile
-#' @importFrom IRanges IRanges
-#' @import BiocGenerics
-#' @author Rawane Samb, Pascal Belleau, Astrid Deschênes
+#' ## Print the maximum number of nucleosomes obtained during the iteration
+#' ## process
+#' result$k_max
+#'
+#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
+#' @importFrom stats aggregate
 #' @export
 rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda = 3,
                     minInterval, maxInterval, minReads = 5,
-                    adaptIterationsToReads = TRUE) {
+                    adaptIterationsToReads = TRUE, vSeed = -1,
+                    saveAsRDS = FALSE) {
 
     # Get call information
     cl <- match.call()
 
     # Parameters validation
-    validateParameters(startPosForwardReads = startPosForwardReads,
+    validateRJMCMCParameters(startPosForwardReads = startPosForwardReads,
                             startPosReverseReads = startPosReverseReads,
                             nbrIterations = nbrIterations,
                             kMax = kMax,
@@ -120,240 +104,57 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                             minInterval = minInterval,
                             maxInterval = maxInterval,
                             minReads = minReads,
-                            adaptIterationsToReads = adaptIterationsToReads)
+                            adaptIterationsToReads = adaptIterationsToReads,
+                            vSeed = vSeed)
 
-    # Casting specific inputs as integer
-    minReads        <- as.integer(minReads)
-    nbrIterations   <- as.integer(nbrIterations)
-    kMax            <- as.integer(kMax)
-
-    ##############################################################
-    #### Parameter Initialization                             ####
-    ##############################################################
-
-    y               <- c(startPosForwardReads, startPosReverseReads)
-    nf              <- length(startPosForwardReads)
-    nr              <- length(startPosReverseReads)
-    nbrReads        <- nf + nr
-
-    # Order reads an mark reverse reads as -1 in a new vector
-    d       <- c(rep(1, nf), rep(-1, nr))
-    yOrder  <- order(y)
-    y       <- y[yOrder]
-    d       <- d[yOrder]
-    rm(yOrder)
-
-    ## Fixed parameters
-    zeta            <- 147
-    deltamin        <- 142
-    deltamax        <- 152
-
-    # Max and min read positions
-    minReadPos <- min(y)
-    maxReadPos <- max(y)
-
-    # Adapt the number of iterations
-    if (adaptIterationsToReads) {
-        nbrIterations <- ifelse(nbrReads <= 12, 1000, nbrIterations)
+    # Find nucleosome positions
+    if(length(startPosForwardReads) > 0 & length(startPosReverseReads) > 0){
+        resultRJMCMC <- rjmcmcNucleo(startPosForwardReads,
+                                     startPosReverseReads,
+                                     nbrIterations, kMax, lambda,
+                                     minInterval, maxInterval, minReads,
+                                     adaptIterationsToReads, vSeed)
+    }
+    else{
+        resultRJMCMC <- NULL
     }
 
-    # List of fixed parameters
-    paramValues <- list(startPSF = startPosForwardReads,
-                        startPSR = startPosReverseReads,
-                        kmax = kMax,
-                        lambda = lambda,
-                        minReads = minReads,
-                        y = y, nr = nr, nf = nf, nbrReads = nbrReads,
-                        zeta = zeta, deltamin = deltamin, deltamax = deltamax,
-                        minReadPos = minReadPos, maxReadPos = maxReadPos)
-
-    # Vector of the number of nucleosomes (integer values)
-    k               <- rep(0L, nbrIterations)
-
-    # Vector of the position of the nucleosomes
-    mu              <- matrix(0, nrow = nbrIterations, ncol = kMax)
-
-    sigmaf          <- matrix(0, nrow = nbrIterations, ncol = kMax)
-
-    sigmar          <- matrix(0, nrow = nbrIterations, ncol = kMax)
-
-    delta           <- matrix(0, nrow = nbrIterations, ncol = kMax)
-
-    w               <- matrix(0, nrow = nbrIterations, ncol = kMax)
-    # Vector of the degrees of freedom of the nucleosomes
-    df              <- matrix(0L, nrow = nbrIterations, ncol = kMax)
-
-    k[1]            <- 1L
-
-    mu[1, 1]        <- runif(1, minReadPos, maxReadPos)
-
-    sigmaf[1, 1]    <- 1
-    sigmar[1, 1]    <- 1
-    delta[1, 1]     <- runif(1, 0, 2*(mu[1, 1] - minReadPos))
-    w[1, 1]         <- 1
-    df[1, 1]        <- 3
-
-    kValue          <- as.integer(k[1])
-
-    ## Initialization of current values used in the loop
-    muValue                         <- mu[1,]
-    sigmafValue                     <- sigmaf[1,]
-    sigmarValue                     <- sigmar[1,]
-    deltaValue                      <- delta[1,]
-    wValue                          <- w[1,]
-    dfValue                         <- df[1,]
-    aValue                          <- rep(0, kMax + 1L)
-    aValue[1]                       <- minReadPos
-    aValue[as.integer(k[1]) + 1L]   <- maxReadPos
-    dimValue                        <- rep(0, kMax)
-    dimValue[1]                     <- nbrReads
-    ktildeValue                     <- as.integer(k[1])
-
-    for (i in 2:nbrIterations) {
-        ## List of current values that is going to be passed to sub-functions
-        varTilde <- list()
-        u <- runif(1)
-        if (kValue == 1L) {
-            ## CASE : Number of nucleosomes equal to 1
-
-
-            if (u <= 0.5) {
-                ## Birth move in case k=1
-                varTilde <- birthMoveK1(paramValues, kValue, muValue,
-                                        sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dfValue, aValue, dimValue)
-            } ## end of Birth move in case k=1
-            else {
-                ## Metropolis-Hastings move
-                varTilde <- mhMoveK1(paramValues, kValue, muValue,
-                                        sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dfValue, aValue, dimValue)
-
-            } ## end Metropolis-Hastings move
-        }  ## end CASE : Number of nucleosomes equal to 1
-        else {
-            ## CASE : Number of nucleosomes larger than 1
-
-            if (u <= Dk(kValue, lambda, kMax)) {
-                ## Death move
-                varTilde <- deathMove(paramValues, kValue, muValue,
-                                        sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dfValue, aValue, dimValue)
-
-            } ## end of Death move
-            else {
-
-                if (u <= (Dk(kValue, lambda, kMax) +
-                                Bk(kValue, lambda, kMax))) {
-                    ### Birth move
-                    varTilde <- birthMove(paramValues, kValue, muValue,
-                                            sigmafValue, sigmarValue,
-                                            deltaValue, wValue, dfValue,
-                                            aValue, dimValue)
-
-                } ## end of Birth move
-                else {
-                    ## Metropolis-Hastings move
-                    varTilde <- mhMove(paramValues, kValue, muValue,
-                                            sigmafValue, sigmarValue,
-                                            deltaValue, wValue, dfValue,
-                                            aValue, dimValue)
-
-                } ## end of Metropolis-Hastings move
-            } ## end of else
-        } ## end of moves in case larger than 1
-
-        v <- runif(1)      #Acceptation/rejet
-
-        if (varTilde$rho >= v && varTilde$k <= kMax) {
-            # Acceptation, so values are updated
-            kValue          <- varTilde$k
-            maxValue        <- as.integer(kValue)
-            zeroVector      <- rep(0, kMax - maxValue)
-            muValue         <- c(varTilde$mu[1:maxValue], zeroVector)
-            sigmafValue     <- c(varTilde$sigmaf[1:maxValue], zeroVector)
-            sigmarValue     <- c(varTilde$sigmar[1:maxValue], zeroVector)
-            deltaValue      <- c(varTilde$delta[1:maxValue], zeroVector)
-            dfValue         <- c(varTilde$df[1:maxValue], zeroVector)
-            wValue          <- c(varTilde$w[1:maxValue], zeroVector)
-            dimValue        <- c(varTilde$dim[1:maxValue], zeroVector)
-            aValue          <- c(varTilde$a[1:(maxValue + 1)], zeroVector)
-        }
-
-        ## Prepared list used by merge and split function
-        kVal <- kValue
-        listUpdate <- list(k       = kVal,
-                            mu     = muValue[1:kVal],
-                            sigmaf = sigmafValue[1:kVal],
-                            sigmar = sigmarValue[1:kVal],
-                            delta  = deltaValue[1:kVal],
-                            df     = dfValue[1:kVal],
-                            w      = wValue[1:kVal]
-        )
-
-        ## Assign resulting values for this iteration
-        kVal          <- listUpdate$k
-        k[i]          <- kVal
-        naVector      <- rep(NA, kMax - kVal)
-        mu[i, ]       <- c(listUpdate$mu, naVector)
-        sigmaf[i, ]   <- c(listUpdate$sigmaf, naVector)
-        sigmar[i, ]   <- c(listUpdate$sigmar, naVector)
-        delta[i, ]    <- c(listUpdate$delta, naVector)
-        w[i, ]        <- c(listUpdate$w, naVector)
-        df[i, ]       <- c(listUpdate$df, naVector)
-
-    } ###end of boucle RJMCMC
-
-    ## ATTENTION: Beware that the potential return of NA is not handled
-    ## Getting the number of nucleosomes with the highest frequency
-    km          <- elementWithHighestMode(as.integer(k))
-    result <- NA
-
-    if(!(is.na(km))){
-        kPositions  <- which(as.integer(k) == km)
-
-        mu_hat     <- colMeans(mu[kPositions, 1:km, drop = FALSE])
-        sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km, drop = FALSE])
-        sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop = FALSE])
-        w_hat      <- colMeans(w[kPositions, 1:km, drop = FALSE])
-        delta_hat  <- colMeans(delta[kPositions, 1:km, drop = FALSE])
-        df_hat     <- round(colMeans(df[kPositions, 1:km, drop = FALSE]))
-
-        # Getting 2.5% and 97.5% quantiles for each important data type
-        qmu     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-        qsigmaf <- t(apply(sigmaf[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-        qsigmar <- t(apply(sigmar[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-        qdelta  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-        qdf     <- t(apply(df[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-        qw      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-
-        # Create the final list
-        result <- list(
-            call    = cl,
-            K       = k,
-            k       = km,
-            mu      = mu_hat,
-            sigmaf  = sigmaf_hat,
-            sigmar  = sigmar_hat,
-            delta   = delta_hat,
-            df      = df_hat,
-            w       = w_hat,
-            qmu     = qmu,
-            qsigmaf = qsigmaf,
-            qsigmar = qsigmar,
-            qdelta  = qdelta,
-            qdf     = qdf,
-            qw      = qw
-        )
-
-        class(result)<-"rjmcmcNucleosomes"
+    # Save output in a RDS file
+    if (saveAsRDS) {
+        options(digits.secs = 2)
+        file_name <- gsub(Sys.time(), pattern = "[:. ]", replacement = "_",
+                            perl = TRUE)
+        saveRDS(object = resultRJMCMC,
+                file = paste0("RJMCMCNucleosomes_output_", file_name, ".RDS"))
     }
+
+    if (is.null(resultRJMCMC)) {
+        ## Set values when no nucleosome can be found
+        k = 0
+        mu = NA
+        k_max = NA
+    } else {
+        ## Set values when no nucleosome can be found
+        # Find k value with the maximum of iterations
+        iterPerK <- data.frame(k = resultRJMCMC$k, it = resultRJMCMC$it)
+        sumIterPerK <- aggregate(it ~ k, data = iterPerK, sum)
+        maxRow <- which.max( sumIterPerK[,"it"])
+        k <- sumIterPerK$k[maxRow]
+        # Find mu values associated to the k value
+        mu <- resultRJMCMC$muHat[k,][1:k]
+        # Get the k_max value
+        k_max <- resultRJMCMC$k_max
+    }
+
+    # Format output
+    result <- list(
+        call = cl,
+        k = k,
+        mu = mu,
+        k_max = k_max
+    )
+
+    class(result)<-"rjmcmcNucleosomes"
 
     return(result)
 }
@@ -364,8 +165,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' chromosome should be merged together.
 #'
 #' @description Merge nucleosome information, from all RDS files present
-#' in a same directory, into one
-#' object of \code{class} "rjmcmcNucleosomesMerge".
+#' in a same directory, into one object
+#' of \code{class} "rjmcmcNucleosomesMerge".
 #'
 #' @param directory a \code{character}, the
 #' name of the directory (relative or absolute path) containing RDS files. The
@@ -378,19 +179,13 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric} of length
 #' \code{k}, the positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
 #' }
 #'
 #' @examples
 #'
 #' ## Use a directory present in the RJMCMC package
-#' directoryWithRDSFiles <- system.file("extdata", package = "RJMCMC")
+#' directoryWithRDSFiles <- system.file("extdata",
+#' package = "RJMCMCNucleosomes")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
 #' ## It is assumed that all files present in the directory are nucleosomes
@@ -405,7 +200,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' class(result)
 #'
 #'
-#' @author Pascal Belleau, Astrid Deschênes
+#' @author Pascal Belleau, Astrid Deschenes
 #' @export
 mergeAllRDSFilesFromDirectory <- function(directory) {
 
@@ -414,14 +209,14 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 
     ## Get the list of all RDS files present in the directory
     fileList <- dir(directory, pattern = ".rds", full.names = TRUE,
-                     ignore.case = TRUE)
+                        ignore.case = TRUE)
 
     ## Extract information from each file
     return(mergeAllRDSFiles(fileList))
 }
 
 
-#' @title Merge nucleosome information for selected RDS files.
+#' @title Merge nucleosome information from selected RDS files.
 #'
 #' @description Merge nucleosome information present in RDS files into one
 #' object of \code{class} "rjmcmcNucleosomesMerge".
@@ -436,19 +231,12 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric} of length
 #' \code{k}, the positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
 #' }
 #'
 #' @examples
 #'
 #' ## Use RDS files present in the RJMCMC package
-#' RDSFiles <- dir(system.file("extdata", package = "RJMCMC"),
+#' RDSFiles <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 #' full.names = TRUE, pattern = "*rds")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
@@ -474,7 +262,7 @@ mergeRDSFiles <- function(RDSFiles) {
 }
 
 
-#' @title A post treatment function to merge closely positioned nucleosomes,
+#' @title A post-treatment function to merge closely positioned nucleosomes,
 #' from the same chromosome, identified by the \code{\link{rjmcmc}} function.
 #'
 #' @description A helper function which merges closely positioned nucleosomes
@@ -505,26 +293,29 @@ mergeRDSFiles <- function(RDSFiles) {
 #' located inside the chromosome.
 #'
 #' @return a \code{array} of \code{numeric}, the updated values of the
-#' nucleosome positions.
+#' nucleosome positions. When no nucleosome is present, \code{NULL} is
+#' returned.
 #'
 #' @examples
-#'
-#' ## Fix seed
-#' set.seed(1132)
 #'
 #' ## Loading dataset
 #' data(reads_demo)
 #'
 #' ## Nucleosome positioning, running both merge and split functions
 #' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse,
-#'          nbrIterations = 1000, lambda = 2, kMax = 30,
-#'          minInterval = 146, maxInterval = 292, minReads = 5)
+#'             startPosReverseReads = reads_demo$readsReverse,
+#'             nbrIterations = 1000, lambda = 2, kMax = 30,
+#'             minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
+#'
+#' ## Before post-treatment
+#' result
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
 #' postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
+#'             startPosReverseReads = reads_demo$readsReverse,
+#'             result, 74, 73500)
 #'
+#' ## After post-treatment
 #' postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
@@ -541,3 +332,360 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
               resultRJMCMC, extendingSize, chrLength))
 }
 
+
+#' @title Generate a graph of nucleosome positions with read coverage
+#'
+#' @description Generate a graph for
+#' a \code{list} or a \code{vector} of nucleosome positions. In presence of
+#' only one prediction (with multiples nucleosome positions), a \code{vector}
+#' is used. In presence of more thant one predictions (as example, before and
+#' after post-treatment or results from different software), a \code{list} with
+#' one entry per prediction is used. All predictions must have been obtained
+#' using the same reads.
+#'
+#' @param nucleosomePositions a \code{list} or a \code{vector} of
+#' \code{numeric}, the nucleosome positions for one or
+#' multiples predictions are obtained using the same reads. In presence of
+#' only one prediction (with multiples nucleosome positions), a \code{vector}
+#' is used. In presence of more thant one predictions (as example, before and
+#' after post-treatment or results from different software), a \code{list} with
+#' one entry per prediction is used.
+#'
+#' @param reads an \code{IRanges} containing all the reads.
+#'
+#' @param xlab a \code{character} string containing the label of the x-axis.
+#'
+#' @param ylab a \code{character} string containing the label of the y-axis.
+#'
+#' @param names a \code{vector} of a \code{character} string containing the
+#' label of each prediction set. The \code{vector} must be the same length of
+#' the \code{nucleosomePositions} \code{list} or 1 in presence of a
+#' \code{vector}. When \code{NULL}, the name of the elements of the \code{list}
+#' are used or the string "Nucleosome" for a \code{vector} are used.
+#' Default: \code{NULL}.
+#'
+#' @return a graph containing the nucleosome positions and the read coverage
+#'
+#' @examples
+#'
+#' ## Generate a synthetic sample with 10 well-positioned nucleosomes, 2 fuzzy
+#' ## nucleosomes and 2 deleted nucleosomes using a Student distribution
+#' ## with a variance of 10 for the well-positioned nucleosomes,
+#' ## a variance of 20 for the fuzzy nucleosomes
+#' library(nucleoSim)
+#' nucleosomeSample <- syntheticNucReadsFromDist(wp.num=10, wp.del=2,
+#' wp.var=10, fuz.num=2, fuz.var=20, max.cover=100, dist="Student",
+#' nuc.len=147, len.var=12, read.len=45, lin.len=20, rnd.seed=155, offset=100)
+#'
+#' dataIP <-nucleosomeSample$dataIP
+#'
+#' forwardReads <- dataIP[dataIP$strand == "+",]$start
+#' reverseReads <- dataIP[dataIP$strand == "-",]$end
+#'
+#' result <- rjmcmc(startPosForwardReads = forwardReads,
+#'             startPosReverseReads = reverseReads,
+#'             nbrIterations = 4000, lambda = 2, kMax = 30,
+#'             minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10213)
+#'
+#' reads <-IRanges(start = dataIP$start, end=dataIP$end)
+#'
+#' ## Create graph using the synthetic map
+#' plotNucleosomes(nucleosomePositions = result$mu, reads = reads)
+#'
+#' @author Astrid Deschenes
+#' @importFrom IRanges coverage
+#' @importFrom graphics plot lines abline points legend polygon
+#' @importFrom grDevices rainbow
+#' @importFrom BiocGenerics start end
+#' @export
+plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
+                                ylab = "coverage", names=NULL) {
+
+    validatePlotNucleosomesParameters(nucleosomePositions, reads, xlab,
+                                      ylab, names)
+
+    ## Set variables differently if vector or list
+    if (!is.atomic(nucleosomePositions)) {
+        nbrItems <-length(nucleosomePositions)
+        posColors <- c(rainbow(nbrItems), "gray")
+        if (is.null(names)) {
+            extraNames <- names(nucleosomePositions)
+        } else {
+            extraNames <- names
+        }
+    } else {
+        nbrItems <-1
+        posColors <- c("green", "gray")
+        if (is.null(names)) {
+            extraNames <- "Nucleosome"
+        } else {
+            extraNames <- names
+        }
+    }
+
+    posNames <- c(extraNames, "Coverage")
+
+    ## Set Y axis maximum range
+    y_max <- max(coverage(reads), na.rm = TRUE) + 10
+
+    ## Step in between each result, when more than one result
+    step = ceiling(y_max / 80)
+
+    ## Always set Y axis minimum to zero
+    y_min <- -1 - (step*nbrItems)
+
+    ## Set X axis minimum ans maximum
+    x_min <- min(c(unlist(nucleosomePositions), start(reads), end(reads)))
+    x_min <- floor(x_min)
+    x_max <- max(c(unlist(nucleosomePositions), start(reads), end(reads)))
+    x_max <- ceiling(x_max)
+
+    # Plot coverage
+    coverage <- c(0, as.integer(coverage(reads)), 0)
+    position <- c(0, 1:(length(coverage) - 1))
+    plot(coverage(reads), type = "l", col = "gray",
+            ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab = xlab,
+            ylab = ylab)
+    polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray",
+            border = "gray", ylim = c(y_min, y_max), xlim = c(x_min, x_max))
+
+    # Plot nucleosome positions
+    if (nbrItems > 1) {
+        for (i in 1:nbrItems) {
+            y_pos = (-(step)) * i
+            nucl <- nucleosomePositions[[i]]
+            points(nucl, rep(y_pos, length(nucl)), ylim = c(y_min, y_max),
+                    xlim = c(x_min, x_max), col = posColors[i], pch = 19)
+        }
+    } else {
+        points(nucleosomePositions, rep(-(step), length(nucleosomePositions)),
+               ylim = c(y_min, y_max), xlim = c(x_min, x_max),
+               col = posColors[1], pch = 19)
+    }
+
+    # Add legend
+    legend("top", posNames, fill = posColors, bty = "n", horiz = TRUE)
+}
+
+#' @title Split a \code{GRanges} containing reads in a list of smaller
+#' segments for the \code{rjmcmc} function.
+#'
+#' @description Split a \code{GRanges} of reads (as example, the reads from
+#' a chromosome) in a \code{list} of smaller \code{GRanges} sot that the
+#' \code{rjmcmc} function can be run on each segments.
+#'
+#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#'
+#' @param zeta a positive \code{integer} or \code{numeric}, the length
+#' of the nucleosomes. Default: 147.
+#'
+#' @param delta a positive \code{integer} or \code{numeric}, the accepted
+#' range of overlapping section between segments. The overlapping section
+#' being \code{zeta} + \code{delta}.
+#'
+#' @param maxLength a positive \code{integer} or \code{numeric}, the
+#' length of each segment.
+#'
+#' @return a \code{list} of \code{GRanges}, the list of segments.
+#'
+#' @examples
+#'
+#' ## Load synthetic dataset of reads
+#' data(syntheticNucleosomeReads)
+#'
+#' ## Use dataset of reads to create GRanges object
+#' sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+#'     ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+#'     end = syntheticNucleosomeReads$dataIP$end),
+#'     strand = syntheticNucleosomeReads$dataIP$strand)
+#'
+#' # Segmentation of the reads
+#' segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 1000)
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @export
+segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
+
+    validateSegmentationParameters(dataIP, zeta, delta, maxLength)
+
+    # Set min and max position
+    posMin <- min(start(dataIP))
+    posMax <- max(end(dataIP))
+
+    # Segment GRanges
+    lapply(seq(posMin, posMax, by = (maxLength - (zeta + delta))),
+            function(x, dataIP, zeta, delta, maxLength){
+                dataIP[start(dataIP) >= x & start(dataIP) <= (x + maxLength)]
+            },
+            dataIP=dataIP, zeta=zeta, delta=delta, maxL = maxLength)
+}
+
+#' @title Nucleosome positioning mapping on a large segment, up to a chromosome
+#'
+#' @description Use of a fully Bayesian hierarchical model for chromosome-wide
+#' profiling of nucleosome positions based on high-throughput short-read
+#' data (MNase-Seq data). Beware that for a genome-wide profiling, each
+#' chromosome must be treated separatly. This function is optimized to run
+#' on an entire chromosome.
+#'
+#' The function will process by splittingg the \code{GRanges} of reads
+#' (as example, the reads from a chromosome) in a \code{list} of smaller
+#' \code{GRanges} segments that can be run by the
+#' \code{rjmcmc} function. All those steps are done automatically.
+#'
+#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#'
+#' @param zeta a positive \code{integer} or \code{numeric}, the length
+#' of the nucleosomes. Default: 147.
+#'
+#' @param delta a positive \code{integer} or \code{numeric}, the accepted
+#' range of overlapping section between segments. The overlapping section
+#' being \code{zeta} + \code{delta}.
+#'
+#' @param maxLength a positive \code{integer} or \code{numeric}, the
+#' length of each segment.
+#'
+#' @param nbrIterations a positive \code{integer} or \code{numeric}, the
+#' number of iterations. Non-integer values of
+#' \code{nbrIterations} will be casted to \code{integer} and truncated towards
+#' zero.
+#'
+#' @param kMax a positive \code{integer} or \code{numeric}, the maximum number
+#' of degrees of freedom per region. Non-integer values
+#' of \code{kMax} will be casted to \code{integer} and truncated towards zero.
+#'
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution. Default: 3.
+#'
+#' @param minInterval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
+#'
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
+#'
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{minReads} will be casted to \code{integer} and truncated towards
+#' zero. Default: 5.
+#'
+#' @param adaptIterationsToReads a \code{logical} indicating if the number
+#' of iterations must be modified in function of the number of reads.
+#' Default: \code{TRUE}.
+#'
+#' @param vSeed a \code{integer}. A seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used. Default: -1.
+#'
+#' @param nbCores a positive \code{integer}, the number
+#' of cores used to run in parallel. Default: 1.
+#'
+#' @param dirOut a \code{character} string. The name of the directory
+#' where 2 directories are created (if they don't already exists).
+#' The directory "dirOut/results" contents the rjmcmc results for each segment.
+#' The directory "dirOut/done" contents file a log file for each segment in
+#' RData format. If the log file for a segment is in the directory,
+#' the program considers that it is has been processed and run the next
+#' segment. Default: "out".
+#'
+#' @param saveSEG a \code{logical}. When \code{TRUE}, a RDS file containing
+#' the segments generated by  \code{\link{segmentation}} function is
+#' saved in directory named from paramter \code{dirOut}.
+#' Default: \code{FALSE}.
+#'
+#' @param saveAsRDS a \code{logical}. When \code{TRUE}, a RDS file containing
+#' the complete output of the \code{rjmcmc} function is created.
+#' Default: \code{FALSE}.
+#'
+#' @return a \code{list} of class
+#' "rjmcmcNucleosomesBeforeAndAfterPostTreatment" containing:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric} of length
+#' \code{k}, the positions of the nucleosomes.
+#'     \item muPost a \code{vector} of \code{numeric} of length
+#' \code{k}, the positions of the nucleosomes after post-treament.
+#' }
+#'
+#' @examples
+#'
+#' ## Load synthetic dataset of reads
+#' data(syntheticNucleosomeReads)
+#'
+#' ## Use dataset of reads to create GRanges object
+#' sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+#'     ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+#'     end = syntheticNucleosomeReads$dataIP$end),
+#'     strand = syntheticNucleosomeReads$dataIP$strand)
+#'
+#' ## Run nucleosome detection on the entire sample
+#' \dontrun{result <- rjmcmcCHR(dataIP=sampleGRanges, zeta = 147,
+#'              delta=50, maxLength=1200,
+#'              nbrIterations = 1000, lambda = 3, kMax = 30,
+#'              minInterval = 146, maxInterval = 292, minReads = 5,
+#'              vSeed = 10113, saveAsRDS = FALSE)}
+#'
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @importFrom parallel mclapply
+#' @importFrom GenomicRanges strand
+#' @export
+rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
+                        nbrIterations, kMax, lambda = 3,
+                        minInterval, maxInterval, minReads = 5,
+                        adaptIterationsToReads = TRUE, vSeed = -1,
+                        nbCores = 1, dirOut="out",
+                        saveAsRDS = FALSE, saveSEG = TRUE){
+
+    if(!dir.exists(dirOut)){
+        dir.create(dirOut)
+    }
+
+    dirDone <- paste0(dirOut, "/done")
+    dirResults <- paste0(dirOut, "/results")
+
+    if(!dir.exists(dirResults)){
+        dir.create(dirResults)
+    }
+
+    if(!dir.exists(dirDone)){
+        dir.create(dirDone)
+    }
+
+    seg <- segmentation(dataIP, zeta, delta, maxLength)
+
+    if(saveSEG){
+        options(digits.secs = 2)
+        file_name <- gsub(Sys.time(), pattern = "[:. ]", replacement = "_",
+                          perl = TRUE)
+        saveRDS(object = seg,
+                file = paste0(dirOut,"/seg_", file_name, ".RDS"))
+    }
+
+    nbSeg <- length(seg)
+
+    a <- mclapply(1:nbSeg, FUN = runCHR, seg, niter = nbrIterations,
+                    kmax = kMax, lambda = lambda, ecartmin = minInterval,
+                    ecartmax = maxInterval, minReads = minReads,
+                    adaptNbrIterations = adaptIterationsToReads,
+                    vSeed = vSeed, saveAsRDS = saveAsRDS, mc.cores = nbCores,
+                    mc.preschedule = FALSE)
+
+    results <- mergeAllRDSFilesFromDirectory(dirResults)
+
+    allReadsForward <- start(dataIP[strand(dataIP) == "+"])
+    allReadsReverse <- end(dataIP[strand(dataIP) == "-"])
+
+    resultPostTreatement <- postTreatment(startPosForwardReads=allReadsForward,
+                                          startPosReverseReads=allReadsReverse,
+                                          results,
+                                          chrLength=max(allReadsForward,
+                                                            allReadsReverse))
+
+     results$muPost <- resultPostTreatement
+
+     results$kPost <- length(resultPostTreatement)
+
+     class(results)<-"rjmcmcNucleosomesBeforeAndAfterPostTreatment"
+
+     return(results)
+}

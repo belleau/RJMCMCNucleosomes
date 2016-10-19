@@ -13,7 +13,8 @@
 #' @examples
 #'
 #' ## Use a directory present in the RJMCMC package
-#' directoryWithRDSFiles <- system.file("extdata", package = "RJMCMC")
+#' directoryWithRDSFiles <- system.file("extdata",
+#' package = "RJMCMCNucleosomes")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
 #' ## It is assumed that all files present in the directory are nucleosomes
@@ -30,7 +31,7 @@
 #' @export
 print.rjmcmcNucleosomesMerge <- function(x, ...) {
     # Print title before printing the content
-    cat("\nRJMCMC - Predicted nucleosomes\n")
+    cat("\nRJMCMCNucleosomes - Predicted nucleosomes\n")
     cat("\nNumber of nucleosomes:\n")
     print(x$k, ...)
     cat("\nNucleosomes positions:\n")

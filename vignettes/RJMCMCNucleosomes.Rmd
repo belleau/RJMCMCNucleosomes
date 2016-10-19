@@ -1,0 +1,295 @@
+---
+title: "Nucleosome Positioning"
+output:
+  BiocStyle::html_document:
+    toc: true
+bibliography: rjmcmc.bibtex
+vignette: >
+  %\VignetteIndexEntry{Nucleosome Positioning}
+  %\VignettePackage{RJMCMCNucleosomes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown()
+library(knitr)
+```
+
+<br />
+**Package**: `r Rpackage("RJMCMCNucleosomes")`<br />
+**Authors**: `r packageDescription("RJMCMCNucleosomes")[["Author"]]`<br />
+**Version**: `r packageDescription("RJMCMCNucleosomes")$Version`<br />
+**Compiled date**: `r Sys.Date()`<br />
+**License**: `r packageDescription("RJMCMCNucleosomes")[["License"]]`<br />
+
+# Licensing and citing
+
+The **RJMCMCNucleosomes** package and the underlying **RJMCMCNucleosomes** code 
+are distributed under the Artistic license 2.0. You are free to use and 
+redistribute this software. 
+
+If you use this package for a publication, we would ask you to cite the
+following:
+
+>Samb R, Khadraoui K, Belleau P, et al. (2015) Using informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide profiling. Statistical Applications in Genetics and Molecular Biology. Volume 14, Issue 6, Pages 517-532, ISSN (Online) 1544-6115, ISSN (Print) 2194-6302, December 2015, <a href="http://dx.doi.org/10.1515/sagmb-2014-0098">doi:10.1515/sagmb-2014-0098</a>
+
+
+# Introduction
+
+Global gene expression patterns are established and maintained by the 
+concerted actions of transcription factors (TFs) and the proteins that 
+constitute chromatin. The key structural element of chromatin is the 
+nucleosome, which consists of an octameric histone core wrapped by 146 bps 
+of DNA and connected to its neighbour by approximately 10-80 pbs of linker 
+DNA [@Polishko2012].
+
+The literature on nucleosome positioning commonly focuses on frequentist 
+inferences within parametric approaches (see for instance @Chen2010 and
+@Xi2010).  In those works, the detection of nucleosome positions is done 
+using a hidden Markov model with an assumed known order.
+
+The **RJMCMCNucleosomes** package is an implementation of a fully Bayesian 
+hierarchical model for profiling of nucleosome positions based on 
+high-throughput short-read data (MNase-Seq data). The implementation is based 
+on a strategy which incorporates four aspects. First, it jointly models local 
+concentrations of directional reads. Second, it uses a Multinomial-Dirichlet 
+model in the construction of an informative prior distribution coupled to a 
+t-mixture model with unknown degrees of freedom. Third, the number of 
+nucleosomes is considered to be a random variable and refers to a prior 
+distribution. Fourth, the unknown parameters are simultaneously using the 
+reversible jump Markov chain Monte Carlo (RJMCMC) simulation technique 
+(see for instance @Green1995 and @Richardson1997). 
+
+Detailed information about the model can be found in the article 
+mentioned in the citing section.
+
+# Loading the RJMCMC package
+
+As with any R package, the **RJMCMCNucleosomes** package should first be loaded 
+with the following command:
+
+```{r loadingPackage, warning=FALSE, message=FALSE} 
+library(RJMCMCNucleosomes)
+```
+
+
+# RJMCMCNucleosomes analysis
+
+A typical **RJMCMCNucleosomes** analysis consists of the following steps:
+
+1. Segment the genome into candidate regions that have sufficient aligned
+reads. The region cannot be larger than one chromosome.
+2. Estimate nucleosome positions for each region.
+3. Regroup all regions together. The final region cannot be larger than
+one chromosome.
+4. Post-process predictions of the regrouped region to correct certain 
+predictions.
+
+
+# RJMCMCNucleosomes analysis step by step
+
+A synthetic nucleosome sample containing 100 nucleosomes (80 
+well-positioned + 20 fuzzy) has been created using the 
+Bioconductor package `r Biocpkg("nucleoSim")`. This synthetic sample will be 
+used throughout this analysis.
+
+```{r createSample, collapse=TRUE, message=FALSE}
+## Load nucleoSim package
+library(nucleoSim)
+
+val.num       <- 50     ### Number of well-positioned nucleosomes
+val.del       <- 10     ### Number of well-positioned nucleosomes to delete
+val.var       <- 30     ### variance associated to the well-positioned nucleosomes
+val.fuz       <- 10     ### Number of fuzzy nucleosomes
+val.fuz.var   <- 50     ### variance associated to the fuzzy nucleosomes
+val.max.cover <- 70     ### Maximum coverage for one nucleosome
+val.nuc.len   <- 147    ### Distance between nucleosomes
+val.len.var   <- 10     ### Variance associated to the length of the reads
+val.lin.len   <- 20     ### The length of the DNA linker
+val.rnd.seed  <- 100    ### Set seed when result needs to be reproducible
+val.offset    <- 10000  ### The number of bases used to offset all nucleosomes and reads
+
+## Create sample using a Normal distribution
+sample <- nucleoSim::syntheticNucReadsFromDist(wp.num=val.num,
+                                    wp.del=val.del, wp.var=val.var,
+                                    fuz.num=val.del, fuz.var=val.fuz.var,
+                                    max.cover=val.max.cover, nuc.len=val.nuc.len,
+                                    len.var=val.len.var, lin.len=val.lin.len,
+                                    rnd.seed=val.rnd.seed,
+                                    distr="Normal", offset=val.offset)
+
+## Create visual representation of the synthetic nucleosome sample
+plot(sample)
+```
+
+
+## Split the analyzed region into segments
+
+It is suggested, in order to accelerate the learning process, to split the 
+analyzed region into segments to accelerate the analysis. Moreover, 
+it is mandatory to analyse each chromosome separately since the 
+\code{rjmcmc} function can only analyze one chromosome at the time.
+
+Region segmentation can be done using the \code{segmentation} function. Beware
+that larger is the size of a segment (parameter \code{maxLength}), the higher 
+the number of iterations need to be to reach convergence during nucleosome 
+predictions step.
+
+```{r segment01, warning=FALSE, collapse=TRUE, message=FALSE} 
+## Load needed packages
+library(GenomicRanges)
+
+## Transform sample dataset into GRanges object
+sampleGRanges <- GRanges(seqnames = sample$dataIP$chr, 
+                          ranges = IRanges(start = sample$dataIP$start, 
+                                           end = sample$dataIP$end), 
+                          strand = sample$dataIP$strand)
+
+## Segment sample into candidate regions
+sampleSegmented <- segmentation(dataIP = sampleGRanges, zeta = 147, 
+                                delta = 40, maxLength = 1000)
+
+## Number of segments created
+length(sampleSegmented)
+```
+
+
+## Run RJMCMCNucleosomes for nucleosome predictions
+
+The \code{rjmcmc} function must be run on each candidate region. As an 
+example, the first candidate region is processed using a very low number 
+of iterations. On real data, the number of iterations should be higher 
+(easily 1000000 iterations).
+
+```{r runRJMCMC01 , warning=FALSE, collapse=TRUE} 
+## Extract forward and reverse reads associated to the first segment
+segment01 <- sampleSegmented[[1]]
+readsForward <- start(segment01[strand(segment01) == "+"])
+readsReverse <- end(segment01[strand(segment01) == "-"])
+
+## Run RJMCMC analysis
+## A higher number of iterations is recommanded for real analysis
+resultSegment01 <- rjmcmc(startPosForwardReads = readsForward,
+                            startPosReverseReads = readsReverse,
+                            nbrIterations = 100000, lambda = 3, kMax = 30,
+                            minInterval = 100, maxInterval = 200, minReads = 5,
+                            vSeed = 1921)
+
+## Print the predicted nucleosomes for the first segment
+resultSegment01
+```
+
+
+## Regroup all regions
+
+Once all segments have been analyzed, the predicted nucleosomes can be merged 
+together. Two functions are available to facilitate the merging process:
+
+* *mergeRDSFiles* function: An array containing the name of all RDS files
+to merge is passed to it
+* *mergeAllRDSFilesFromDirectory* function: the name of the directory 
+(relative or absolute path) containing all RDS files to merge is passed to it
+
+Beware that segment from different chromosomes should not be merged together.
+
+The segments of the sample created sooner have all been processed (using 
+500000 iterations) and saved in RDS files. Those will now be merged together.
+
+```{r regroup01, warning=FALSE, collapse=TRUE, message=FALSE}
+## The directory containing the results of all segments
+## On RDS file has been created for each segment
+directory <- system.file("extdata", "demo_vignette", package = "RJMCMCNucleosomes")
+
+## Merging predicted nucleosomes from all segments
+resultsAllMerged <- mergeAllRDSFilesFromDirectory(directory)
+
+resultsAllMerged
+```
+
+
+## Post-process predictions
+
+In some cases the RJMCMC method tends to over split the distribution of reads 
+for a single nucleosome. Although this characteristic increases the number 
+of false positives, it is still beneficial for the region’s rich in 
+nucleosomes.
+
+A function, that merges closely positioned nucleosomes, has been implemented 
+to rectify the over splitting and provide more conservative results.
+
+The \code{postTreatment} function must be run on the entire analyzed region to
+be efficient. __It should not be run on segmented results__. The function 
+needs the positions of the reads used for the RJMCMC analysis.
+
+The value of \code{extendingSize} should be kept low (bellow 20). A larger 
+value could cause the possible merge of true nucleosomes. 
+
+```{r postProcess01, collapse=TRUE, message=FALSE}
+## Split reads from the initial sample data into forward and reverse subsets
+allReadsForward <- subset(sample$dataIP, strand == "+")
+allReadsReverse <- subset(sample$dataIP, strand == "-")
+
+## Number of nucleosomes before the post-treatment
+resultsAllMerged$k
+
+## Use the post-treatment function
+resultsPostTreatment <- postTreatment(startPosForwardReads =  
+                                allReadsForward$start,
+                                startPosReverseReads = allReadsReverse$end, 
+                                resultRJMCMC = resultsAllMerged,
+                                extendingSize = 15,
+                                chrLength = max(allReadsForward$start, 
+                                                    allReadsReverse$start))
+
+
+## Number of nucleosomes after the post-treatment
+length(resultsPostTreatment)
+```
+
+The \code{postTreatment} function can significantly reduces the number of 
+nucleosomes by merging closely positioned nucleosomes.
+
+
+## Visualisation of the predicted nucleosomes
+
+Visualisation of the predicted nucleosomes, with its associated read coverage, 
+is available in the **RJMCMCNucleosomes** package.
+
+The \code{plotNucleosomes} function needs the nucleosome positions as well as 
+the reads, in a \code{IRanges} format, to create a graph. When reads are used 
+to predict more than one set of nucleosome positions (as example, before and
+after post-treatment or results from different software), the predictions can
+be merged in a \code{list} so that all predictions can be plot simultaneously.
+
+```{r visualisation, collapse=TRUE, message=FALSE, fig.height=6.5, fig.width=8}
+## Extract reads to create an IRange
+reads <-IRanges(start = sample$dataIP$start, end=sample$dataIP$end)
+
+## Merge predictions from before post-treatment and after post-treatment in 
+## a list so that both results will be shown in graph
+resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos, sample$fuz$nucleopos),
+                              BeforePostTreatment = resultsAllMerged$mu,    
+                              AfterPostTreatment = resultsPostTreatment)
+
+## Create graph using nucleosome positions and reads
+## The plot will shows : 
+## 1. nucleosomes from the sample
+## 2. nucleosomes detected by rjmcmc() function
+## 3. nucleosomes obtained after post-treament 
+plotNucleosomes(resultsBeforeAndAfter, reads, 
+                    names=c("Sample", "RJMCMC", "After Post-Treatment"))
+```
+
+
+# Session info
+
+Here is the output of `sessionInfo()` on the system on which this document was 
+compiled:
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
+
+
+# References

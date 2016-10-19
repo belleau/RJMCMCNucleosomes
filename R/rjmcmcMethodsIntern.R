@@ -1,323 +1,108 @@
-#' @title Death Submove Probability
+#' @title Interface for the RJMCMC nucleosome mapping method in C++
 #'
-#' @description Calculation of the death submove probability of a randomly
-#' selected nucleosome using a truncated Poisson distribution.
-#'
-#' @param k a positive \code{integer}, the number of nucleosomes.
-#'
-#' @param lambda a positive \code{numeric}, the theorical mean
-#' of the Poisson distribution.
-#'
-#' @param kMax a positive \code{integer}, the maximum number of nucleosomes
-#' authorized. When \code{k} is equal or superior to \code{kMax}, the
-#' returned value is \code{0}. Default: \code{30}.
-#'
-#' @return a \code{numeric} value representing the calculated death submove
-#' probability. The value \code{0} when \code{k} is equal or superior to
-#' \code{kMax} or when \code{k} is equal to \code{1}.
-#'
-#' @examples
-#'
-#' ## Return the death submove probability
-#' RJMCMC:::Dk(k = 12L, lambda = 2L, kMax = 30L)
-#'
-#' ## Zero is returned when k = 1
-#' RJMCMC:::Dk(k = 1L, lambda = 3L, kMax = 30L)
-#'
-#' ## Zerio is returned when k is superior to kMax
-#' RJMCMC:::Dk(k = 31L, lambda = 2L, kMax = 30L)
-#'
-#' @author Rawane Samb
-#' @importFrom stats dpois
-#' @keywords internal
-Dk <- function(k, lambda, kMax = 30) {
-    ifelse((k == 1 || k > kMax), 0,
-            0.5* min(1, k / lambda)) # min(1, dpois(k - 1, lambda)/dpois(k, lambda)))
-
-}
-
-
-#' @title Birth Submove Probability
-#'
-#' @description Calculation of the birth submove probability of adding a new
-#' nucleosome using a truncated Poisson distribution.
+#' @description Function that calls the core of the nucleosome positioning
+#' mapping function that is implemented in C++.
 #'
 #' @param k a positive \code{integer}, the number of nucleosomes.
 #'
 #' @param lambda a positive \code{numeric}, the theorical mean
 #' of the Poisson distribution.
 #'
-#' @param kMax a positive \code{integer}, the maximum number of nucleosomes
-#' authorized. When \code{k} is equal or superior to \code{kMax}, the
-#' returned value is \code{0}. Default: \code{30}.
+#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
+#' start position of all the forward reads.
 #'
-#' @return a \code{numeric} value. The value \code{0} when \code{k} is equal
-#' or superior to \code{kMax} or when \code{k} is equal to \code{1}.
+#' @param startPosReverseReads a \code{vector} of \code{numeric}, the
+#' start position of all the reverse reads. Beware that the start position of
+#' a reverse read is always higher that the end positition.
 #'
-#' @examples
+#' @param nbrIterations a positive \code{integer} or \code{numeric}, the
+#' number of iterations. Non-integer values of
+#' \code{nbrIterations} will be casted to \code{integer} and truncated towards
+#' zero.
 #'
-#' ## Return the birth submove probability
-#' RJMCMC:::Bk(k = 14L, lambda = 1L, kMax = 30L)
+#' @param kMax a positive \code{integer} or \code{numeric}, the maximum number
+#' of nucleosomes per region. Non-integer values
+#' of \code{kMax} will be casted to \code{integer} and truncated towards zero.
 #'
-#' ## Zero is returned when k = 1
-#' RJMCMC:::Bk(k = 1L, lambda = 3L, kMax = 30L)
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution. Default: 3.
 #'
-#' ## Zero is returned when k is superior to kMax
-#' RJMCMC:::Bk(k = 31L, lambda = 2L, kMax = 30L)
+#' @param minInterval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
 #'
-#' @author Rawane Samb
-#' @importFrom stats dpois
-#' @keywords internal
-Bk <- function(k, lambda, kMax = 30) {
-    ifelse((k >= kMax), 0,
-            0.5 * min(1, lambda/ (k+1))) # min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
-}
-
-
-#' @title Random deviate from a truncated normal distribution
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
 #'
-#' @description Generate a random deviate value from a normal distribution.
-#' The returned value is included inside a specified range
-#' ]\code{minValue},\code{maxValue}[
-#' specified by user. The mean and variance of the normal distribution is
-#' also specified by user.
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{minReads} will be casted to \code{integer} and truncated towards
+#' zero. Default: 5.
 #'
-#' @param mu a \code{numeric} value, the mean of the normal distribution.
+#' @param adaptIterationsToReads a \code{logical} indicating if the number
+#' of iterations must be modified in function of the number of reads.
+#' Default: \code{TRUE}.
 #'
-#' @param sigma a non-negative \code{numeric}, the variance of the normal
-#' distribution.
+#' @param vSeed a \code{integer}. A seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used. Default: -1.
 #'
-#' @param minValue a \code{numeric} value, the inferior boundary of the
-#' range in which the output value must be located. The returned value has to
-#' be superior to \code{minValue}.
-#'
-#' @param maxValue a \code{numeric} value, the superior boundary of the range
-#' in which the output value must be located. The returned value has to be
-#' inferior to \code{maxValue}.
-#'
-#' @return a \code{numeric} which is superior to \code{minValue} and inferior
-#' to \code{maxValue}.
-#'
-#' @examples
-#'
-#' ## Set seed to replicate results
-#' set.seed(3333)
-#'
-#' ## Return a value, between 1000 and 3000, generated froma a normal
-#' ## distribution with a mean of 2000 and a variance of 30.
-#' RJMCMC:::tnormale(2000, 30, 1000, 30000)
-#'
-#' @author Rawane Samb
-#' @importFrom stats rnorm
-#' @keywords internal
-tnormale <- function(mu, sigma, minValue, maxValue) {
-    repeat {
-        y <- rnorm(1, mu, sd = sqrt(sigma))
-        if (y > minValue & y < maxValue) break()
-    }
-    return(y)
-}
-
-
-#' @title Student Mixture Model
-#'
-#' @description Generation a value from a Student Mixture distribution.
-#'
-#' @param i an \code{integer}, a count parameter.
-#'
-#' @param k a positive \code{integer} value, the number of nucleosomes in the
-#' analyzed region.
-#'
-#' @param weight a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the weight for each
-#' nucleosome. The sum of all \code{weight} values must be equal to \code{1}.
-#' The length of \code{weight} must be equal to \code{k}.
-#'
-#' @param mu a \code{vector} of positive \code{integer} of length \code{k},
-#' the positions of all the nucleosomes in the analyzed region. The length
-#' of \code{weight} must be equal to \code{k}.
-#'
-#' @param sigma a \code{vector} of \code{numeric} of length \code{k}, the
-#' variance for each nucleosome. The length of \code{sigma} must be equal
-#' to \code{k}.
-#'
-#' @param dfr a \code{vector} of \code{numeric} of length \code{k}, the degrees
-#' of freedom for each nucleosome. The length of \code{dfr} must
-#' be equal to \code{k}.
-#'
-#' @return a \code{numerical}, the value generated from a Student Mixture
-#' distribution.
+#' @return a \code{list} containing:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item k_max a \code{integer}, the maximum number of nucleosomes
+#' obtained during the iteration process.
+#'     \item it a \code{vector} of \code{integer} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
+#'     \item nbState a \code{integer}, the number of changes of state.
+#'     \item mu a \code{matrix} of \code{numeric} with \code{k_max} columns
+#' and \code{nbState} row containing, in each row, the \code{mu} values
+#' associated the the state identified by the row number.
+#'     \item muHat a \code{matrix} of \code{numeric} with \code{k_max} columns
+#' and \code{k_max} rows containing, in each row, the mean \code{mu} values
+#' associated the number of nucleosomes detected. The row number
+#' corresponds to the number of nucleosomes detected.
+#'     \item nbK a \code{vector} of length \code{k_max} containing
+#' \code{integer}, the number of iterations
+#' which detected a specific number of nucleosomes. The position in the vector
+#' correspond to the number of nucleosomes.
+#' }
 #'
 #' @examples
 #'
-#' ## Return a value generated from a student mixture
-#' RJMCMC:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
-#' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
+## Loading dataset
+#' data(reads_demo)
 #'
-#' @importFrom stats runif rt
-#' @author Rawane Samb, Astrid Deschenes
+#' ## Nucleosome positioning, running both merge and split functions
+#' result <- rjmcmcNucleo(startPosForwardReads = reads_demo$readsForward,
+#'          startPosReverseReads = reads_demo$readsReverse,
+#'          nbrIterations = 1000, lambda = 2, kMax = 30,
+#'          minInterval = 146, maxInterval = 292, minReads = 5,
+#'          adaptIterationsToReads = TRUE, vSeed = -1)
+#'
+#' ## Print the final estimation of the number of nucleosomes
+#' result$k
+#'
+#' ## Print the position of nucleosomes
+#' result$mu
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @importFrom Rcpp evalCpp
+#' @useDynLib RJMCMCNucleosomes, .registration = TRUE
+#' @exportPattern "^[[:alpha:]]+"
 #' @keywords internal
-student.mixture <- function(i, k, weight, mu, sigma, dfr) {
-    # Adding zero to the weight vector and calculating the cumulative sums
-    sumWeight <- cumsum(c(0, weight))
-
-    u <- runif(1, 0, 1)
-
-    # Get the maximal position where the sum of weight is inferior to u
-    position <- max(which(sumWeight < u))
-
-    return(mu[position] + sqrt(sigma[position]) * rt(1, dfr[position]))
-}
-
-
-#' @title Normal Mixture Model
 #'
-#' @description Generation a value from a Normal Mixture distribution.
-#'
-#' @param i a \code{integer}, a count parameter.
-#'
-#' @param k a positive \code{integer} value, the number of nucleosomes in the
-#' analyzed region.
-#'
-#' @param weight a \code{vector} of length \code{k}, the weight for each
-#' nucleosome. The sum of all \code{weight} values must be equal to \code{1}.
-#' The length of \code{weight} must be equal to \code{k}.
-#'
-#' @param mu a \code{vector} of positive \code{integer} of length \code{k},
-#' the positions of all the nucleosomes in the analyzed region. The length
-#' of \code{weight} must be equal to \code{k}.
-#'
-#' @param sigma a \code{vector} of length \code{k}, the variance for each
-#' nucleosome. The length of \code{sigma} must be equal to \code{k}.
-#'
-#' @return a \code{numerical}, the value generated from a Normal Mixture
-#' distribution.
-#'
-#' @examples
-#'
-#' ## Return a value generated from a normal mixture
-#' RJMCMC:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
-#' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
-#'
-#' @importFrom stats runif
-#' @author Rawane Samb, Astrid Deschenes
-#' @keywords internal
-normal.mixture <- function(i, k, weight, mu, sigma) {
-    # Adding zero to the weight vector and calculating the cumulative sums
-    sumWeight <- cumsum(c(0, weight))
-
-    u <- runif(1, 0, 1)
-
-    # Get the maximal position where the sum of weight is inferior to u
-    position <- max(which(sumWeight < u))
-
-    return(rnorm(1, mu[position], sd = sqrt(sigma[position])))
-}
-
-
-#' @title Prior density of \eqn{mu}
-#'
-#' @description Computes the prior density of \eqn{mu} conditionally to
-#' the number of nucleosomes.
-#'
-#' For more information on the calculation of the prior density of \eqn{mu},
-#' see Proposotion 1 and equation (11) of the cited article.
-#'
-#' @param mu a \code{vector} of positive \code{integer} containing the
-#' positions of all nucleosomes.
-#'
-#' @param readPositions a \code{vector} of positive \code{integer}
-#' corresponding to the
-#' positions of all reads, including forward and reverse strands. The
-#' values insinde \code{readPositions} must be sorted.
-#'
-#' @return  a \code{numeric}, the exact prior density of \code{mu} given the
-#' number of nucleosomes.
-#'
-#' @references Samb R., Khadraoui K., Belleau P., Deschenes A., Lakhal L.
-#' and Droit A. Using
-#' informative Multinomial-Dirichlet prior in a t-mixture with
-#' reversible jump estimation of nucleosome positions for genome-wide
-#' profiling. Statistical Applications in Genetics and Molecular Biology.
-#' Volume 14, Issue 6, Pages 517-532, ISSN (Online) 1544-6115,
-#' ISSN (Print) 2194-6302, DOI: 10.1515/sagmb-2014-0098, December 2015
-#'
-#' @examples
-#'
-#' ## Sorted vector of read positions, including forward and reverse
-#' readPositions <- c(9909L, 9928L, 9935L, 26603L, 26616L, 26632L, 26636L,
-#' 26640L, 44900L, 44902L, 44909L,  44910L, 44910L, 44918L,
-#' 44924L, 44931L, 44935L, 44942L, 44946L)
-#'
-#' ## Position of the group of nucleosomes
-#' mu <- c(10000L, 26700L, 45000L)
-#'
-#' ## Calculation of the exact prior density of mu
-#' density <- RJMCMC:::priorMuDensity(mu, readPositions)
-#'
-#' @author Rawane Samb, Astrid Deschenes
-#' @keywords internal
-priorMuDensity <- function(mu, readPositions) {
-    ## Get the number of nucleosomes
-    k <- length(mu)
-
-    ## Create a matrix used in the calculation of the priors
-    basicMatrix <- matrix(0L, nrow = k, ncol = k)
-    for (i in 1:k) {
-        basicMatrix[i, i] <- 1L
-    }
-    if (k > 1) {
-        for (i in 2:k) {
-            basicMatrix[i , i - 1] <- -1L
-        }
-    }
-    omega <- t(basicMatrix) %*% basicMatrix
-
-    ## Calculating the range (R)
-    R <- max(readPositions) - min(readPositions)
-
-    ## Calculating the mean (E)
-    E <- (max(readPositions) + min(readPositions))/2
-    tau <- 1/R^2
-    M <- rep(E, k)
-    const <- (pi/(2*tau))^{-k/2}
-
-    ## The calculation of the prior
-    ## Equation 11 in the cited article
-    return(const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M))))
-}
-
-
-#' @title Element with the hightest number of occurences
-#'
-#' @description Returned the \code{integer} with the highest number of
-#' occurences in a \code{vector}.
-#' When more than one \code{integer} have the highest number of occurences,
-#' \code{NA} is returned.
-#'
-#' @param sample a \code{numeric} \code{vector} (of positive \code{integer}
-#' values). If the elements of \code{sample} are \code{numeric} but not
-#' \code{integer}, the elements are truncated by \code{as.integer}.
-#'
-#' @return  a \code{integer} with the highest number of occurences or
-#' \code{NA} when more than one \code{integer} have the highest number
-#' of occurences.
-#'
-#' @author Rawane Samb, Astrid Deschenes
-#' @keywords internal
-#' @examples
-#'
-#' ## Return the element with the hightest number of occurence
-#' data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-#' RJMCMC:::elementWithHighestMode(data01)
-#'
-#' data02 <- c(3L, 6L, 4L, 3L, 6L)
-#' RJMCMC:::elementWithHighestMode(data02)
-#'
-elementWithHighestMode <- function(sample) {
-    tabsample <- tabulate(sample)
-    maxOccurence <- tabsample == max(tabsample)
-    ifelse(sum(maxOccurence) == 1, which(maxOccurence), NA)
+rjmcmcNucleo <- function(startPosForwardReads,
+                              startPosReverseReads,
+                              nbrIterations, kMax, lambda,
+                              minInterval, maxInterval,
+                              minReads = 5L,
+                              adaptIterationsToReads = TRUE, vSeed = -1) {
+    # Call C++ function
+    .Call('RJMCMCNucleosomes_rjmcmcNucleo',
+          PACKAGE = 'RJMCMCNucleosomes',
+          startPosForwardReads, startPosReverseReads,
+          nbrIterations, kMax, lambda, minInterval,
+          maxInterval, minReads, adaptIterationsToReads, vSeed)
 }
 
 
@@ -360,30 +145,36 @@ elementWithHighestMode <- function(sample) {
 #' @param adaptIterationsToReads a \code{logical} indicating if the number
 #' of iterations must be modified in function of the number of reads.
 #'
+#' @param vSeed a \code{integer}. A seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used.
+#'
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
 #'
 #' @examples
 #'
 #' ## The function returns 0 when all paramaters are valid
-#' RJMCMC:::validateParameters(startPosForwardReads = c(72400, 72431, 72428,
-#' 72429, 72426), startPosReverseReads = c(72520, 72523, 72521, 72533, 72511),
-#' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
-#' maxInterval = 200, adaptIterationsToReads = TRUE)
+#' RJMCMCNucleosomes:::validateRJMCMCParameters(startPosForwardReads = c(72400,
+#' 72431, 72428, 72429, 72426), startPosReverseReads = c(72520, 72523, 72521,
+#' 72533, 72511), nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1,
+#' minInterval = 100, maxInterval = 200, adaptIterationsToReads = TRUE,
+#' vSeed = 100)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{RJMCMC:::validateParameters(startPosForwardReads = c(72400, 72431,
-#' 72428, 72429, 72426), startPosReverseReads = NA,
+#' \dontrun{RJMCMCNucleosomes:::validateRJMCMCParameters(startPosForwardReads =
+#' c(72400, 72431, 72428, 72429, 72426), startPosReverseReads = NA,
 #' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
-#' maxInterval = 200, adaptIterationsToReads = TRUE)}
+#' maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 #'
 #' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
-validateParameters <- function(startPosForwardReads, startPosReverseReads,
-                                    nbrIterations, kMax, lambda,
-                                    minInterval, maxInterval, minReads,
-                                    adaptIterationsToReads) {
+validateRJMCMCParameters <- function(startPosForwardReads,
+                                        startPosReverseReads,
+                                        nbrIterations, kMax, lambda,
+                                        minInterval, maxInterval, minReads,
+                                        adaptIterationsToReads, vSeed) {
     ## Validate the nbrIterations parameter
     if (!(isSingleInteger(nbrIterations) || isSingleNumber(nbrIterations)) ||
             as.integer(nbrIterations) < 1) {
@@ -409,8 +200,7 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
 
     ## Validate that the startPosForwardReads has at least one read
     ## and that the values are integer
-    if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads)
-        || length(startPosForwardReads) < 1)
+    if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads))
     {
         stop(paste0("startPosForwardReads must be a non-empty vector of ",
                     "numeric values."))
@@ -418,8 +208,7 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
 
     ## Validate that the startPosReverseReads has at least one read
     ## and that the values are integer
-    if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads)
-        || length(startPosReverseReads) < 1)
+    if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads))
     {
         stop(paste0("startPosReverseReads must be a non-empty vector of ",
                     "numeric values."))
@@ -430,1551 +219,12 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
         stop("adaptIterationsToReads must be a logical.")
     }
 
+    ## Validate that vSeed is a numeric value
+    if (!isSingleNumber(vSeed)) {
+        stop("vSeed must be a numeric value.")
+    }
+
     return(0)
-}
-
-
-#' @title Birth move in the case that only one nucleosome is present
-#'
-#' @description Attempt to add a component for a new nucleosome in the
-#' case that only one nucleosome is present \code{k = 1}
-#'
-#' @param paramValues a \code{list} containing:
-#' \itemize{
-#'     \item startPSF a \code{vector} of positive \code{integer}, the
-#' start position of all the forward reads.
-#'     \item startPSR a \code{vector} of positive \code{integer}, the
-#' start position of all the reverse reads.
-#'     \item kmax a \code{integer} the maximum number of nucleosomes allowed.
-#'     \item lambda a positive \code{numeric}, the theorical mean
-#' of the Poisson distribution.
-#'     \item minReads a \code{integer}, the minimum
-#' number of reads in a potential canditate region.
-#'     \item y a \code{vector} of \code{numeric}, the position of all reads (
-#' including forward and reverse reads).
-#'     \item nr a \code{integer}, the number of reverse reads.
-#'     \item nf a \code{integer}, the number of forward reads.
-#'     \item nbrReads a \code{integer}, the total number of reads (including
-#' forward and reverse reads).
-#'     \item zeta \code{integer}, the length of a nucleosome.
-#'     \item deltamin a \code{integer}, the minimum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item deltamax a \code{integer}, the maximum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item minReadPos a \code{numeric}, the minimum position of the reads.
-#'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
-#'     \item nbrIterations a \code{integer}, the number of iterations.
-#' }
-#'
-#' @param kValue a \code{integer}, the number of nucleosomes.
-#'
-#' @param muValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the positions of the nucleosomes.
-#'
-#' @param sigmafValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the forward reads for each nucleosome.
-#'
-#' @param sigmarValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the reverse reads for each nucleosome.
-#'
-#' @param deltaValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'
-#' @param wValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the weight for each nucleosome.
-#'
-#' @param dfValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the degrees of freedom for each nucleosome.
-#'
-#' @param aValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue + 1}, the positions, on the chromosome, delimiting the regions
-#' of the reads associated with each nucleosome.
-#'
-#' @param dimValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the number of reads associated to each nucleosome.
-#'
-#' @return a \code{list} containing:
-#' \itemize{
-#'     \item k a \code{integer}, the updated number of nucleosomes.
-#'     \item mu a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the updated distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'     \item w a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated weight for each nucleosome.
-#'     \item df a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the number of degrees of freedom.
-#'     \item a a \code{vector} of positive \code{numerical} of length
-#' \code{k + 1}, the updated positions, on the chromosome, delimiting the
-#' regions of the reads associated with each nucleosome.
-#'     \item dim a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated number of reads associated to each nucleosome.
-#'     \item rho a \code{numeric}, the acceptance probability.
-#' }
-#'
-#' @examples
-#'
-#' ## Load dataset
-#' data(reads_demo)
-#'
-#' ## Create a list containing the mandatory parameters
-#' paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
-#' nr = length(reads_demo$readsReverse),
-#' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-#' y = sort(c(reads_demo$readsForward, reads_demo$readsReverse)),
-#' startPSF = reads_demo$readsForward,
-#' startPSR = reads_demo$readsReverse, lambda = 2,
-#' zeta = 147, deltamin = 142, deltamax = 152,
-#' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-#'
-#' ## Create a list containing the mandatory parameters
-#' RJMCMC:::birthMoveK1(paramValues = paramList, kValue = 1L,
-#' muValue = c(73008.53, rep(0, 29)), sigmafValue = c(1, rep(0, 29)),
-#' sigmarValue = c(1, rep(0 ,29)),
-#' deltaValue = c(61.03185, rep(0, 29)), wValue = c(1, rep(0, 29)),
-#' dfValue = c(3, rep(0, 29)),
-#' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' max(c(reads_demo$readsReverse, reads_demo$readsForward)), rep(0, 29)),
-#' dimValue = c(length(reads_demo$readsForward) +
-#' length(reads_demo$readsReverse), rep(0, 29)))
-#'
-#'
-#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
-#' @keywords internal
-#'
-birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
-                            sigmarValue, deltaValue, wValue,
-                            dfValue, aValue, dimValue) {
-
-    varTilde <- list(k = 0L, mu = rep(0,paramValues$kmax),
-                        sigmaf = rep(0, paramValues$kmax),
-                        sigmar = rep(0, paramValues$kmax),
-                        delta = rep(0, paramValues$kmax),
-                        w = rep(0, paramValues$kmax),
-                        df = rep(3, paramValues$kmax),
-                        a = rep(0, paramValues$kmax + 1L),
-                        dim = rep(0, paramValues$kmax), rho = 0)
-
-    Kn          <- 0
-    Kaf         <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kbf         <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kar         <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-    Kbr         <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-
-    Y1f         <- rep(0, paramValues$nf)
-    Y2f         <- rep(0, paramValues$nf)
-    Y1r         <- rep(0, paramValues$nr)
-    Y2r         <- rep(0, paramValues$nr)
-
-
-    varTilde$k <- kValue + 1L
-    count  <- 1L
-
-    repeat {
-        j <- sample(1:kValue, 1)
-        varTilde$mu[j] <- runif(1, paramValues$minReadPos, muValue[ j])
-        varTilde$mu[ 1:varTilde$k] <- sort(c(muValue[ 1:kValue],
-                                                varTilde$mu[j]))
-
-        varTilde$a[j + 1] <- runif(1, varTilde$mu[j], varTilde$mu[j+1])
-        varTilde$a[1:(varTilde$k + 1)] <- sort(c(aValue[ 1:varTilde$k],
-                                                varTilde$a[ j+1]))
-        varTilde$a[1]                 <- paramValues$minReadPos
-        varTilde$a[(varTilde$k+1)]    <- paramValues$maxReadPos
-
-        varTilde$dim[1] <- length(paramValues$y[varTilde$a[1] <= paramValues$y &
-                                            paramValues$y < varTilde$a[2]])
-        varTilde$dim[varTilde$k] <- length(paramValues$y[varTilde$a[varTilde$k]
-                                            <= paramValues$y & paramValues$y
-                                            <= paramValues$maxReadPos])
-
-        if (varTilde$k > 2) {   # impossible si kValue == 1
-            for (m in 2:(varTilde$k-1)) {
-                varTilde$dim[m] <- length(paramValues$y[(varTilde$a[m] <=
-                                        paramValues$y & paramValues$y <
-                                        varTilde$a[m+1])])
-            }
-        }
-
-        Pr <- min(varTilde$dim[1:varTilde$k])
-
-        ybar <- mean(paramValues$y[varTilde$a[j] <= paramValues$y &
-                                    paramValues$y <= varTilde$a[j + 1]])
-        classesf <- paramValues$y[varTilde$a[j] <= paramValues$y &
-                                    paramValues$y <= ybar]
-        classesr <- paramValues$y[ybar <= paramValues$y &
-                                    paramValues$y <= varTilde$a[j + 1]]
-
-        Lf <- length(classesf[!duplicated(classesf)])
-        Lr <- length(classesr[!duplicated(classesr)])
-
-        count <- count + 1L
-
-        if ((Pr > 1 & Lf > 1 & Lr > 1) || count == 1000L) break()
-    }
-
-    if (count == 1000L) {
-        ## End of iterations have been reached without meeting conditions
-        varTilde$rho <- 0
-    } else  {
-        varTilde$df[j] <- sample(3:30, 1)
-
-        varTilde$sigmaf[j] <- ifelse(Lf > 1,
-                                    var(classesf) * (varTilde$df[j] - 2)/
-                                    varTilde$df[j], sigmafValue[j])
-        varTilde$sigmar[j] <- ifelse(Lr > 1,
-                                    var(classesr) * (varTilde$df[j] - 2)/
-                                    varTilde$df[j], sigmarValue[j])
-
-        varTilde$sigmaf[1:varTilde$k] <- c(sigmafValue[ 1:kValue],
-                                            varTilde$sigmaf[j])
-        varTilde$sigmar[1:varTilde$k] <- c(sigmarValue[ 1:kValue],
-                                            varTilde$sigmar[j])
-
-        varTilde$delta[j] <- tnormale(paramValues$zeta,
-                                        1/(varTilde$sigmaf[j]^{-1} +
-                                        varTilde$sigmar[j]^{-1}),
-                                        paramValues$deltamin,
-                                        paramValues$deltamax)
-        varTilde$delta[1:varTilde$k] <- c(varTilde$delta[j],
-                                           deltaValue[1:kValue])
-
-        alpha                   <- rep(1, kValue)
-        alphatilde              <- rep(1, varTilde$k)
-        alphaproptilde          <- rep(1, varTilde$k)
-        alphaprop               <- rep(1, kValue)
-        varTilde$w[ 1:varTilde$k]  <- rdirichlet(1, alphaproptilde)
-        ennetilde               <- varTilde$dim[1:varTilde$k]
-        enne <- rmultinom(1, paramValues$nbrReads, wValue[1:kValue])
-
-        # likelihood ratio
-
-        for (m in 1:kValue) {
-            Kaf[ ,m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmaf[m])) *
-                        dt((paramValues$startPSF - varTilde$mu[m] +
-                        varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                        varTilde$df[m]))
-            Kbf[ ,m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
-                        dt((paramValues$startPSF - muValue[m] +
-                        deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]))
-        }
-        Kaf[ ,varTilde$k] <- (varTilde$w[varTilde$k] *
-                        (1/sqrt(varTilde$sigmaf[varTilde$k])) *
-                        dt(( paramValues$startPSF - varTilde$mu[varTilde$k] +
-                        varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[varTilde$k]),
-                        varTilde$df[m]))
-
-        for (s in 1:paramValues$nf) {
-            Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
-            Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
-        }
-
-        for (m in 1:kValue) {
-
-            Kar[ ,m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
-                        dt((paramValues$startPSR - varTilde$mu[m] -
-                            varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                            varTilde$df[m]))
-            Kbr[ ,m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
-                        dt((paramValues$startPSR - muValue[m] -
-                            deltaValue[m]/2)/sqrt(sigmarValue[m]), dfValue[m]))
-        }
-
-        Kar[ ,varTilde$k] <- (varTilde$w[varTilde$k] *
-                                (1/sqrt(varTilde$sigmar[varTilde$k])) *
-                                dt((paramValues$startPSR -
-                                varTilde$mu[varTilde$k] -
-                                varTilde$delta[m]/2)/
-                                sqrt(varTilde$sigmar[varTilde$k]),
-                                varTilde$df[m]))
-
-        for (s in 1:paramValues$nr) {
-            Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
-            Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
-        }
-
-        Kn          <- sum(Y1f) + sum(Y1r)
-        Kd          <- sum(Y2f) + sum(Y2r)
-
-        q           <- Kn - Kd
-        rap.q       <- exp(q)
-
-        rap.vrais   <- rap.q
-
-        if (j == 1) {
-            # Density of varTilde$mu[j]
-            qalloc <- 1/(muValue[j] - paramValues$minReadPos)
-        } else {
-            qalloc <- 1/(muValue[j] - muValue[j - 1])
-        }
-
-        rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],
-                            paramValues$y)/priorMuDensity(muValue[1:kValue],
-                            paramValues$y))
-
-        rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,
-                            varTilde$w[1:varTilde$k])/
-                            dmultinom(dimValue[1:kValue],
-                            paramValues$nbrReads, wValue[1:kValue])
-        rap.priork    <- (dpois(varTilde$k, paramValues$lambda)/
-                            dpois(kValue, paramValues$lambda))
-        rap.propmu    <- (1/(qalloc))
-
-
-        rap.prior     <- rap.priormu * rap.priorenne * rap.priork
-        rap.prop      <- rap.propmu
-
-        varTilde$rho  <- min(1, (rap.vrais) * (rap.prior) * (rap.prop ) *
-                            (Dk(varTilde$k, paramValues$lambda,
-                            paramValues$kmax)/Bk(kValue,
-                            paramValues$lambda, paramValues$kmax)))
-
-    }
-
-    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
-
-    return(varTilde)
-}
-
-#' @title Birth move when the current number of nucleosomes is superior to 1
-#'
-#' @description Attempt to add a component for a new nucleosome. The function
-#' is specific to the case when when the current number of nucleosomes is
-#' superior to 1.
-#'
-#' @param paramValues a \code{list} containing:
-#' \itemize{
-#'     \item startPSF a \code{vector} of positive \code{integer}, the
-#' start position of all the forward reads.
-#'     \item startPSR a \code{vector} of positive \code{integer}, the
-#' start position of all the reverse reads.
-#'     \item kmax a \code{integer} the maximum number of nucleosomes allowed.
-#'     \item lambda a positive \code{numeric}, the theorical mean
-#' of the Poisson distribution.
-#'     \item minReads a \code{integer}, the minimum
-#' number of reads in a potential canditate region.
-#'     \item y a \code{vector} of \code{numeric}, the position of all reads (
-#' including forward and reverse reads).
-#'     \item nr a \code{integer}, the number of reverse reads.
-#'     \item nf a \code{integer}, the number of forward reads.
-#'     \item nbrReads a \code{integer}, the total number of reads (including
-#' forward and reverse reads).
-#'     \item zeta \code{integer}, the length of a nucleosome.
-#'     \item deltamin a \code{integer}, the minimum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item deltamax a \code{integer}, the maximum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item minReadPos a \code{numeric}, the minimum position of the reads.
-#'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
-#' }
-#'
-#' @param kValue a \code{integer}, the number of nucleosomes.
-#'
-#' @param muValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the positions of the nucleosomes.
-#'
-#' @param sigmafValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the forward reads for each nucleosome.
-#'
-#' @param sigmarValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the reverse reads for each nucleosome.
-#'
-#' @param deltaValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'
-#' @param wValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the weight for each nucleosome.
-#'
-#' @param dfValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the number of degrees of freedom.
-#'
-#' @param aValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue + 1}, the positions, on the chromosome, delimiting the regions
-#' of the reads associated with each nucleosome.
-#'
-#' @param dimValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the number of reads associated to each nucleosome.
-#'
-#' @return a \code{list} containing:
-#' \itemize{
-#'     \item k a \code{integer}, the updated number of nucleosomes.
-#'     \item mu a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the updated distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'     \item w a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated weight for each nucleosome.
-#'     \item df a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated degrees of freedom.
-#'     \item a a \code{vector} of positive \code{numerical} of length
-#' \code{k + 1}, the updated positions, on the chromosome, delimiting the
-#' regions of the reads associated with each nucleosome.
-#'     \item dim a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated number of reads associated to each nucleosome.
-#'     \item rho a \code{numeric}, the acceptance probability.
-#' }
-#'
-#' @examples
-#'
-#' ## Load dataset
-#' data(reads_demo)
-#'
-#' ## Create a list containing the mandatory parameters
-#' paramList <- list(kmax = 5L, nf = length(reads_demo$readsForward),
-#' nr = length(reads_demo$readsReverse),
-#' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-#' y = sort(c(reads_demo$readsForward, reads_demo$readsReverse)),
-#' startPSF = reads_demo$readsForward,
-#' startPSR = reads_demo$readsReverse, lambda = 2,
-#' zeta = 147, deltamin = 142, deltamax = 152,
-#' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-#'
-#' ## Initial position of the nucleosomes
-#' muPosition <- c(72800, 73000)
-#' muPosition
-#'
-#' ## Birth move when more than one nucleosome
-#' result <- RJMCMC:::birthMove(paramValues = paramList, kValue = 2L,
-#' muValue = muPosition, sigmafValue = c(100, 120), sigmarValue = c(120, 100),
-#' deltaValue = c(200, 210), wValue = c(0.5, 0.5), dfValue = c(3, 4),
-#' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)), 73150,
-#' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
-#' dimValue = c(length(reads_demo$readsForward),
-#' length(reads_demo$readsReverse)))
-#'
-#' ## Final position of the nucleosomes
-#' result$mu[1:3]
-#'
-#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
-#' @keywords internal
-#'
-birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
-                            deltaValue, wValue, dfValue,
-                            aValue, dimValue){
-    #Birth move
-
-    varTilde <- list(k = 0L, mu = rep(0,paramValues$kmax),
-                        sigmaf = rep(0, paramValues$kmax),
-                        sigmar = rep(0, paramValues$kmax),
-                        delta = rep(0, paramValues$kmax),
-                        w = rep(0, paramValues$kmax),
-                        df = rep(3, paramValues$kmax),
-                        a = rep(0, paramValues$kmax + 1L),
-                        dim = rep(0, paramValues$kmax), rho = 0)
-
-    Kn          <- 0
-    Kaf         <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kbf         <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kar         <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-    Kbr         <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-
-    Y1f         <- rep(0, paramValues$nf)
-    Y2f         <- rep(0, paramValues$nf)
-    Y1r         <- rep(0, paramValues$nr)
-    Y2r         <- rep(0, paramValues$nr)
-
-
-    varTilde$k  <- kValue + 1L
-    count       <- 1L
-
-    repeat {
-        j <- sample(1:kValue, 1)
-
-        if (j == 1) {
-            varTilde$mu[j] <- runif(1, paramValues$minReadPos, muValue[j])
-        } else {
-            varTilde$mu[j] <- runif(1, muValue[j - 1], muValue[j])
-        }
-
-        varTilde$mu[1:varTilde$k] <- sort(c(muValue[1:kValue], varTilde$mu[j]))
-
-        varTilde$a[j + 1] <- ifelse(j < kValue, runif(1,varTilde$mu[j],
-                                        varTilde$mu[j + 1]),
-                                        runif(1, varTilde$mu[j],
-                                        paramValues$maxReadPos))
-        varTilde$a[1:(varTilde$k + 1)] <- sort(c(aValue[1:varTilde$k],
-                                                varTilde$a[j + 1]))
-
-        if (j == 1) {
-            varTilde$a[j] <- paramValues$minReadPos
-        } else {
-            varTilde$a[j] <- runif(1, varTilde$mu[j - 1], varTilde$mu[j])
-        }
-
-        varTilde$a[1]                   <- paramValues$minReadPos
-        varTilde$a[varTilde$k + 1]      <- paramValues$maxReadPos
-
-        varTilde$dim[1]          <- length(paramValues$y[varTilde$a[1] <=
-                                        paramValues$y & paramValues$y <
-                                        varTilde$a[2]])
-        varTilde$dim[varTilde$k] <- length(paramValues$y[varTilde$a[varTilde$k]
-                                        <= paramValues$y & paramValues$y
-                                        <= paramValues$maxReadPos])
-
-        if (varTilde$k > 2) {
-            for (m in 2:(varTilde$k - 1)) {
-                varTilde$dim[m] <- length(paramValues$y[varTilde$a[m] <=
-                                        paramValues$y & paramValues$y <
-                                        varTilde$a[m + 1]])
-            }
-        }
-        Pr <- min(varTilde$dim[1:varTilde$k])
-
-        ybar     <- mean(paramValues$y[varTilde$a[j] <= paramValues$y &
-                                    paramValues$y <= varTilde$a[j + 1]])
-        classesf <- paramValues$y[varTilde$a[j] <= paramValues$y &
-                                    paramValues$y <= ybar]
-        classesr <- paramValues$y[ybar <= paramValues$y & paramValues$y <=
-                                    varTilde$a[j+1]]
-
-        Lf <- length(classesf[!duplicated(classesf)])
-        Lr <- length(classesr[!duplicated(classesr)])
-        count <- count + 1L
-
-        if ((Pr>1 & Lf>1 & Lr>1) || count == 1000L) break()
-    }
-
-    if (count == 1000L) {
-        ## End of iterations have been reached without meeting conditions
-        varTilde$rho <- 0
-    } else {
-        varTilde$df[j]     <- sample(3:30, 1)
-        varTilde$sigmaf[j] <- ifelse(Lf > 1, var(classesf) *
-                                (varTilde$df[j]-2)/varTilde$df[j],
-                                sigmafValue[j])
-        varTilde$sigmar[j] <- ifelse(Lr > 1, var(classesr) *
-                                (varTilde$df[j]-2)/varTilde$df[j],
-                                sigmarValue[j])
-
-        if (j == 1) {
-            varTilde$sigmaf[1:varTilde$k] <- c(sigmafValue[1:kValue],
-                                                    varTilde$sigmaf[j])
-            varTilde$sigmar[1:varTilde$k] <- c(sigmarValue[1:kValue],
-                                                    varTilde$sigmar[j])
-        } else {
-            varTilde$sigmaf[1:varTilde$k] <- c(sigmafValue[1:(j - 1)],
-                                                varTilde$sigmaf[j],
-                                                sigmafValue[j:kValue])
-            varTilde$sigmar[1:varTilde$k] <- c(sigmarValue[1:(j - 1)],
-                                                varTilde$sigmar[j],
-                                                sigmarValue[j:kValue])
-        }
-
-        varTilde$delta[j] <- tnormale(paramValues$zeta,
-                                    1/(varTilde$sigmaf[j]^{-1} +
-                                    varTilde$sigmar[j]^{-1}),
-                                    paramValues$deltamin, paramValues$deltamax)
-
-        if (j == 1) {
-            varTilde$delta[1:varTilde$k] <- c(varTilde$delta[j],
-                                                deltaValue[1:kValue])
-        } else if (j == kValue) {
-            varTilde$delta[1:varTilde$k] <- c(deltaValue[ 1:kValue],
-                                                varTilde$delta[j])
-        } else {
-            varTilde$delta[1:varTilde$k] <- c(deltaValue[ 1:(j-1)],
-                                                varTilde$delta[j],
-                                                deltaValue[j:kValue])
-        }
-
-        alpha                 <- rep(1, kValue)
-        alphatilde            <- rep(1, varTilde$k)
-        alphaproptilde        <- rep(1, varTilde$k)
-        alphaprop             <- rep(1, kValue)
-        ennetilde             <- varTilde$dim[1:varTilde$k]
-        enne                  <- rmultinom(1, paramValues$nbrReads,
-                                            wValue[1:kValue])
-        varTilde$w[1:varTilde$k] <- rdirichlet(1, alphaproptilde)
-
-        ### likelihood ratio
-
-        for (m in 1:kValue) {
-            Kaf[, m]<- (varTilde$w[m] *(1/sqrt(varTilde$sigmaf[m])) *
-                            dt((paramValues$startPSF - varTilde$mu[m] +
-                            varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                            varTilde$df[m]))
-            Kbf[, m]<- (wValue[m] * (1/sqrt(sigmafValue[m])) *
-                            dt((paramValues$startPSF - muValue[m] +
-                            deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]))
-        }
-        Kaf[, varTilde$k]<- (varTilde$w[varTilde$k] *
-                            (1/sqrt(varTilde$sigmaf[varTilde$k])) *
-                            dt((paramValues$startPSF - varTilde$mu[varTilde$k] +
-                            varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[varTilde$k]),
-                            varTilde$df[m]))
-
-        for (s in 1:paramValues$nf) {
-            Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
-            Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
-        }
-
-        for (m in 1:kValue) {
-            Kar[,m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
-                            dt((paramValues$startPSR - varTilde$mu[m] -
-                            varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                            varTilde$df[m]))
-            Kbr[,m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
-                            dt((paramValues$startPSR - muValue[m] -
-                            deltaValue[m]/2)/sqrt(sigmarValue[m]),
-                            dfValue[m]))
-        }
-
-        Kar[, varTilde$k] <- (varTilde$w[varTilde$k] *
-                                (1/sqrt(varTilde$sigmar[varTilde$k])) *
-                                dt((paramValues$startPSR -
-                                varTilde$mu[varTilde$k] -
-                                varTilde$delta[m]/2)/sqrt(varTilde$sigmar[varTilde$k]),
-                                varTilde$df[m]))
-
-        for (s in 1:paramValues$nr) {
-            Y1r[s] <-log(sum(Kar[s, 1:varTilde$k]))
-            Y2r[s] <-log(sum(Kbr[s, 1:kValue]))
-        }
-
-        Kn <- sum(Y1f)+sum(Y1r)
-        Kd <- sum(Y2f)+sum(Y2r)
-
-        q         <- Kn - Kd
-        rap.q     <- exp(q)
-
-        rap.vrais <- rap.q
-
-        #Density of
-        varTilde$mu[j]
-        if (j == 1) {
-            qalloc <- 1/(muValue[j] - paramValues$minReadPos)
-        } else {
-            qalloc <- 1/(muValue[j] - muValue[j - 1])
-        }
-
-        rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],
-                            paramValues$y)/priorMuDensity(muValue[1:kValue],
-                            paramValues$y))
-
-        rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,
-                        varTilde$w[1:varTilde$k])/dmultinom(dimValue[1:kValue],
-                        paramValues$nbrReads, wValue[1:kValue])
-        rap.priork    <- (dpois(varTilde$k, paramValues$lambda)/dpois(kValue,
-                                                    paramValues$lambda))
-        rap.propmu    <- (1/(qalloc))
-
-
-        rap.prior     <- rap.priormu * rap.priorenne * rap.priork
-        rap.prop      <- rap.propmu
-        varTilde$rho  <- min(1, (rap.vrais) * (rap.prior)  *  (rap.prop ) *
-                            (Dk(varTilde$k, paramValues$lambda,
-                            paramValues$kmax)/Bk(kValue, paramValues$lambda,
-                            paramValues$kmax)))
-    }
-
-    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
-
-    return(varTilde)
-}
-
-
-#' @title Metropolis-Hastings move when number of nucleosomes is equal to 1
-#'
-#' @description Attempt to randomly change the position of one nucleosome.
-#' Special case for a number of nucleosomes equal to one. This
-#' move is given by the usual Metropolis-Hastings move, see for instance
-#' Tierney (1994).
-#'
-#' @param paramValues a \code{list} containing:
-#' \itemize{
-#'     \item startPSF a \code{vector} of positive \code{integer}, the
-#' start position of all the forward reads.
-#'     \item startPSR a \code{vector} of positive \code{integer}, the
-#' start position of all the reverse reads.
-#'     \item kmax a \code{integer} the maximum number of nucleosomes allowed.
-#'     \item lambda a positive \code{numeric}, the theorical mean
-#' of the Poisson distribution.
-#'     \item minReads a \code{integer}, the minimum
-#' number of reads in a potential canditate region.
-#'     \item y a \code{vector} of \code{numeric}, the position of all reads (
-#' including forward and reverse reads).
-#'     \item nr a \code{integer}, the number of reverse reads.
-#'     \item nf a \code{integer}, the number of forward reads.
-#'     \item nbrReads a \code{integer}, the total number of reads (including
-#' forward and reverse reads).
-#'     \item zeta \code{integer}, the length of a nucleosome.
-#'     \item deltamin a \code{integer}, the minimum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item deltamax a \code{integer}, the maximum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item minReadPos a \code{numeric}, the minimum position of the reads.
-#'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
-#' }
-#'
-#' @param kValue a \code{integer}, the number of nucleosomes.
-#'
-#' @param muValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the positions of the nucleosomes.
-#'
-#' @param sigmafValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the forward reads for each nucleosome.
-#'
-#' @param sigmarValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the reverse reads for each nucleosome.
-#'
-#' @param deltaValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'
-#' @param wValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the weight for each nucleosome.
-#'
-#' @param dfValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the degrees of freedom for each nucleosome.
-#'
-#' @param aValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue + 1}, the positions, on the chromosome, delimiting the regions
-#' of the reads associated with each nucleosome.
-#'
-#' @param dimValue a \code{vector} of positive \code{integer} of length
-#' \code{kValue}, the number of reads associated to each nucleosome.
-#'
-#' @return a \code{list} containing:
-#' \itemize{
-#'     \item k a \code{integer}, the updated number of nucleosomes.
-#'     \item mu a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'     \item w a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated weight for each nucleosome.
-#'     \item df a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated degrees of freedom for each nucleosome.
-#'     \item a a \code{vector} of positive \code{integer} of length
-#' \code{k + 1}, the updated positions, on the chromosome, delimiting the
-#' regions of the reads associated with each nucleosome.
-#'     \item dim a \code{vector} of positive \code{integer} of length
-#' \code{k}, the updated number of reads associated to each nucleosome.
-#'     \item rho a \code{numeric}, the acceptance probability.
-#' }
-#'
-#' @examples
-#'
-#' ## Load dataset
-#' data(reads_demo)
-#'
-#' ## Create a list containing the mandatory parameters
-#' paramList <- list(kmax = 5L, nf = length(reads_demo$readsForward),
-#' nr = length(reads_demo$readsReverse),
-#' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-#' y = sort(c(reads_demo$readsForward, reads_demo$readsReverse)),
-#' startPSF = reads_demo$readsForward,
-#' startPSR = reads_demo$readsReverse, lambda = 2,
-#' zeta = 147, deltamin = 142, deltamax = 152,
-#' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-#'
-#' ## Initial position of the nucleosome
-#' muPosition <- c(73000)
-#' muPosition
-#'
-#' # Metropolis-Hastings move when 1 nucleosome present
-#' result <- RJMCMC:::mhMoveK1(paramValues = paramList, kValue = 1L,
-#' muValue = muPosition, sigmafValue = c(100), sigmarValue = c(120),
-#' deltaValue = c(200), wValue = c(1), dfValue = c(3),
-#' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
-#' dimValue = c(length(reads_demo$readsForward) +
-#' length(reads_demo$readsReverse)))
-#'
-#' ## Final position of the nucleosome
-#' result$mu[1]
-#'
-#' @importFrom stats runif dmultinom
-#' @importFrom MCMCpack rdirichlet ddirichlet
-#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
-#' @keywords internal
-#'
-mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
-                            deltaValue, wValue, dfValue, aValue, dimValue) {
-    #Create list that will be returned
-    varTilde <- list(k = 0L, mu = rep(0,paramValues$kmax),
-                        sigmaf = rep(0, paramValues$kmax),
-                        sigmar = rep(0, paramValues$kmax),
-                        delta = rep(0, paramValues$kmax),
-                        w = rep(0, paramValues$kmax),
-                        df = rep(3, paramValues$kmax),
-                        a = rep(0, paramValues$kmax + 1L),
-                        dim = rep(0, paramValues$kmax), rho = 0)
-
-    Kn          <- 0
-    Kaf         <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kbf         <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kar         <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-    Kbr         <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-
-    Y1f         <- rep(0, paramValues$nf)
-    Y2f         <- rep(0, paramValues$nf)
-    Y1r         <- rep(0, paramValues$nr)
-    Y2r         <- rep(0, paramValues$nr)
-
-    varTilde$k <- kValue
-    count      <- 1L
-
-    repeat {
-        j                   <- sample(1:kValue, 1)
-        varTilde$mu[j]      <- runif(1, muValue[j], paramValues$maxReadPos)
-        varTilde$mu[1:varTilde$k]  <- sort(c(varTilde$mu[1:varTilde$k]))
-
-        varTilde$a[j]   <- paramValues$minReadPos
-        varTilde$a[j+1] <- paramValues$maxReadPos
-
-        varTilde$dim[1]          <- length(paramValues$y[varTilde$a[1] <=
-                                        paramValues$y & paramValues$y <
-                                        varTilde$a[2]])
-        varTilde$dim[varTilde$k] <- length(paramValues$y[varTilde$a[varTilde$k]
-                                        <= paramValues$y & paramValues$y
-                                        <= paramValues$maxReadPos])
-
-        if (varTilde$k > 2) {
-            for (m in 2:(varTilde$k - 1)) {
-                varTilde$dim[m] <- length(paramValues$y[(varTilde$a[m] <=
-                                        paramValues$y & paramValues$y <
-                                        varTilde$a[m + 1])])
-            }
-        }
-
-        Pr <- min(varTilde$dim[1:varTilde$k])
-
-        ybar        <- mean(paramValues$y[varTilde$a[j] <= paramValues$y &
-                                        paramValues$y <= varTilde$a[j + 1]])
-        classesf    <- paramValues$y[varTilde$a[j] <= paramValues$y &
-                                        paramValues$y <= ybar]
-        classesr    <- paramValues$y[ybar <= paramValues$y & paramValues$y <=
-                                        varTilde$a[j + 1]]
-
-        Lf      <- length(classesf[!duplicated(classesf)])
-        Lr      <- length(classesr[!duplicated(classesr)])
-        count   <- count + 1L
-
-        ## Verify that conditions are met to stop the loop
-        if ((Pr > 1 & Lf > 1 & Lr > 1) || count == 1000L) break()
-    }
-
-    if (count == 1000L) {
-        ## End of iterations have been reached without meeting conditions
-        varTilde$rho <- 0
-    } else {
-
-        varTilde$sigmaf[1:varTilde$k] <- sigmafValue[1:kValue]
-        varTilde$sigmar[1:varTilde$k] <- sigmarValue[1:kValue]
-
-        varTilde$df[j] <- sample(3:30, 1)
-
-        varTilde$sigmaf[j] <- ifelse(Lf > 1, var(classesf) *
-                                    (varTilde$df[j] - 2)/varTilde$df[j],
-                                    sigmafValue[j])
-        varTilde$sigmar[j] <- ifelse(Lr > 1, var(classesr) *
-                                    (varTilde$df[j] - 2)/varTilde$df[j],
-                                    sigmarValue[j])
-
-        varTilde$delta[1:varTilde$k] <- deltaValue[1:kValue]
-
-        varTilde$delta[j] <- tnormale(paramValues$zeta,
-                                1/(varTilde$sigmaf[j]^{-1} +
-                                varTilde$sigmar[j]^{-1}), paramValues$deltamin,
-                                paramValues$deltamax)
-
-        alpha                    <- rep(1, kValue)
-        alphatilde               <- rep(1, varTilde$k)
-        ennetilde                <- varTilde$dim[1:varTilde$k]
-        alphaproptilde           <- rep(1, varTilde$k)
-        alphaprop                <- rep(1, kValue)
-        varTilde$w[1:varTilde$k] <- rdirichlet(1, alphaproptilde)
-
-        ### calcul du rapport de vraisemblance de M-H move
-
-        for (m in 1:varTilde$k) {
-            Kaf[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmaf[m])) *
-                        dt((paramValues$startPSF - varTilde$mu[m] +
-                        varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                        varTilde$df[m]))
-            Kbf[, m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
-                        dt((paramValues$startPSF - muValue[m] +
-                        deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]))
-        }
-        for (s in 1:paramValues$nf) {
-            Y1f[s] <-log(sum(Kaf[s, 1:varTilde$k]))
-            Y2f[s] <-log(sum(Kbf[s, 1:kValue]))
-        }
-
-        for (m in 1:varTilde$k) {
-            Kar[,m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
-                        dt((paramValues$startPSR -varTilde$mu[m] -
-                        varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                        varTilde$df[m]))
-            Kbr[,m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
-                        dt((paramValues$startPSR - muValue[m] -
-                        deltaValue[m]/2)/sqrt(sigmarValue[m]), dfValue[m]))
-        }
-        for (s in 1:paramValues$nr) {
-            Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
-            Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
-        }
-
-        Kn <- sum(Y1f) + sum(Y1r)
-        Kd <- sum(Y2f) + sum(Y2r)
-
-        q     <- Kn - Kd
-        rap.q <- exp(q)
-
-        rap.vrais <- rap.q
-
-        rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],
-                            paramValues$y)/priorMuDensity(muValue[1:kValue],
-                            paramValues$y))
-        rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,
-                            varTilde$w[1:varTilde$k])/dmultinom(dimValue[1:kValue],
-                            paramValues$nbrReads, wValue[1:kValue])
-
-        rap.prior     <- rap.priormu * rap.priorenne
-
-#       In Samb et al. rho  <- min(1, rap.vrais * (rap.prior) * (rap.prop))
-#       but rap.prop = rap.propmu = 1
-#       so rho  <- min(1, rap.vrais * (rap.prior))
-#       we removed : rap.priork = 1
-
-        varTilde$rho  <- min(1, rap.vrais * (rap.prior))
-
-    }
-
-    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
-
-    return(varTilde)
-}
-
-#' @title Metropolis-Hastings move when more than one nucleosomes are present
-#'
-#' @description Attempt to randomly change the position of one nucleosome.
-#' This move is given by the usual Metropolis-Hastings move, see for instance
-#' Tierney (1994).
-#'
-#' @param paramValues a \code{list} containing:
-#' \itemize{
-#'     \item startPSF a \code{vector} of positive \code{integer}, the
-#' start position of all the forward reads.
-#'     \item startPSR a \code{vector} of positive \code{integer}, the
-#' start position of all the reverse reads.
-#'     \item kmax a \code{integer} the maximum number of nucleosomes allowed.
-#'     \item lambda a positive \code{numeric}, the theorical mean
-#' of the Poisson distribution.
-#'     \item minReads a \code{integer}, the minimum
-#' number of reads in a potential canditate region.
-#'     \item y a \code{vector} of \code{numeric}, the position of all reads (
-#' including forward and reverse reads).
-#'     \item nr a \code{integer}, the number of reverse reads.
-#'     \item nf a \code{integer}, the number of forward reads.
-#'     \item nbrReads a \code{integer}, the total number of reads (including
-#' forward and reverse reads).
-#'     \item zeta \code{integer}, the length of a nucleosome.
-#'     \item deltamin a \code{integer}, the minimum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item deltamax a \code{integer}, the maximum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item minReadPos a \code{numeric}, the minimum position of the reads.
-#'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
-#' }
-#'
-#' @param kValue a \code{integer}, the number of nucleosomes.
-#'
-#' @param muValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the positions of the nucleosomes.
-#'
-#' @param sigmafValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the forward reads for each nucleosome.
-#'
-#' @param sigmarValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the reverse reads for each nucleosome.
-#'
-#' @param deltaValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'
-#' @param wValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the weight for each nucleosome.
-#'
-#' @param dfValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the degrees of freedom for each nucleosome.
-#'
-#' @param aValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue + 1}, the positions, on the chromosome, delimiting the regions
-#' of the reads associated with each nucleosome.
-#'
-#' @param dimValue a \code{vector} of positive \code{integer} of length
-#' \code{kValue}, the number of reads associated to each nucleosome.
-#'
-#' @return a \code{list} containing:
-#' \itemize{
-#'     \item k a \code{integer}, the updated number of nucleosomes.
-#'     \item mu a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'     \item w a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated weight for each nucleosome.
-#'     \item df a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated degrees of freedom for each nucleosome.
-#'     \item a a \code{vector} of positive \code{integer} of length
-#' \code{k + 1}, the updated positions, on the chromosome, delimiting the
-#' regions of the reads associated with each nucleosome.
-#'     \item dim a \code{vector} of positive \code{integer} of length
-#' \code{k}, the updated number of reads associated to each nucleosome.
-#'     \item rho a \code{numeric}, the acceptance probability.
-#' }
-#'
-#' @examples
-#'
-#' ## Load dataset
-#' data(reads_demo)
-#'
-#' ## Create a list containing the mandatory parameters
-#' paramList <- list(kmax = 5L, nf = length(reads_demo$readsForward),
-#' nr = length(reads_demo$readsReverse),
-#' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-#' y = sort(c(reads_demo$readsForward, reads_demo$readsReverse)),
-#' startPSF = reads_demo$readsForward,
-#' startPSR = reads_demo$readsReverse, lambda = 2,
-#' zeta = 147, deltamin = 142, deltamax = 152,
-#' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-#'
-#' ## Initial position of the nucleosomes
-#' muPosition <- c(72800, 73000)
-#' muPosition
-#'
-#' ## Metropolis-Hastings move
-#' result <- RJMCMC:::mhMove(paramValues = paramList, kValue = 2L,
-#' muValue = muPosition, sigmafValue = c(100, 120), sigmarValue = c(120, 100),
-#' deltaValue = c(200, 210), wValue = c(0.5, 0.5), dfValue = c(3, 4),
-#' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)), 73150,
-#' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
-#' dimValue = c(length(reads_demo$readsForward),
-#' length(reads_demo$readsReverse)))
-#'
-#' ## Final position of the nucleosomes
-#' result$mu[1:2]
-#'
-#' @importFrom stats runif dmultinom dt
-#' @importFrom MCMCpack rdirichlet ddirichlet
-#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
-#' @keywords internal
-#'
-mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
-                   deltaValue, wValue, dfValue, aValue, dimValue) {
-    ## Create returned list
-    varTilde <- list(k = 0L, mu = rep(0,paramValues$kmax),
-                            sigmaf = rep(0, paramValues$kmax),
-                            sigmar = rep(0, paramValues$kmax),
-                            delta = rep(0, paramValues$kmax),
-                            w = rep(0, paramValues$kmax),
-                            df = rep(3, paramValues$kmax),
-                            a = rep(0, paramValues$kmax + 1L),
-                            dim = rep(0, paramValues$kmax), rho = 0)
-
-    Kn      <- 0
-    Kaf     <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kbf     <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kar     <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-    Kbr     <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-
-    Y1f     <- rep(0, paramValues$nf)
-    Y2f     <- rep(0, paramValues$nf)
-    Y1r     <- rep(0, paramValues$nr)
-    Y2r     <- rep(0, paramValues$nr)
-
-    varTilde$k   <- kValue
-    count        <- 1L
-
-    repeat {
-        j                          <- sample(2:kValue, 1)
-        varTilde$mu[1:varTilde$k]  <- muValue[1:kValue]
-
-        if (j==1) {
-            varTilde$mu[j] <- runif(1, paramValues$minReadPos, muValue[j + 1])
-        } else {
-            if (j==varTilde$k) {
-                varTilde$mu[j] <- runif(1,muValue[j - 1],
-                                            paramValues$maxReadPos)
-            } else {
-                varTilde$mu[j] <- runif(1,muValue[j - 1], muValue[j + 1])
-            }
-        }
-
-        varTilde$mu[1:varTilde$k] <- sort(c(varTilde$mu[1:varTilde$k]))
-
-        varTilde$a[1:(varTilde$k + 1)] <- sort(c(aValue[1:(kValue + 1)]))
-
-        if (j==varTilde$k) {
-            varTilde$a[j] <- runif(1, varTilde$mu[j], paramValues$maxReadPos)
-            varTilde$a[j + 1] <- paramValues$maxReadPos
-        } else {
-            if (j==1) {
-                varTilde$a[j] <- paramValues$minReadPos
-                varTilde$a[j + 1] <- runif(1, varTilde$mu[j],
-                                            varTilde$mu[j + 1])
-            } else {
-                varTilde$a[j] <- runif(1, varTilde$mu[j - 1], varTilde$mu[j])
-                varTilde$a[j + 1] <- runif(1, varTilde$mu[j],
-                                            varTilde$mu[j + 1])
-            }
-        }
-
-        varTilde$a[1]              <- paramValues$minReadPos
-        varTilde$a[varTilde$k + 1] <- paramValues$maxReadPos
-
-        varTilde$dim[1]          <- length(paramValues$y[varTilde$a[1] <=
-                                            paramValues$y & paramValues$y <
-                                                    varTilde$a[2]])
-        varTilde$dim[varTilde$k] <- length(paramValues$y[varTilde$a[varTilde$k]
-                                            <= paramValues$y & paramValues$y <=
-                                            paramValues$maxReadPos])
-
-        if (varTilde$k > 2) {
-            for (m in 2:(varTilde$k - 1)) {
-                varTilde$dim[m] <- length(paramValues$y[varTilde$a[m] <=
-                                                paramValues$y &
-                                            paramValues$y < varTilde$a[m + 1]])
-            }
-        }
-
-        Pr <- min(varTilde$dim[1:varTilde$k])
-
-        ybar      <- mean(paramValues$y[varTilde$a[j] <= paramValues$y &
-                                        paramValues$y <= varTilde$a[j + 1]])
-        classesf  <- paramValues$y[varTilde$a[j] <= paramValues$y &
-                                        paramValues$y <= ybar]
-        classesr  <- paramValues$y[ybar <= paramValues$y &
-                                        paramValues$y <= varTilde$a[j + 1]]
-
-        Lf    <- length(classesf[!duplicated(classesf)])
-        Lr    <- length(classesr[!duplicated(classesr)])
-        count <- count + 1L
-
-        ## Verify that conditions are met to stop the loop
-        if ((Pr > 1 & Lf > 1 & Lr > 1) || count == 1000L) break()
-    }
-
-    if (count == 1000L) {
-        ## End of iterations have been reached without meeting conditions
-        varTilde$rho <- 0
-    } else {
-        ## Conditions have been met, data must be updated
-        varTilde$sigmaf[1:varTilde$k] <- sigmafValue[1:kValue]
-        varTilde$sigmar[1:varTilde$k] <- sigmarValue[1:kValue]
-
-        varTilde$df[j]     <- sample(3:30, 1)
-
-        varTilde$sigmaf[j] <- ifelse(Lf > 1, var(classesf) *
-                                        (varTilde$df[j] - 2)/varTilde$df[j],
-                                        sigmafValue[j])
-        varTilde$sigmar[j] <- ifelse(Lr > 1, var(classesr) *
-                                         (varTilde$df[j] - 2)/varTilde$df[j],
-                                        sigmarValue[j])
-
-        varTilde$delta[1:varTilde$k] <- deltaValue[1:kValue]
-        varTilde$delta[j] <- tnormale(paramValues$zeta,
-                                    1/(varTilde$sigmaf[j]^{-1} +
-                                    varTilde$sigmar[j]^{-1}),
-                                    paramValues$deltamin, paramValues$deltamax)
-
-        alpha           <- rep(1, kValue)
-        alphatilde      <- rep(1, varTilde$k)
-        ennetilde       <- varTilde$dim[1:varTilde$k]
-        alphaproptilde  <- rep(1, varTilde$k)
-        alphaprop       <- rep(1, kValue)
-        varTilde$w[1:varTilde$k] <- rdirichlet(1, alphaproptilde)
-
-        ###calcul du rapport de vraisemblance de M-H move
-
-        for (m in 1:varTilde$k) {
-            Kaf[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmaf[m])) *
-                            dt((paramValues$startPSF - varTilde$mu[m] +
-                            varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                            varTilde$df[m]))
-            Kbf[, m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
-                            dt((paramValues$startPSF -muValue[m] +
-                            deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]))
-        }
-        for (s in 1:paramValues$nf) {
-            Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
-            Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
-        }
-
-        for (m in 1:varTilde$k) {
-            Kar[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
-                        dt((paramValues$startPSR - varTilde$mu[m] -
-                            varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                            varTilde$df[m]))
-            Kbr[, m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
-                            dt((paramValues$startPSR - muValue[m] -
-                            deltaValue[m]/2)/sqrt(sigmarValue[m]), dfValue[m]))
-        }
-        for (s in 1:paramValues$nr) {
-            Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
-            Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
-        }
-
-        Kn <- sum(Y1f) + sum(Y1r)
-        Kd <- sum(Y2f) + sum(Y2r)
-
-        q         <- Kn - Kd
-        rap.q     <- exp(q)
-
-        rap.vrais <- rap.q
-
-        rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],
-                            paramValues$y)/
-                            priorMuDensity(muValue[1:kValue], paramValues$y))
-
-        rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,
-                        varTilde$w[1:varTilde$k])/dmultinom(dimValue[1:kValue],
-                        paramValues$nbrReads, wValue[1:kValue])
-
-        rap.prior     <- rap.priormu * rap.priorenne
-
-#       In Samb et al. rho  <- min(1, rap.vrais * (rap.prior) * (rap.prop))
-#       but rap.prop = rap.propmu = 1
-#       so rho  <- min(1, rap.vrais * (rap.prior))
-#       we removed : rap.priork = 1
-
-        varTilde$rho  <- min(1, rap.vrais * (rap.prior))
-
-    }
-
-    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
-
-    return(varTilde)
-}
-
-#' @title Death move when more than one nucleosome are present
-#'
-#' @description Attempt to randomly delete the position of one nucleosome. The
-#' function is only used when more than one nucleosome are present.
-#'
-#' @param paramValues a \code{list} containing:
-#' \itemize{
-#'     \item startPSF a \code{vector} of positive \code{integer}, the
-#' start position of all the forward reads.
-#'     \item startPSR a \code{vector} of positive \code{integer}, the
-#' start position of all the reverse reads.
-#'     \item kmax a \code{integer} the maximum number of nucleosomes allowed.
-#'     \item lambda a positive \code{numeric}, the theorical mean
-#' of the Poisson distribution.
-#'     \item minReads a \code{integer}, the minimum
-#' number of reads in a potential canditate region.
-#'     \item y a \code{vector} of \code{numeric}, the position of all reads (
-#' including forward and reverse reads).
-#'     \item nr a \code{integer}, the number of reverse reads.
-#'     \item nf a \code{integer}, the number of forward reads.
-#'     \item nbrReads a \code{integer}, the total number of reads (including
-#' forward and reverse reads).
-#'     \item zeta \code{integer}, the length of a nucleosome.
-#'     \item deltamin a \code{integer}, the minimum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item deltamax a \code{integer}, the maximum distance between the maxima
-#' of the forward and reverse reads position densities for each nucleosome.
-#'     \item minReadPos a \code{numeric}, the minimum position of the reads.
-#'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
-#' }
-#'
-#' @param kValue a \code{integer}, the number of nucleosomes.
-#'
-#' @param muValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the positions of the nucleosomes.
-#'
-#' @param sigmafValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the forward reads for each nucleosome.
-#'
-#' @param sigmarValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the variance of the reverse reads for each nucleosome.
-#'
-#' @param deltaValue a \code{vector} of \code{numeric} of length
-#' \code{kValue}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'
-#' @param wValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the weight for each nucleosome.
-#'
-#' @param dfValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the degrees of freedom for each nucleosome.
-#'
-#' @param aValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue + 1}, the positions, on the chromosome, delimiting the regions
-#' of the reads associated with each nucleosome.
-#'
-#' @param dimValue a \code{vector} of positive \code{integer} of length
-#' \code{kValue}, the number of reads associated to each nucleosome.
-#'
-#' @return a \code{list} containing:
-#' \itemize{
-#'     \item k a \code{integer}, the updated number of nucleosomes.
-#'     \item mu a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the updated distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
-#'     \item w a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated weight for each nucleosome.
-#'     \item df a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated degrees of freedom for each nucleosome.
-#'     \item a a \code{vector} of positive \code{integer} of length
-#' \code{k + 1}, the updated positions, on the chromosome, delimiting the
-#' regions of the reads associated with each nucleosome.
-#'     \item dim a \code{vector} of positive \code{integer} of length
-#' \code{k}, the updated number of reads associated to each nucleosome.
-#'     \item rho a \code{numeric}, the acceptance probability.
-#' }
-#'
-#' @examples
-#'
-#' ## Load dataset
-#' data(reads_demo)
-#'
-#' ## Create a list containing the mandatory parameters
-#' paramList <- list(kmax = 5L, nf = length(reads_demo$readsForward),
-#' nr = length(reads_demo$readsReverse),
-#' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-#' y = sort(c(reads_demo$readsForward, reads_demo$readsReverse)),
-#' startPSF = reads_demo$readsForward,
-#' startPSR = reads_demo$readsReverse, lambda = 2,
-#' zeta = 147, deltamin = 142, deltamax = 152,
-#' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-#'
-#' ## Initial position of the nucleosomes
-#' muPosition <- c(72800, 73000)
-#' muPosition
-#'
-#' ## Death move
-#' result <- RJMCMC:::deathMove(paramValues = paramList, kValue = 2L,
-#' muValue = muPosition, sigmafValue = c(100, 120), sigmarValue = c(120, 100),
-#' deltaValue = c(200, 210), wValue = c(0.5, 0.5), dfValue = c(3, 4),
-#' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)), 73150,
-#' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
-#' dimValue = c(length(reads_demo$readsForward),
-#' length(reads_demo$readsReverse)))
-#'
-#' ## Final position of the nucleosomes
-#' result$mu[1:2]
-#'
-#' @importFrom stats runif dmultinom dpois
-#' @importFrom MCMCpack rdirichlet ddirichlet
-#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
-#' @keywords internal
-#'
-deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
-                        deltaValue, wValue, dfValue, aValue, dimValue) {
-    ### Death move
-    varTilde <- list(k = 0L, mu = rep(0,paramValues$kmax),
-                        sigmaf = rep(0, paramValues$kmax),
-                        sigmar = rep(0, paramValues$kmax),
-                        delta = rep(0, paramValues$kmax),
-                        w = rep(0, paramValues$kmax),
-                        df = rep(3, paramValues$kmax),
-                        a = rep(0, paramValues$kmax + 1L),
-                        dim = rep(0, paramValues$kmax), rho = 0)
-
-    Kn      <- 0
-    Kaf     <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kbf     <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
-    Kar     <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-    Kbr     <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
-
-    Y1f     <- rep(0, paramValues$nf)
-    Y2f     <- rep(0, paramValues$nf)
-    Y1r     <- rep(0, paramValues$nr)
-    Y2r     <- rep(0, paramValues$nr)
-
-    varTilde$k <- kValue - 1L
-    count  <- 1L
-    repeat {
-
-        j   <- sample(1:kValue, 1)
-        X   <- muValue[1:kValue]
-        varTilde$mu[1:varTilde$k]       <- sort(c(X[-j]))
-
-        Yf                              <- sigmafValue[1:kValue]
-        varTilde$sigmaf[1:varTilde$k]   <- Yf[-j]
-
-        Yr                              <- sigmarValue[1:kValue]
-        varTilde$sigmar[1:varTilde$k]   <- Yr[-j]
-
-        Delta                           <- deltaValue[1:kValue]
-        varTilde$delta[1:varTilde$k]    <- Delta[-j]
-
-        Dl                              <- dfValue[1:kValue]
-        varTilde$df[1:varTilde$k]       <- Dl[-j]
-
-        Z                               <- aValue[1:(kValue + 1)]
-
-        if (j == kValue) {
-            varTilde$a[1:(varTilde$k + 1)] <- Z[-j]
-        } else {
-            varTilde$a[1:(varTilde$k + 1)] <- Z[-(j + 1)]
-        }
-
-        varTilde$a[1]                <- paramValues$minReadPos
-        varTilde$a[varTilde$k + 1]   <- paramValues$maxReadPos
-
-        varTilde$dim[1] <- length(paramValues$y[varTilde$a[1] <=
-                                        paramValues$y  & paramValues$y <
-                                        varTilde$a[2]])
-        varTilde$dim[varTilde$k] <- length(paramValues$y[varTilde$a[varTilde$k]
-                                        <= paramValues$y & paramValues$y <=
-                                        paramValues$maxReadPos])
-        if (varTilde$k > 2) {
-            for (m in 2:(varTilde$k - 1)) {
-                varTilde$dim[m] <- length(paramValues$y[varTilde$a[m] <=
-                                                paramValues$y & paramValues$y
-                                                < varTilde$a[m + 1]])
-            }
-        }
-
-        Pr   <- min(varTilde$dim[1:varTilde$k])
-
-        ybar <- mean(paramValues$y[varTilde$a[j] <= paramValues$y &
-                                        paramValues$y <= varTilde$a[j + 1]])
-
-        classesf <- paramValues$y[varTilde$a[j] <= paramValues$y &
-                                        paramValues$y <= ybar]
-        classesr <- paramValues$y[ybar <= paramValues$y &
-                                        paramValues$y <= varTilde$a[j + 1]]
-
-        Lf    <- length(classesf[!duplicated(classesf)])
-        Lr    <- length(classesr[!duplicated(classesr)])
-        count <- count + 1L
-
-        if ((Pr > 1 & Lf > 1 & Lr > 1) || count == 1000L) break()
-    }
-
-    if (count == 1000L) {
-        varTilde$rho <- 0
-    } else {
-        alpha          <- rep(1, kValue)
-        alphatilde     <- rep(1, varTilde$k)
-        alphaproptilde <- rep(1, varTilde$k)
-        alphaprop      <- rep(1, kValue)
-        ennetilde      <- varTilde$dim[1:varTilde$k]
-        enne           <- rmultinom(1, paramValues$nbrReads, wValue[1:kValue])
-        varTilde$w[1:varTilde$k] <- rdirichlet(1, alphaproptilde)
-
-        ### Rapport de vraisemblance ###
-
-        for (m in 1:varTilde$k) {
-            Kaf[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmaf[m])) *
-                            dt((paramValues$startPSF -varTilde$mu[m] +
-                            varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                            varTilde$df[m]))
-            Kbf[, m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
-                            dt((paramValues$startPSF - muValue[m] +
-                            deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]))
-        }
-
-        Kbf[, kValue] <- (wValue[kValue] * (1/sqrt(sigmafValue[kValue])) *
-                            dt((paramValues$startPSF - muValue[kValue] +
-                            deltaValue[m]/2)/sqrt(sigmafValue[kValue]),
-                            varTilde$df[m]))
-
-        for (s in 1:paramValues$nf) {
-            Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
-            Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
-        }
-
-        for (m in 1:varTilde$k) {
-            Kar[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
-                            dt((paramValues$startPSR - varTilde$mu[m] -
-                            varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                            varTilde$df[m]))
-            Kbr[, m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
-                            dt((paramValues$startPSR - muValue[m] -
-                            deltaValue[m]/2)/sqrt(sigmarValue[m]), dfValue[m]))
-        }
-        Kbr[, kValue] <- (wValue[kValue] * (1/sqrt(sigmarValue[kValue])) *
-                            dt((paramValues$startPSR - muValue[kValue] -
-                            deltaValue[m]/2)/sqrt(sigmarValue[kValue]),
-                            dfValue[m]))
-
-        for (s in 1:paramValues$nr) {
-            Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
-            Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
-        }
-
-        Kn <- sum(Y1f) + sum(Y1r)
-        Kd <- sum(Y2f) + sum(Y2r)
-
-        q     <- Kn - Kd
-        rap.q <- exp(q)
-
-        rap.vrais <- rap.q
-
-        # Density of varTilde$mu[j]
-        if (j == 1) {
-            qalloc <- 1/(muValue[j + 1] - paramValues$minReadPos)
-        } else {
-            if (j == kValue) {
-                qalloc <- 1/(paramValues$maxReadPos - muValue[j - 1])
-            } else {
-                qalloc <- 1/(muValue[j + 1] - muValue[j - 1])
-            }
-        }
-
-        rap.priormu    <- (priorMuDensity(varTilde$mu[1:varTilde$k],
-                            paramValues$y)/priorMuDensity(muValue[1:kValue],
-                            paramValues$y))
-
-        rap.priorenne  <- dmultinom(ennetilde, paramValues$nbrReads,
-                                varTilde$w[1:varTilde$k])/
-                                dmultinom(dimValue[1:kValue],
-                                paramValues$nbrReads, wValue[1:kValue])
-        rap.priork     <- (dpois(varTilde$k, paramValues$lambda)/
-                               dpois(kValue, paramValues$lambda))
-        rap.propmu     <- (qalloc)
-
-        rap.prior      <- rap.priormu * rap.priorenne * rap.priork
-        rap.prop       <- rap.propmu
-
-        varTilde$rho  <- min(1, (rap.vrais) * (rap.prior) * (rap.prop) *
-                            (Bk(varTilde$k, paramValues$lambda,
-                            paramValues$kmax)/Dk(kValue, paramValues$lambda,
-                            paramValues$kmax)))
-    }
-
-    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
-
-    return(varTilde)
 }
 
 
@@ -1990,30 +240,24 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric} of length
 #' \code{k}, the positions of the nucleosomes.
-#'     \item sigmaf a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the forward reads for each nucleosome.
-#'     \item sigmar a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the reverse reads for each nucleosome.
-#'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the distance between the maxima of the forward and
-#' reverse reads position densities for each nucleosome.
 #' }
 #'
 #' @examples
 #'
 #' ## Loading two files containing nucleosomes informations for two sections of
 #' ## the same chromosome
-#' file_100 <- dir(system.file("extdata", package = "RJMCMC"),
-#'                 pattern = "yeastRes_Chr1_Seg_100.rds",
+#' file_1 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+#'                 pattern = "newSeg_1.rds",
 #'                 full.names = TRUE)
 #'
-#' file_101 <- dir(system.file("extdata", package = "RJMCMC"),
-#'                 pattern = "yeastRes_Chr1_Seg_101.rds",
+#' file_2 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+#'                 pattern = "newSeg_2.rds",
 #'                 full.names = TRUE)
 #'
 #' ## Merging nucleosomes informations from the two files
-#' result <- RJMCMC:::mergeAllRDSFiles(c(file_100, file_101))
+#' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
 #'
+#' @importFrom methods is
 #' @author Pascal Belleau, Astrid Deschenes
 #' @keywords internal
 #'
@@ -2023,33 +267,22 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     result        <- list()
     result$k      <- 0
     result$mu     <- array(dim = c(0))
-    result$sigmaf <- array(dim = c(0))
-    result$sigmar <- array(dim = c(0))
-    result$delta  <- array(dim = c(0))
-    result$df     <- array(dim = c(0))
 
     ## Extract information from each file
     for (fileName in arrayOfFiles) {
         data <- readRDS(file = fileName)
         ## Only use data from rjmcmcNucleosomes or rjmcmcNucleosomesMerge class
-        if (is(data, "rjmcmcNucleosomesMerge") ||
-                is(data, "rjmcmcNucleosomes")) {
+        if ((is(data, "rjmcmcNucleosomesMerge") ||
+                is(data, "rjmcmcNucleosomes"))
+                & length(data$mu[is.na(data$mu)]) == 0 ) {
             result$k      <- result$k + data$k
             result$mu     <- c(result$mu, data$mu)
-            result$sigmaf <- c(result$sigmaf, data$sigmaf)
-            result$sigmar <- c(result$sigmar, data$sigmar)
-            result$delta  <- c(result$delta, data$delta)
-            result$df     <- c(result$df, data$df)
         }
     }
 
     ## Ensure that all values are ordered in ascending order of mu
     newOrder      <- order(result$mu)
     result$mu     <- result$mu[newOrder]
-    result$sigmaf <- result$sigmaf[newOrder]
-    result$sigmar <- result$sigmar[newOrder]
-    result$delta  <- result$delta[newOrder]
-    result$df     <- result$df[newOrder]
 
     ## Assign class type to list
     class(result)<-"rjmcmcNucleosomesMerge"
@@ -2074,11 +307,11 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #' @examples
 #'
 #' ## Loading a file
-#' file_test <- dir(system.file("extdata", package = "RJMCMC"),
-#' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+#' file_test <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+#' pattern = "newSeg_2.rds", full.names = TRUE)
 #'
 #' ## Testing using a real file
-#' RJMCMC:::validateRDSFilesParameters(c(file_test))
+#' RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
@@ -2086,7 +319,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 validateRDSFilesParameters <- function(RDSFiles) {
 
     ## Validate the RDSFiles parameters
-    if (is.na(RDSFiles) || is.null(RDSFiles)) {
+    if (is.null(RDSFiles) || is.na(RDSFiles)) {
         stop("RDSFiles must be a list of valid RDS files")
     }
 
@@ -2116,10 +349,10 @@ validateRDSFilesParameters <- function(RDSFiles) {
 #' @examples
 #'
 #' ## Load an existing directory
-#' directory <- system.file("extdata", package = "RJMCMC")
+#' directory <- system.file("extdata", package = "RJMCMCNucleosomes")
 #'
 #' ## Testing using a real directory
-#' RJMCMC:::validateDirectoryParameters(directory)
+#' RJMCMCNucleosomes:::validateDirectoryParameters(directory)
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
@@ -2171,17 +404,17 @@ validateDirectoryParameters <- function(directory) {
 #' data(reads_demo)
 #'
 #' ## Load dataset containing nucleosome information
-#' file_002 <- dir(system.file("extdata", package = "RJMCMC"),
-#' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+#' file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+#' pattern = "newSeg_2.rds", full.names = TRUE)
 #' nucleosome_info <- readRDS(file_002)
 #'
 #' ## The function returns 0 when all parameters are valid
-#' RJMCMC:::validatePrepMergeParameters(startPosForwardReads =
+#' RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads =
 #' reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
 #' resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{RJMCMC:::validatePrepMergeParameters(startPosForwardReads = c(72400,
+#' \dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads = c(72400,
 #' 72431, 72428, 72429, 72426), startPosReverseReads = c(72522, 72531, 72528,
 #' 72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 #'
@@ -2235,6 +468,185 @@ validatePrepMergeParameters <- function(startPosForwardReads,
     return(0)
 }
 
+
+#' @title Parameters validation for the \code{\link{plotNucleosomes}} function
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{plotNucleosomes}} function.
+#'
+#' @param nucleosomePositions a \code{list} or a \code{vector} of
+#' \code{numeric}, the nucleosome positions for one or
+#' multiples predictions are obtained using the same reads. In presence of
+#' only one prediction (with multiples nucleosome positions), a \code{vector}
+#' is used. In presence of more thant one predictions (as example, before and
+#' after post-treatment or results from different software), a \code{list} with
+#' one entry per prediction is used.
+#'
+#' @param reads an \code{IRanges} containing all the reads.
+#'
+#' @param xlab a \code{character} string containing the label of the x-axis.
+#'
+#' @param ylab a \code{character} string containing the label of the y-axis.
+#'
+#' @param names a \code{vector} of a \code{character} string containing the
+#' label of each prediction set. The \code{vector} must be the same length of
+#' the \code{nucleosomePositions} \code{list} or 1 in presence of a
+#' \code{vector}.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @examples
+#'
+#' ## Create a IRanges object with 2 reads
+#' reads <- IRanges(start=c(950, 969), end=c(1020, 1022))
+#'
+#' ## Create a vector containing nucleosome positions
+#' nucleosomes <- c(1001)
+#'
+#' ## The function returns 0 when all parameters are valid
+#' RJMCMCNucleosomes:::validatePlotNucleosomesParameters(nucleosomePositions =
+#' nucleosomes, reads = reads, xlab = "position", ylab = "coverage",
+#' names = c("test"))
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+#' #nucleosomePositions = c("hi"), reads = reads, xlab = "position",
+#' #ylab = "coverage", names = c("test"))}
+#'
+#' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+#' #nucleosomePositions = nucleosomes, reads = reads, xlab = "position",
+#' #ylab = "coverage", names = c("test_one", "test_false"))}
+#'
+#' @author Astrid Deschenes
+#' @keywords internal
+#'
+validatePlotNucleosomesParameters <- function(nucleosomePositions, reads,
+                                                xlab, ylab, names) {
+
+    ## Validate that nucleosomePositions is a vector
+    if (!is.vector(nucleosomePositions)) {
+        stop(paste0("nucleosomePositions must be a \'list\' or a \'vector\' ",
+                    "of numeric values"))
+    }
+
+    ## Validate that nucleosomePositions contains numeric values
+    if (!is.numeric(unlist(nucleosomePositions))) {
+        stop("nucleosomePositions can only contain numerical values")
+    }
+
+    ## Validate that reads is a IRanges object
+    if (!(class(reads) == "IRanges")) {
+        stop("reads must be an object of class \'IRanges\'")
+    }
+
+    ## Validate that xlab is a IRanges object
+    if (!is.character(xlab)) {
+        stop("xlab must be a character string")
+    }
+
+    ## Validate that ylab is a IRanges object
+    if (!is.character(ylab)) {
+        stop("ylab must be a character string")
+    }
+
+    ## Validate that names is a vector of character strings with
+    ## length corresponding to nucleosomePositions
+    if (!is.null(names)) {
+        if (!is.vector(names)) {
+            stop("names must be a vector or a list of character strings")
+        }
+        if (!is.list(nucleosomePositions)) {
+            if(!(length(names) == 1) || !is.character(names)) {
+                stop("names must be a vector of one character string")
+            }
+        } else {
+            if(!(length(names) == length(nucleosomePositions))) {
+                stop(paste0("names must be a vector containing the same ",
+                    "number of character string as the number of entries ",
+                    "in nucleosomesPositions list"))
+            }
+        }
+    }
+
+    return(0)
+}
+
+#' @title Parameters validation for the \code{\link{segmentation}} function
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{segmentation}} function.
+#'
+#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#'
+#' @param zeta a positive \code{integer} or \code{numeric}, the length
+#' of the nucleosomes. Default: 147.
+#'
+#' @param delta a positive \code{integer} or \code{numeric}, the accepted
+#' range of overlapping section between segments. The overlapping section
+#' being \code{zeta} + \code{delta}.
+#'
+#' @param maxLength a positive \code{integer} or \code{numeric}, the
+#' length of each segment.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @examples
+#'
+#' ## Load synthetic dataset of reads
+#' data(syntheticNucleosomeReads)
+#'
+#' ## Use dataset of reads to create GRanges object
+#' sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+#' ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+#' end = syntheticNucleosomeReads$dataIP$end),
+#' strand = syntheticNucleosomeReads$dataIP$strand)
+#'
+#' ## The function returns 0 when all parameters are valid
+#' RJMCMCNucleosomes:::validateSegmentationParameters(dataIP = sampleGRanges,
+#' zeta = 147, delta = 30, maxLength = 12000)
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
+#' #dataIP = c(100), zeta = 147, delta = 30, maxLength = 12000)}
+#'
+#' #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
+#' #dataIP = sampleGRanges, zeta = "hi", delta = 30, maxLength = 12000)}
+#'
+#' @author Astrid Deschenes, Pascal Belleau
+#' @importFrom S4Vectors isSingleInteger isSingleNumber
+#' @keywords internal
+#'
+validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
+                                            maxLength) {
+    # Validate that dataIP is a GRanges
+    if(!is(dataIP,"GRanges"))
+    {
+        stop("dataIP must be \'GRanges\' object.")
+    }
+
+    ## Validate the zeta parameter
+    if (!(isSingleInteger(zeta) || isSingleNumber(zeta)) ||
+        as.integer(zeta) < 1) {
+        stop("zeta must be a positive integer or numeric")
+    }
+
+    ## Validate the delta parameter
+    if (!(isSingleInteger(delta) || isSingleNumber(delta)) ||
+        as.integer(delta) < 1) {
+        stop("delta must be a positive integer or numeric")
+    }
+
+    ## Validate the maxLength parameter
+    if (!(isSingleInteger(maxLength) || isSingleNumber(maxLength)) ||
+        as.integer(maxLength) < 1) {
+        stop("maxLength must be a positive integer or numeric")
+    }
+
+    return(0)
+}
+
 #' @title A internal post treatment function to merge closely positioned
 #' nucleosomes, from the same chromosome,
 #' identified by the \code{\link{rjmcmc}} function
@@ -2271,10 +683,11 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' number of reads in a potential canditate region. Non-integer values
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero. Default: 5.
-#
+#'
 #'
 #' @return a \code{array} of \code{numeric}, the updated values of the
-#' nucleosome positions.
+#' nucleosome positions. When no nucleosome is present, \code{NULL} is
+#' returned.
 #'
 #' @examples
 #'
@@ -2286,7 +699,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' RJMCMC_result$mu
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- RJMCMC:::postMerge(startPosForwardReads =
+#' postResult <- RJMCMCNucleosomes:::postMerge(startPosForwardReads =
 #' reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
 #' resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 #'
@@ -2302,7 +715,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' @keywords internal
 #'
 postMerge <- function(startPosForwardReads, startPosReverseReads,
-                                resultRJMCMC, extendingSize, chrLength, minReads = 5)
+                        resultRJMCMC, extendingSize, chrLength, minReads = 5)
 {
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
@@ -2354,19 +767,18 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
             b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
 
             if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                    segReads$yF <= (b - minLimit)]) >= minReads &
+                            segReads$yF <= (b - minLimit)]) >= minReads &
                 length(segReads$yR[segReads$yR >= (a + minLimit) &
-                                    segReads$yR <= (b + maxLimit)]) >= minReads) {
+                            segReads$yR <= (b + maxLimit)]) >= minReads) {
                 ## Calculate the new position of the nucleosome
                 newMu[cpt] <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                    segReads$yF <= (b - minLimit)]) +
+                                segReads$yF <= (b - minLimit)]) +
                             (mean(segReads$yR[segReads$yR >= (a + minLimit) &
-                                    segReads$yR <= (b + maxLimit)]) -
+                                segReads$yR <= (b + maxLimit)]) -
                             mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                    segReads$yF <= (b - minLimit) ]))/2)
+                                segReads$yF <= (b - minLimit) ]))/2)
                 cpt <- cpt + 1L
             }
-
             ## Nucleosomes not respecting the condition are flushed
         } else {
             newMu[cpt] <- resultRJMCMC$mu[current]
@@ -2374,5 +786,130 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
         }
     }
 
-    return(as.numeric(newMu[!is.na(newMu)]))
+    finalResult <- NULL
+
+    if (!all(is.na(newMu))) {
+        finalResult <- as.numeric(newMu[!is.na(newMu)])
+    }
+
+    return(finalResult)
 }
+
+#' @title Run \code{\link{rjmcmc}} on multiples segments and merge results.
+#'
+#' @description Run \code{\link{rjmcmc}} on a segment that is contained
+#' in a \code{list} of segments. Files generated by the function are all saved
+#' in a directory specified by user. A RData log file is created when a
+#' segment has been run while the result is saved in a RDS file.
+#'
+#' If the same output directory is used more than once, the
+#' \code{\link{rjmcmc}} won't be called for segments that have the à
+#' corresponding RData log file.
+#'
+#' @param p a \code{integer}, the position of the segment to treat in a
+#' \code{list} of \code{GRanges}.
+#'
+#' @param seg a \code{list} a \code{GRanges} containing the segments
+#' to be process.
+#'
+#' @param niter a positive \code{integer} or \code{numeric}, the
+#' number of iterations. Non-integer values of
+#' \code{nbrIterations} will be casted to \code{integer} and truncated towards
+#' zero.
+#'
+#' @param kMax a positive \code{integer} or \code{numeric}, the maximum number
+#' of degrees of freedom per region. Non-integer values
+#' of \code{kMax} will be casted to \code{integer} and truncated towards zero.
+#'
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution. Default: 3.
+#'
+#' @param minInterval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
+#'
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
+#'
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{minReads} will be casted to \code{integer} and truncated towards
+#' zero. Default: 5.
+#'
+#' @param adaptNbrIterations a \code{logical} indicating if the number
+#' of iterations must be modified in function of the number of reads.
+#'
+#' @param vSeed a \code{integer}. A seed used when reproducible results are
+#' needed. When a value inferior or equal to zero is given, a random integer
+#' is used. Default: -1.
+#'
+#' @param saveAsRDS a \code{logical}. When \code{TRUE}, a RDS file containing
+#' the complete output of the c++ rjmcmc() function is created.
+#' Default : \code{FALSE}.
+#'
+#' @param maxLength a positive \code{integer} or \code{numeric}, the
+#' length of each segment.
+#'
+#' @return 0.
+#'
+#' @examples
+#'
+#' ## Load synthetic dataset of reads
+#' data(syntheticNucleosomeReads)
+#'
+#' ## Use dataset of reads to create GRanges object
+#' sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
+#'     ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
+#'     end = syntheticNucleosomeReads$dataIP$end),
+#'     strand = syntheticNucleosomeReads$dataIP$strand)
+#'
+#' # Segmentation of the reads
+#' seg <- segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 1000)
+#' \dontrun{
+#' dir.create("out")
+#' dir.create("out/done")
+#' dir.create("out/results")
+#'
+#' runCHR(p=1, seg=seg, niter=1000, kmax=330,lambda=3,
+#'          ecartmin=147, ecartmax=297, minReads=5)}
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @importFrom GenomicRanges strand
+#' @keywords internal
+#'
+runCHR <- function(p, seg, niter, kmax, lambda,
+                   ecartmin, ecartmax,
+                   minReads, adaptNbrIterations,
+                   vSeed=-1, saveAsRDS=FALSE, dirOut="out")
+{
+    dirDone <- paste0(dirOut, "/done")
+    dirResults <- paste0(dirOut, "/results")
+    validateDirectoryParameters(dirDone)
+    validateDirectoryParameters(dirResults)
+
+    nameDone <- paste0(dirDone,"/rjmcm_seg_", p, ".RData")
+
+    if (!file.exists(nameDone) ) {
+        nameRDS  <- paste0(dirResults,"/rjmcmc_seg_", p, ".rds")
+        print(paste0("Doing: ", nameRDS))
+        listeSeg <- rjmcmc(startPosForwardReads = start(seg[[p]][strand(seg[[p]]) == "+"]),
+                            startPosReverseReads = end(seg[[p]][strand(seg[[p]]) == "-"]),
+                            nbrIterations = niter, kMax = kmax,
+                            lambda=lambda, minInterval = ecartmin,
+                            maxInterval = ecartmax, minReads = minReads,
+                            vSeed = vSeed, saveAsRDS = saveAsRDS,
+                            adaptIterationsToReads = adaptNbrIterations)
+
+        if(all(is.na(listeSeg)))
+        {
+            print(paste0("Seg NA ", nameRDS))
+        }
+        saveRDS(listeSeg, nameRDS)
+
+        print(paste0("Done: ", nameRDS))
+        save(nameRDS, file=nameDone)
+    }
+
+    return(0)
+}
+
+

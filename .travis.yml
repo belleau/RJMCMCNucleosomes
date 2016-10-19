@@ -1,42 +1,37 @@
 language: r
 sudo: required
 
+# R version
+r: bioc-release
+
+# Package caching only makes sense for the release versions.
+cache: packages
+
 # Packages from Bioconductor needed
 bioc_required: true
 
-env:
-  global:
-    - BIOC_USE_DEVEL="TRUE"
+# Be strict when checking package
+warnings_are_errors: false
+
+r_build_args: "--no-manual --no-resave-data"
+r_check_args: "--no-build-vignettes --no-manual --timings"
 
 # Package dependencies installed using apt-get
-apt_packages:
-  - gsl-bin
-  - libgsl0-dev
+addons:
+  apt:
+    packages:
+      - gsl-bin
+      - libgsl0-dev
+      - libgsl0ldbl
 
-# Be strict when checking package
-warnings_are_errors: true
-
-# Package dependencies from CRAN
+# Package dependencies from CRAN not in DESCRIPTION file
 r_binary_packages:
-  - RUnit
-  - knitr
-  - rmarkdown
-  - MCMCpack
+   - covr
 
-# Package dependencies from Bioconductor
-bioc_packages:
-  - BiocGenerics
-  - GenomeInfoDb
-  - IRanges
-  - BiocStyle
-  - GenomicRanges
-  - PING
+# To compile C++ code
+before_script:
+  - Rscript -e 'library(Rcpp); Rcpp::compileAttributes()'
 
-# Package dependencies from github
-r_github_packages:
-  - jimhester/covr
-  - arnauddroitlab/consensusseeker
-  - arnauddroitlab/nucleoSim
-
+# To send info to codecov
 after_success:
-  - Rscript -e 'library(covr);codecov()'
+  - Rscript -e 'library(covr); codecov()'

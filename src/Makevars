@@ -1,0 +1,5 @@
+# set -I and -L for gsl
+GSL_CFLAGS =`gsl-config --cflags`
+GSL_LIBS =`gsl-config --libs`
+PKG_CPPFLAGS = $(GSL_CFLAGS)
+PKG_LIBS = $(GSL_LIBS)
