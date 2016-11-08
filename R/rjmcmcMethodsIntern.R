@@ -92,17 +92,17 @@
 #' @keywords internal
 #'
 rjmcmcNucleo <- function(startPosForwardReads,
-                              startPosReverseReads,
-                              nbrIterations, kMax, lambda,
-                              minInterval, maxInterval,
-                              minReads = 5L,
-                              adaptIterationsToReads = TRUE, vSeed = -1) {
+                                startPosReverseReads,
+                                nbrIterations, kMax, lambda,
+                                minInterval, maxInterval,
+                                minReads = 5L,
+                                adaptIterationsToReads = TRUE, vSeed = -1) {
     # Call C++ function
     .Call('RJMCMCNucleosomes_rjmcmcNucleo',
-          PACKAGE = 'RJMCMCNucleosomes',
-          startPosForwardReads, startPosReverseReads,
-          nbrIterations, kMax, lambda, minInterval,
-          maxInterval, minReads, adaptIterationsToReads, vSeed)
+            PACKAGE = 'RJMCMCNucleosomes',
+            startPosForwardReads, startPosReverseReads,
+            nbrIterations, kMax, lambda, minInterval,
+            maxInterval, minReads, adaptIterationsToReads, vSeed)
 }
 
 
@@ -273,8 +273,8 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
         data <- readRDS(file = fileName)
         ## Only use data from rjmcmcNucleosomes or rjmcmcNucleosomesMerge class
         if ((is(data, "rjmcmcNucleosomesMerge") ||
-                is(data, "rjmcmcNucleosomes"))
-                & length(data$mu[is.na(data$mu)]) == 0 ) {
+                        is(data, "rjmcmcNucleosomes")) &
+                        length(data$mu[is.na(data$mu)]) == 0 ) {
             result$k      <- result$k + data$k
             result$mu     <- c(result$mu, data$mu)
         }
@@ -877,9 +877,8 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
 #' @keywords internal
 #'
 runCHR <- function(p, seg, niter, kmax, lambda,
-                   ecartmin, ecartmax,
-                   minReads, adaptNbrIterations,
-                   vSeed=-1, saveAsRDS=FALSE, dirOut="out")
+                    ecartmin, ecartmax, minReads, adaptNbrIterations,
+                    vSeed=-1, saveAsRDS=FALSE, dirOut="out")
 {
     dirDone <- paste0(dirOut, "/done")
     dirResults <- paste0(dirOut, "/results")
