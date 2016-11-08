@@ -62,6 +62,16 @@ NULL
 #'     a reverse read is always higher that the end positition.
 #' }
 #'
+#' @return A \code{list} containing:
+#' \itemize{
+#'     \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
+#'     the start positions of the forward reads.
+#'     \item \code{readsReverse} a \code{vector} of non-negative
+#'     \code{numeric}, the start
+#'     positions of the reverse reads. Beware that the start position of
+#'     a reverse read is always higher that the end positition.
+#' }
+#'
 #' @seealso
 #' \itemize{
 #'     \item \code{\link{rjmcmc}} {for profiling of nucleosome positions}
@@ -97,6 +107,16 @@ NULL
 #' @aliases reads_demo_02
 #'
 #' @format A \code{list} containing:
+#' \itemize{
+#'     \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
+#'     the start positions of the forward reads.
+#'     \item \code{readsReverse} a \code{vector} of non-negative
+#'     \code{numeric}, the start
+#'     positions of the reverse reads. Beware that the start position of
+#'     a reverse read is always higher that the end positition.
+#' }
+#'
+#' @return A \code{list} containing:
 #' \itemize{
 #'     \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
 #'     the start positions of the forward reads.
@@ -147,7 +167,6 @@ NULL
 #' "rjmcmcNucleosomes" which contains the information about the
 #' detected nucleosomes.
 #'
-#'
 #' @name RJMCMC_result
 #'
 #' @docType data
@@ -155,6 +174,19 @@ NULL
 #' @aliases RJMCMC_result
 #'
 #' @format A \code{list} of \code{class} "rjmcmcNucleosomes" containing:
+#' \itemize{
+#' \item \code{call} the matched call.
+#' \item \code{k} a \code{integer}, the final estimation of the number
+#' of nucleosomes. \code{0} when no nucleosome is detected.
+#' \item \code{mu} a \code{vector} of \code{numeric} of length
+#' \code{k}, the positions of the nucleosomes. \code{NA} when no nucleosome is
+#' detected.
+#' \item \code{k_max} a \code{integer}, the maximum number of nucleosomes
+#' obtained during the iteration process. \code{NA} when no nucleosome is
+#' detected.
+#' }
+#'
+#' @return A \code{list} of \code{class} "rjmcmcNucleosomes" containing:
 #' \itemize{
 #' \item \code{call} the matched call.
 #' \item \code{k} a \code{integer}, the final estimation of the number
@@ -185,7 +217,7 @@ NULL
 #' }
 #'
 #' @usage data(RJMCMC_result)
-#'
+#' @docType data
 #' @keywords datasets
 #'
 #' @examples
@@ -224,6 +256,24 @@ NULL
 #' @aliases syntheticNucleosomeReads
 #'
 #' @format A \code{list} containing:
+#' \itemize{
+#'     \item \code{call} the called that generated the dataset.
+#'     \item \code{dataIP} a \code{data.frame} with the chromosome name, the
+#'     starting and ending positions and the direction of all forward and
+#'     reverse reads for all well-positioned and fuzzy nucleosomes. Paired-end
+#'     reads are identified with an unique id.
+#'     \item \code{wp} a \code{data.frame} with the positions of all the
+#'     well-positioned nucleosomes, as well as the number of paired-reads
+#'     associated to each one.
+#'     \item \code{fuz} a \code{data.frame} with the positions of all the
+#'     fuzzy nucleosomes, as well as the number of paired-reads associated
+#'     to each one.
+#'     \item \code{paired} a \code{data.frame} with the starting and ending
+#'     positions of the reads used to generate the paired-end reads.
+#'     Paired-end reads are identified with an unique id.
+#' }
+#'
+#' @return A \code{list} containing:
 #' \itemize{
 #'     \item \code{call} the called that generated the dataset.
 #'     \item \code{dataIP} a \code{data.frame} with the chromosome name, the
