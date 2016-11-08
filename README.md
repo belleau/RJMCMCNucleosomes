@@ -1,8 +1,8 @@
 RJMCMCNucleosomes: Nucleosome Positioning
 ==============================================================
 
-[![Build Status](https://travis-ci.org/adeschen/RJMCMCNucleosomes.svg?branch=master)](https://travis-ci.org/adeschen/RJMCMCNucleosomes)
-[![codecov](https://codecov.io/gh/adeschen/RJMCMCNucleosomes/branch/master/graph/badge.svg)](https://codecov.io/gh/adeschen/RJMCMCNucleosomes)
+[![Build Status](https://travis-ci.org/ArnaudDroitLab/RJMCMCNucleosomes.svg?branch=master)](https://travis-ci.org/ArnaudDroitLab/RJMCMCNucleosomes)
+[![codecov](https://codecov.io/gh/ArnaudDroitLab/RJMCMCNucleosomes/branch/master/graph/badge.svg)](https://codecov.io/gh/ArnaudDroitLab/RJMCMCNucleosomes)
 
 # THIS PACKAGE IS UNDER DEVELOPMENT AND SHOULD NOT BE USED AT THIS MOMENT #
 

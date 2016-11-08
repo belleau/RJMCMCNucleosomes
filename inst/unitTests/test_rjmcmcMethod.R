@@ -43,17 +43,17 @@ file_003 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 test.rjmcmc_one_read_forward_and_one_read_reverse <- function() {
 
     obs <- rjmcmc(startPosForwardReads = c(1),
-                  startPosReverseReads = c(2),
-                  nbrIterations = 210, lambda = 3, kMax = 30,
-                  minInterval = 100, maxInterval = 200, minReads = 10,
-                  vSeed = 2211)
+                    startPosReverseReads = c(2),
+                    nbrIterations = 210, lambda = 3, kMax = 30,
+                    minInterval = 100, maxInterval = 200, minReads = 10,
+                    vSeed = 2211)
 
     exp.k           <- 1
     exp.k_max       <- 1
     exp.mu          <- c(1.017962247133255)
 
     message     <- paste0(" test.rjmcmc_one_read_forward_and_one_read_reverse() ",
-                          "- RJMCMC did not generated expected values")
+                            "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
     checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
@@ -74,7 +74,7 @@ test.rjmcmc_good_result_01 <- function() {
     exp.mu          <- c(72393.0264332128, 72457.6656495946, 72555.4429585791, 72990.7142984954)
 
     message     <- paste0(" rjmcmc_good_result_01() ",
-                       "- RJMCMC did not generated expected values")
+                        "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
     checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
@@ -91,10 +91,11 @@ test.rjmcmc_good_result_02 <- function() {
 
     exp.k           <- 4
     exp.k_max       <- 4
-    exp.mu          <- c(72325.7014073403, 72357.7522020026, 72678.9998565154, 72875.6569724952)
+    exp.mu          <- c(72325.7014073403, 72357.7522020026,
+                            72678.9998565154, 72875.6569724952)
 
     message     <- paste0(" rjmcmc_good_result_02() ",
-                      "- RJMCMC did not generated expected values")
+                        "- RJMCMC did not generated expected values")
 
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)

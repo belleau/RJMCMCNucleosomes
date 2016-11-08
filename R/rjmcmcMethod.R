@@ -110,10 +110,10 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     # Find nucleosome positions
     if(length(startPosForwardReads) > 0 & length(startPosReverseReads) > 0){
         resultRJMCMC <- rjmcmcNucleo(startPosForwardReads,
-                                     startPosReverseReads,
-                                     nbrIterations, kMax, lambda,
-                                     minInterval, maxInterval, minReads,
-                                     adaptIterationsToReads, vSeed)
+                                        startPosReverseReads,
+                                        nbrIterations, kMax, lambda,
+                                        minInterval, maxInterval, minReads,
+                                        adaptIterationsToReads, vSeed)
     }
     else{
         resultRJMCMC <- NULL
@@ -329,7 +329,7 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 
     ## Run post merging function and return results
     return(postMerge(startPosForwardReads, startPosReverseReads,
-              resultRJMCMC, extendingSize, chrLength))
+                resultRJMCMC, extendingSize, chrLength))
 }
 
 
@@ -402,7 +402,7 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
                                 ylab = "coverage", names=NULL) {
 
     validatePlotNucleosomesParameters(nucleosomePositions, reads, xlab,
-                                      ylab, names)
+                                        ylab, names)
 
     ## Set variables differently if vector or list
     if (!is.atomic(nucleosomePositions)) {
@@ -681,11 +681,11 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
                                           chrLength=max(allReadsForward,
                                                             allReadsReverse))
 
-     results$muPost <- resultPostTreatement
+    results$muPost <- resultPostTreatement
 
-     results$kPost <- length(resultPostTreatement)
+    results$kPost <- length(resultPostTreatement)
 
-     class(results)<-"rjmcmcNucleosomesBeforeAndAfterPostTreatment"
+    class(results)<-"rjmcmcNucleosomesBeforeAndAfterPostTreatment"
 
-     return(results)
+    return(results)
 }

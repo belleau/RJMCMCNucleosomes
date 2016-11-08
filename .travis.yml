@@ -11,7 +11,7 @@ cache: packages
 bioc_required: true
 
 # Be strict when checking package
-warnings_are_errors: false
+warnings_are_errors: true
 
 r_build_args: "--no-manual --no-resave-data"
 r_check_args: "--no-build-vignettes --no-manual --timings"
@@ -34,4 +34,4 @@ before_script:
 
 # To send info to codecov
 after_success:
-  - Rscript -e 'library(covr); codecov()'
+  - bash <(curl -s https://codecov.io/bash)

@@ -771,7 +771,7 @@ private:
 		bool flag = false;
 		iteratorNucleo it1, it2, it3;
 		NucleoD *uBef, *uNext;
-		double muBef, muNext, vNext;
+		double muBef, muNext;
 		int k = this->valK();
 		int i = 0;
 
@@ -895,7 +895,7 @@ private:
 				uBef = NULL;
 				uMH = NULL;
 				uNext = NULL;
-				double a = this->maxPos() + 1;
+
 				flag = false;
 				cpt++;
 				i = (int) gsl_ran_flat (this->rng(), 0, k);
