@@ -16,6 +16,17 @@
 \usage{
 data(reads_demo)
 }
+\value{
+A \code{list} containing:
+\itemize{
+    \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
+    the start positions of the forward reads.
+    \item \code{readsReverse} a \code{vector} of non-negative
+    \code{numeric}, the start
+    positions of the reverse reads. Beware that the start position of
+    a reverse read is always higher that the end positition.
+}
+}
 \description{
 A group of froward and reverse reads that can be used to test the
 \code{rjmcmc} function.

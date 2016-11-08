@@ -10,6 +10,8 @@
 #'
 #' @param \ldots arguments passed to or from other methods
 #'
+#' @return an object of class \code{mergeAllRDSFilesFromDirectory}
+#'
 #' @examples
 #'
 #' ## Use a directory present in the RJMCMC package
