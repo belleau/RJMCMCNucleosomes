@@ -877,9 +877,9 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
 #' @keywords internal
 #'
 runCHR <- function(p, seg, niter, kmax, lambda,
-                   ecartmin, ecartmax,
-                   minReads, adaptNbrIterations,
-                   vSeed=-1, saveAsRDS=FALSE, dirOut="out")
+                    ecartmin, ecartmax,
+                    minReads, adaptNbrIterations,
+                    vSeed=-1, saveAsRDS=FALSE, dirOut="out")
 {
     dirDone <- paste0(dirOut, "/done")
     dirResults <- paste0(dirOut, "/results")

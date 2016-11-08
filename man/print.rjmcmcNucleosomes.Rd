@@ -11,6 +11,9 @@
 
 \item{\ldots}{arguments passed to or from other methods}
 }
+\value{
+An object of class \code{rjmcmcNucleosomes}
+}
 \description{
 Generated a formated output of a list marked as
 an \code{rjmcmcNucleosomes} class

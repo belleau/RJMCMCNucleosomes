@@ -20,6 +20,20 @@ detected.
 \usage{
 data(RJMCMC_result)
 }
+\value{
+A \code{list} of \code{class} "rjmcmcNucleosomes" containing:
+\itemize{
+\item \code{call} the matched call.
+\item \code{k} a \code{integer}, the final estimation of the number
+of nucleosomes. \code{0} when no nucleosome is detected.
+\item \code{mu} a \code{vector} of \code{numeric} of length
+\code{k}, the positions of the nucleosomes. \code{NA} when no nucleosome is
+detected.
+\item \code{k_max} a \code{integer}, the maximum number of nucleosomes
+obtained during the iteration process. \code{NA} when no nucleosome is
+detected.
+}
+}
 \description{
 A \code{list} of \code{class}
 "rjmcmcNucleosomes" which contains the information about the

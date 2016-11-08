@@ -10,6 +10,9 @@
 #'
 #' @param \ldots arguments passed to or from other methods
 #'
+#' @return an object of class
+#' \code{rjmcmcNucleosomesBeforeAndAfterPostTreatment}
+#'
 #' @examples
 #'
 #' ## TODO

@@ -9,6 +9,8 @@
 #'
 #' @param \ldots arguments passed to or from other methods
 #'
+#' @return An object of class \code{rjmcmcNucleosomes}
+#'
 #' @examples
 #'
 #' ## Loading dataset

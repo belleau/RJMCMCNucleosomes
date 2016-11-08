@@ -12,6 +12,9 @@ function to be printed}
 
 \item{\ldots}{arguments passed to or from other methods}
 }
+\value{
+an object of class \code{mergeAllRDSFilesFromDirectory}
+}
 \description{
 Generated a formated output of a list marked as
 an \code{rjmcmcNucleosomesMerge} class
