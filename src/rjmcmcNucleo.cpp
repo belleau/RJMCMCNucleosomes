@@ -1,7 +1,4 @@
 #include <Rcpp.h>
-#include <Rinternals.h>
-#include <R_ext/Rdynload.h>
-
 #include <gsl/gsl_randist.h>
 #include <iostream>
 #include <math.h>
@@ -89,13 +86,3 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     return resO;
 }
 
-
-static const R_CallMethodDef callMethods[] = {
-    {".rjmcmcNucleo", (DL_FUNC) &rjmcmcNucleo, 10},
-    {NULL, NULL, 0}
-};
-
-void R_init_rjmcmcNucleo(DllInfo * info)
-{
-    R_registerRoutines(info, NULL, callMethods, NULL, NULL);
-}
