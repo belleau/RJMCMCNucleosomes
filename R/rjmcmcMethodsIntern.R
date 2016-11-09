@@ -98,7 +98,7 @@ rjmcmcNucleo <- function(startPosForwardReads,
                                 minReads = 5L,
                                 adaptIterationsToReads = TRUE, vSeed = -1) {
     # Call C++ function
-    .Call('RJMCMCNucleosomes_rjmcmcNucleo',
+    .Call('C_RJMCMCNucleosomes_rjmcmcNucleo',
             PACKAGE = 'RJMCMCNucleosomes',
             startPosForwardReads, startPosReverseReads,
             nbrIterations, kMax, lambda, minInterval,
@@ -890,10 +890,8 @@ runCHR <- function(p, seg, niter, kmax, lambda,
     if (!file.exists(nameDone) ) {
         nameRDS  <- paste0(dirResults,"/rjmcmc_seg_", p, ".rds")
         print(paste0("Doing: ", nameRDS))
-        listeSeg <- rjmcmc(startPosForwardReads =
-                                start(seg[[p]][strand(seg[[p]]) == "+"]),
-                            startPosReverseReads =
-                                end(seg[[p]][strand(seg[[p]]) == "-"]),
+        listeSeg <- rjmcmc(startPosForwardReads = start(seg[[p]][strand(seg[[p]]) == "+"]),
+                            startPosReverseReads = end(seg[[p]][strand(seg[[p]]) == "-"]),
                             nbrIterations = niter, kMax = kmax,
                             lambda=lambda, minInterval = ecartmin,
                             maxInterval = ecartmax, minReads = minReads,
