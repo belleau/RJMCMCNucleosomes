@@ -26,7 +26,7 @@ of nucleosomes per region. Non-integer values
 of \code{kMax} will be casted to \code{integer} and truncated towards zero.}
 
 \item{lambda}{a positive \code{numeric}, the theorical mean
-of the Poisson distribution.}
+of the Poisson distribution. Default: 3.}
 
 \item{minInterval}{a \code{numeric}, the minimum distance between two
 nucleosomes.}
@@ -46,11 +46,6 @@ Default: \code{TRUE}.}
 \item{vSeed}{a \code{integer}. A seed used when reproducible results are
 needed. When a value inferior or equal to zero is given, a random integer
 is used. Default: -1.}
-
-\item{k}{a positive \code{integer}, the number of nucleosomes.}
-
-\item{lambda}{a positive \code{numeric}, the theorical mean
-of the Poisson distribution. Default: 3.}
 }
 \value{
 a \code{list} containing:
@@ -82,8 +77,9 @@ mapping function that is implemented in C++.
 
 data(reads_demo)
 
-## Nucleosome positioning, running both merge and split functions
-result <- rjmcmcNucleo(startPosForwardReads = reads_demo$readsForward,
+## Run nucleosome positioning
+result <- RJMCMCNucleosomes:::rjmcmcNucleo(
+         startPosForwardReads = reads_demo$readsForward,
          startPosReverseReads = reads_demo$readsReverse,
          nbrIterations = 1000, lambda = 2, kMax = 30,
          minInterval = 146, maxInterval = 292, minReads = 5,
@@ -99,5 +95,5 @@ result$mu
 \author{
 Pascal Belleau, Astrid Deschenes
 }
-\keyword{internal}
+\keyword{}
 

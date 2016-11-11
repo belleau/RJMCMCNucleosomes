@@ -38,6 +38,8 @@
 #'     the nucleosome positions and the read coverage.}
 #' }
 #'
+#' @importFrom Rcpp evalCpp
+#' @useDynLib RJMCMCNucleosomes
 #' @keywords package
 NULL
 

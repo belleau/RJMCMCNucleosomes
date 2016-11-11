@@ -43,6 +43,7 @@ Suggests:
     nucleoSim,
     RUnit
 LinkingTo: Rcpp
+SystemRequirements: Rcpp
 Encoding: UTF-8
 License: Artistic-2.0
 VignetteBuilder: knitr
