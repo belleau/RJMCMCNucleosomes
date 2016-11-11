@@ -18,8 +18,8 @@ a reverse read is always higher that the end positition.}
 
 \item{resultRJMCMC}{an object of \code{class}
 "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge", the information
- about nucleosome positioning for an entire chromosome or a region that must
- be treated as one unit.}
+about nucleosome positioning for an entire chromosome or a region that must
+be treated as one unit.}
 
 \item{extendingSize}{a positive \code{numeric} or a positive \code{integer}
 indicating the size of the consensus region used to group closeley
