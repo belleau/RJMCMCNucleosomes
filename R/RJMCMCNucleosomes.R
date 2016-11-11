@@ -90,9 +90,9 @@ NULL
 #'
 #' ## Nucleosome positioning
 #' rjmcmc(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse,
-#'          nbrIterations = 100, lambda = 3, kMax = 30,
-#'          minInterval = 146, maxInterval = 292, minReads = 5)
+#'             startPosReverseReads = reads_demo$readsReverse,
+#'             nbrIterations = 100, lambda = 3, kMax = 30,
+#'             minInterval = 146, maxInterval = 292, minReads = 5)
 #'
 NULL
 
@@ -156,9 +156,9 @@ NULL
 #'
 #' ## Nucleosome positioning
 #' rjmcmc(startPosForwardReads = reads_demo_02$readsForward,
-#'          startPosReverseReads = reads_demo_02$readsReverse,
-#'          nbrIterations = 150, lambda = 3, kMax = 30,
-#'          minInterval = 144, maxInterval = 290, minReads = 6)
+#'             startPosReverseReads = reads_demo_02$readsReverse,
+#'             nbrIterations = 150, lambda = 3, kMax = 30,
+#'             minInterval = 144, maxInterval = 290, minReads = 6)
 #'
 NULL
 
@@ -233,8 +233,8 @@ NULL
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
 #' postResult <- postTreatment(startPosForwardReads = reads_demo_02$readsForward,
-#' startPosReverseReads = reads_demo_02$readsReverse, extendingSize = 60,
-#' chrLength = 100000, resultRJMCMC = RJMCMC_result)
+#'     startPosReverseReads = reads_demo_02$readsReverse, extendingSize = 60,
+#'     chrLength = 100000, resultRJMCMC = RJMCMC_result)
 #'
 #' ## Results after post-treatment
 #' postResult

@@ -79,11 +79,11 @@ data(reads_demo)
 
 ## Run nucleosome positioning
 result <- RJMCMCNucleosomes:::rjmcmcNucleo(
-         startPosForwardReads = reads_demo$readsForward,
-         startPosReverseReads = reads_demo$readsReverse,
-         nbrIterations = 1000, lambda = 2, kMax = 30,
-         minInterval = 146, maxInterval = 292, minReads = 5,
-         adaptIterationsToReads = TRUE, vSeed = -1)
+            startPosForwardReads = reads_demo$readsForward,
+            startPosReverseReads = reads_demo$readsReverse,
+            nbrIterations = 1000, lambda = 2, kMax = 30,
+            minInterval = 146, maxInterval = 292, minReads = 5,
+            adaptIterationsToReads = TRUE, vSeed = -1)
 
 ## Print the final estimation of the number of nucleosomes
 result$k
