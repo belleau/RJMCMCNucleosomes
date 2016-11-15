@@ -60,7 +60,8 @@ reverseReads <- dataIP[dataIP$strand == "-",]$end
 result <- rjmcmc(startPosForwardReads = forwardReads,
             startPosReverseReads = reverseReads,
             nbrIterations = 4000, lambda = 2, kMax = 30,
-            minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10213)
+            minInterval = 146, maxInterval = 292, minReads = 5,
+            vSeed = 10213)
 
 reads <-IRanges(start = dataIP$start, end=dataIP$end)
 

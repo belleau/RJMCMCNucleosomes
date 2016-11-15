@@ -95,5 +95,5 @@ result$mu
 \author{
 Pascal Belleau, Astrid Deschenes
 }
-\keyword{}
+\keyword{internal}
 

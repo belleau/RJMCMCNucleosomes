@@ -278,8 +278,8 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' @param resultRJMCMC an object of \code{class}
 #' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge", the information
-#'  about nucleosome positioning for an entire chromosome or a region that must
-#'  be treated as one unit.
+#' about nucleosome positioning for an entire chromosome or a region that must
+#' be treated as one unit.
 #'
 #' @param extendingSize a positive \code{numeric} or a positive \code{integer}
 #' indicating the size of the consensus region used to group closeley
@@ -321,7 +321,7 @@ mergeRDSFiles <- function(RDSFiles) {
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
 postTreatment <- function(startPosForwardReads, startPosReverseReads,
-                           resultRJMCMC, extendingSize = 74L, chrLength) {
+                            resultRJMCMC, extendingSize = 74L, chrLength) {
 
     ## Validate parameters
     validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,
@@ -385,7 +385,8 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #' result <- rjmcmc(startPosForwardReads = forwardReads,
 #'             startPosReverseReads = reverseReads,
 #'             nbrIterations = 4000, lambda = 2, kMax = 30,
-#'             minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10213)
+#'             minInterval = 146, maxInterval = 292, minReads = 5,
+#'             vSeed = 10213)
 #'
 #' reads <-IRanges(start = dataIP$start, end=dataIP$end)
 #'
@@ -459,8 +460,8 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
         }
     } else {
         points(nucleosomePositions, rep(-(step), length(nucleosomePositions)),
-               ylim = c(y_min, y_max), xlim = c(x_min, x_max),
-               col = posColors[1], pch = 19)
+                ylim = c(y_min, y_max), xlim = c(x_min, x_max),
+                col = posColors[1], pch = 19)
     }
 
     # Add legend
@@ -656,7 +657,7 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
     if(saveSEG){
         options(digits.secs = 2)
         file_name <- gsub(Sys.time(), pattern = "[:. ]", replacement = "_",
-                          perl = TRUE)
+                            perl = TRUE)
         saveRDS(object = seg,
                 file = paste0(dirOut,"/seg_", file_name, ".RDS"))
     }
@@ -676,9 +677,9 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
     allReadsReverse <- end(dataIP[strand(dataIP) == "-"])
 
     resultPostTreatement <- postTreatment(startPosForwardReads=allReadsForward,
-                                          startPosReverseReads=allReadsReverse,
-                                          results,
-                                          chrLength=max(allReadsForward,
+                                        startPosReverseReads=allReadsReverse,
+                                        results,
+                                        chrLength=max(allReadsForward,
                                                             allReadsReverse))
 
     results$muPost <- resultPostTreatement

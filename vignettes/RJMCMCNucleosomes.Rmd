@@ -100,22 +100,25 @@ library(nucleoSim)
 
 val.num       <- 50     ### Number of well-positioned nucleosomes
 val.del       <- 10     ### Number of well-positioned nucleosomes to delete
-val.var       <- 30     ### variance associated to the well-positioned nucleosomes
+val.var       <- 30     ### variance associated to well-positioned nucleosomes
 val.fuz       <- 10     ### Number of fuzzy nucleosomes
-val.fuz.var   <- 50     ### variance associated to the fuzzy nucleosomes
+val.fuz.var   <- 50     ### variance associated to fuzzy nucleosomes
 val.max.cover <- 70     ### Maximum coverage for one nucleosome
 val.nuc.len   <- 147    ### Distance between nucleosomes
 val.len.var   <- 10     ### Variance associated to the length of the reads
 val.lin.len   <- 20     ### The length of the DNA linker
 val.rnd.seed  <- 100    ### Set seed when result needs to be reproducible
-val.offset    <- 10000  ### The number of bases used to offset all nucleosomes and reads
+val.offset    <- 10000  ### The number of bases used to offset 
+                        ### all nucleosomes and reads
 
 ## Create sample using a Normal distribution
 sample <- nucleoSim::syntheticNucReadsFromDist(wp.num=val.num,
                                     wp.del=val.del, wp.var=val.var,
                                     fuz.num=val.del, fuz.var=val.fuz.var,
-                                    max.cover=val.max.cover, nuc.len=val.nuc.len,
-                                    len.var=val.len.var, lin.len=val.lin.len,
+                                    max.cover=val.max.cover, 
+                                    nuc.len=val.nuc.len,
+                                    len.var=val.len.var, 
+                                    lin.len=val.lin.len,
                                     rnd.seed=val.rnd.seed,
                                     distr="Normal", offset=val.offset)
 
@@ -199,7 +202,8 @@ The segments of the sample created sooner have all been processed (using
 ```{r regroup01, warning=FALSE, collapse=TRUE, message=FALSE}
 ## The directory containing the results of all segments
 ## On RDS file has been created for each segment
-directory <- system.file("extdata", "demo_vignette", package = "RJMCMCNucleosomes")
+directory <- system.file("extdata", "demo_vignette", 
+                            package = "RJMCMCNucleosomes")
 
 ## Merging predicted nucleosomes from all segments
 resultsAllMerged <- mergeAllRDSFilesFromDirectory(directory)
@@ -268,7 +272,8 @@ reads <-IRanges(start = sample$dataIP$start, end=sample$dataIP$end)
 
 ## Merge predictions from before post-treatment and after post-treatment in 
 ## a list so that both results will be shown in graph
-resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos, sample$fuz$nucleopos),
+resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos, 
+                                            sample$fuz$nucleopos),
                               BeforePostTreatment = resultsAllMerged$mu,    
                               AfterPostTreatment = resultsPostTreatment)
 
