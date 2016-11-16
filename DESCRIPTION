@@ -1,14 +1,12 @@
 Package: RJMCMCNucleosomes
-Version: 0.99.4
+Version: 0.99.5
 Date: 2015-05-01
 Title: Bayesian hierarchical model for genome-wide nucleosome
     positioning with high-throughput short-read data (MNase-Seq)
 Description: This package does nucleosome positioning using informative
     Multinomial-Dirichlet prior in a t-mixture with reversible jump
     estimation of nucleosome positions for genome-wide profiling.
-Author: Pascal Belleau, Rawane Samb, Astrid Deschênes, Khader Khadraoui,
-    Lajmi Lakhal-Chaieb and Arnaud Droit
-Author@R: c(person("Pascal", "Belleau",
+Authors@R: c(person("Pascal", "Belleau",
     email="pascal.belleau@crchuq.ulaval.ca", role=c("aut")),
     person("Rawane", "Samb",
     email="rawane.samb.1@ulaval.ca", role=c("aut")),
@@ -31,9 +29,9 @@ Imports:
     BiocGenerics,
     GenomeInfoDb,
     S4Vectors,
+    BiocParallel,
     stats,
     graphics,
-    parallel,
     methods,
     grDevices
 Suggests:
@@ -43,10 +41,10 @@ Suggests:
     nucleoSim,
     RUnit
 LinkingTo: Rcpp
+SystemRequirements: Rcpp
 Encoding: UTF-8
 License: Artistic-2.0
 VignetteBuilder: knitr
 biocViews: BiologicalQuestion, ChIPSeq, NucleosomePositioning,
     Software, StatisticalMethod, Bayesian
-Maintainer: Astrid Deschenes <Astrid-Louise.Deschenes@crchudequebec.ulaval.ca>
 RoxygenNote: 5.0.1

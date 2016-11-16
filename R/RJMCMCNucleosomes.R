@@ -1,4 +1,5 @@
-#' RJMCMCNucleosomes: Bayesian hierarchical model for genome-wide nucleosome positioning with high-throughput short-read data (MNase-Seq)
+#' RJMCMCNucleosomes: Bayesian hierarchical model for genome-wide
+#' nucleosome positioning with high-throughput short-read data (MNase-Seq)
 #'
 #' This package does nucleosome positioning using informative
 #' Multinomial-Dirichlet prior in a t-mixture with reversible jump
@@ -38,12 +39,14 @@
 #'     the nucleosome positions and the read coverage.}
 #' }
 #'
+#' @importFrom Rcpp evalCpp
+#' @useDynLib RJMCMCNucleosomes
 #' @keywords package
 NULL
 
 #' Forward reads and reverse reads in \code{numeric} format (for demo purpose).
 #'
-#' A group of froward and reverse reads that can be used to test the
+#' A group of forward and reverse reads that can be used to test the
 #' \code{rjmcmc} function.
 #'
 #' @name reads_demo
@@ -88,16 +91,16 @@ NULL
 #'
 #' ## Nucleosome positioning
 #' rjmcmc(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse,
-#'          nbrIterations = 100, lambda = 3, kMax = 30,
-#'          minInterval = 146, maxInterval = 292, minReads = 5)
+#'             startPosReverseReads = reads_demo$readsReverse,
+#'             nbrIterations = 100, lambda = 3, kMax = 30,
+#'             minInterval = 146, maxInterval = 292, minReads = 5)
 #'
 NULL
 
 #' Forward reads and reverse reads in \code{integer} format
 #' (for demo purpose).
 #'
-#' A group of froward and reverse reads that can be used to test the
+#' A group of forward and reverse reads that can be used to test the
 #' \code{rjmcmc} function.
 #'
 #' @name reads_demo_02
@@ -154,9 +157,9 @@ NULL
 #'
 #' ## Nucleosome positioning
 #' rjmcmc(startPosForwardReads = reads_demo_02$readsForward,
-#'          startPosReverseReads = reads_demo_02$readsReverse,
-#'          nbrIterations = 150, lambda = 3, kMax = 30,
-#'          minInterval = 144, maxInterval = 290, minReads = 6)
+#'             startPosReverseReads = reads_demo_02$readsReverse,
+#'             nbrIterations = 150, lambda = 3, kMax = 30,
+#'             minInterval = 144, maxInterval = 290, minReads = 6)
 #'
 NULL
 
@@ -231,8 +234,8 @@ NULL
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
 #' postResult <- postTreatment(startPosForwardReads = reads_demo_02$readsForward,
-#' startPosReverseReads = reads_demo_02$readsReverse, extendingSize = 60,
-#' chrLength = 100000, resultRJMCMC = RJMCMC_result)
+#'     startPosReverseReads = reads_demo_02$readsReverse, extendingSize = 60,
+#'     chrLength = 100000, resultRJMCMC = RJMCMC_result)
 #'
 #' ## Results after post-treatment
 #' postResult

@@ -28,7 +28,7 @@ A \code{list} containing:
 }
 }
 \description{
-A group of froward and reverse reads that can be used to test the
+A group of forward and reverse reads that can be used to test the
 \code{rjmcmc} function.
 }
 \examples{
@@ -38,9 +38,9 @@ data(reads_demo)
 
 ## Nucleosome positioning
 rjmcmc(startPosForwardReads = reads_demo$readsForward,
-         startPosReverseReads = reads_demo$readsReverse,
-         nbrIterations = 100, lambda = 3, kMax = 30,
-         minInterval = 146, maxInterval = 292, minReads = 5)
+            startPosReverseReads = reads_demo$readsReverse,
+            nbrIterations = 100, lambda = 3, kMax = 30,
+            minInterval = 146, maxInterval = 292, minReads = 5)
 
 }
 \seealso{

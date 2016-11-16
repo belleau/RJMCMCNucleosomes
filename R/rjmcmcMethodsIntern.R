@@ -3,11 +3,6 @@
 #' @description Function that calls the core of the nucleosome positioning
 #' mapping function that is implemented in C++.
 #'
-#' @param k a positive \code{integer}, the number of nucleosomes.
-#'
-#' @param lambda a positive \code{numeric}, the theorical mean
-#' of the Poisson distribution.
-#'
 #' @param startPosForwardReads a \code{vector} of \code{numeric}, the
 #' start position of all the forward reads.
 #'
@@ -72,12 +67,13 @@
 ## Loading dataset
 #' data(reads_demo)
 #'
-#' ## Nucleosome positioning, running both merge and split functions
-#' result <- rjmcmcNucleo(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse,
-#'          nbrIterations = 1000, lambda = 2, kMax = 30,
-#'          minInterval = 146, maxInterval = 292, minReads = 5,
-#'          adaptIterationsToReads = TRUE, vSeed = -1)
+#' ## Run nucleosome positioning
+#' result <- RJMCMCNucleosomes:::rjmcmcNucleo(
+#'             startPosForwardReads = reads_demo$readsForward,
+#'             startPosReverseReads = reads_demo$readsReverse,
+#'             nbrIterations = 1000, lambda = 2, kMax = 30,
+#'             minInterval = 146, maxInterval = 292, minReads = 5,
+#'             adaptIterationsToReads = TRUE, vSeed = -1)
 #'
 #' ## Print the final estimation of the number of nucleosomes
 #' result$k
@@ -86,9 +82,6 @@
 #' result$mu
 #'
 #' @author Pascal Belleau, Astrid Deschenes
-#' @importFrom Rcpp evalCpp
-#' @useDynLib RJMCMCNucleosomes, .registration = TRUE
-#' @exportPattern "^[[:alpha:]]+"
 #' @keywords internal
 #'
 rjmcmcNucleo <- function(startPosForwardReads,
@@ -414,9 +407,10 @@ validateDirectoryParameters <- function(directory) {
 #' resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 #'
 #' ## The function raises an error when at least one paramater is not valid
-#' \dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads = c(72400,
-#' 72431, 72428, 72429, 72426), startPosReverseReads = c(72522, 72531, 72528,
-#' 72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
+#' \dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(
+#' startPosForwardReads = c(72400, 72431, 72428, 72429, 72426),
+#' startPosReverseReads = c(72522, 72531, 72528, 72559, 72546),
+#' resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 #'
 #' @author Astrid Deschenes
 #' @importFrom GenomeInfoDb Seqinfo
@@ -658,7 +652,7 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #' The function uses the Bioconductor \code{package} \code{consensusSeeker} to
 #' group closely positioned nucleosomes.
 #'
-#' @param startPosFrowardReads a \code{vector} of \code{numeric}, the
+#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
 #' start position of all the forward reads.
 #'
 #' @param startPosReverseReads a \code{vector} of \code{numeric}, the

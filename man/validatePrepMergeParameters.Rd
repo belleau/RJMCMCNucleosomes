@@ -54,9 +54,10 @@ reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
 resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 
 ## The function raises an error when at least one paramater is not valid
-\dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads = c(72400,
-72431, 72428, 72429, 72426), startPosReverseReads = c(72522, 72531, 72528,
-72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
+\dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(
+startPosForwardReads = c(72400, 72431, 72428, 72429, 72426),
+startPosReverseReads = c(72522, 72531, 72528, 72559, 72546),
+resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 
 }
 \author{
