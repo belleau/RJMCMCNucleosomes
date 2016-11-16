@@ -251,6 +251,7 @@ validateRJMCMCParameters <- function(startPosForwardReads,
 #' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
 #'
 #' @importFrom methods is
+#' @importFrom stats setNames
 #' @author Pascal Belleau, Astrid Deschenes
 #' @keywords internal
 #'
@@ -259,7 +260,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     ## Create list that will contain data from all files
     result        <- list()
     result$k      <- 0
-    result$mu     <- array(dim = c(0))
+    mu <- setNames(vector("list", length(arrayOfFiles)),  arrayOfFiles)
 
     ## Extract information from each file
     for (fileName in arrayOfFiles) {
@@ -269,13 +270,14 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
                         is(data, "rjmcmcNucleosomes")) &
                         length(data$mu[is.na(data$mu)]) == 0 ) {
             result$k      <- result$k + data$k
-            result$mu     <- c(result$mu, data$mu)
+            mu[[fileName]] <- data$mu
         }
     }
 
     ## Ensure that all values are ordered in ascending order of mu
-    newOrder      <- order(result$mu)
-    result$mu     <- result$mu[newOrder]
+    mu <- unlist(mu, use.names=FALSE)
+    newOrder      <- order(mu)
+    result$mu     <- mu[newOrder]
 
     ## Assign class type to list
     class(result)<-"rjmcmcNucleosomesMerge"
