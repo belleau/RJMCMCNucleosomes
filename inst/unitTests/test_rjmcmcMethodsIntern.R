@@ -1052,3 +1052,36 @@ test.postMerge_good_NULL_returned <- function() {
                       "- postMerge() did not generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
+
+## Test the result of postMerge() function when mu is set to NA
+test.postMerge_mu_NA_returned <- function() {
+
+    testRJMCMC <- RJMCMC_result
+    testRJMCMC$mu <- NA
+    ## Reads are not located where the nucleosomes are
+    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo$readsForward,
+                                        startPosReverseReads = reads_demo$readsReverse,
+                                        resultRJMCMC = testRJMCMC,
+                                        extendingSize = 100, chrLength = 80000)
+    exp <- NULL
+    message <- paste0(" test.postMerge_mu_NA_returned() ",
+                      "- postMerge() did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result of postMerge() function when empty mu is passed
+test.postMerge_mu_empty_returned <- function() {
+
+    testRJMCMC <- RJMCMC_result
+    testRJMCMC$mu <- c()
+    ## Reads are not located where the nucleosomes are
+    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo$readsForward,
+                                        startPosReverseReads = reads_demo$readsReverse,
+                                        resultRJMCMC = testRJMCMC,
+                                        extendingSize = 100, chrLength = 80000)
+    exp <- NULL
+    message <- paste0(" test.postMerge_mu_NA_returned() ",
+                      "- postMerge() did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+

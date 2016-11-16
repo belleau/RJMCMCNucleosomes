@@ -689,14 +689,15 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #'
 #' ## Loading dataset
 #' data(RJMCMC_result)
-#' data(reads_demo)
+#' data(reads_demo_02)
 #'
 #' ## Results before post-treatment
 #' RJMCMC_result$mu
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
 #' postResult <- RJMCMCNucleosomes:::postMerge(startPosForwardReads =
-#' reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
+#' reads_demo_02$readsForward,
+#' startPosReverseReads = reads_demo_02$readsReverse,
 #' resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 #'
 #' ## Results after post-treatment
@@ -708,6 +709,7 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #' @importFrom IRanges IRanges
 #' @importFrom GenomeInfoDb Seqinfo seqinfo seqnames
 #' @importFrom S4Vectors queryHits subjectHits
+#' @importFrom BiocGenerics sapply
 #' @keywords internal
 #'
 postMerge <- function(startPosForwardReads, startPosReverseReads,
@@ -721,71 +723,71 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
     ## Prepare Seqinfo object using chromosome length
     seqinfo <- Seqinfo(c("chrI"), c(chrLength), FALSE, "mock1")
 
-    ## Prepare first GRanges using nucleosome positions
-    nbMu <- length(resultRJMCMC$mu)
-    rjmcmc_peak <- GRanges(seqnames = rep('chrI', nbMu),
+    finalResult <- NULL
+
+    ## Prepare a GRanges using nucleosome positions
+    ## Only apply merge when at least one nucleosome is present
+    if (!is.null(resultRJMCMC$mu) && !is.na(resultRJMCMC$mu)) {
+        nbMu <- length(resultRJMCMC$mu)
+        rjmcmc_peak <- GRanges(seqnames = rep('chrI', nbMu),
                         IRanges(resultRJMCMC$mu, resultRJMCMC$mu),
                         seqinfo = seqinfo)
-    nbPeaks <- length(rjmcmc_peak)
-    names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
-    rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
+        nbPeaks <- length(rjmcmc_peak)
+        names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
+        rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
 
-    ## Find nucleosomes present in same regions
-    result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak),
+        ## Find nucleosomes present in same regions
+        result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak),
                                         chrInfo = seqinfo,
                                         extendingSize = extendingSize,
                                         expandToFitPeakRegion = FALSE,
                                         shrinkToFitPeakRegion = FALSE,
                                         minNbrExp = 1)
 
-    overlapsPeak <- findOverlaps(query = result$consensusRanges,
-                        subject =  rjmcmc_peak)
+        overlapsPeak <- findOverlaps(query = result$consensusRanges,
+                                    subject =  rjmcmc_peak)
 
-    allOverlap <- queryHits(overlapsPeak)
-    uniqueOverlap <- unique(allOverlap)
-    nbOverlap <- length(uniqueOverlap)
+        allOverlap <- queryHits(overlapsPeak)
+        uniqueOverlap <- unique(allOverlap)
+        nbOverlap <- length(uniqueOverlap)
 
-    ## Interval used to check for reads
-    maxLimit <- 74 + extendingSize
-    minLimit <- 74 - extendingSize
+        ## Interval used to check for reads
+        maxLimit <- 74 + extendingSize
+        minLimit <- 74 - extendingSize
 
-    ## Treat each overlapping region separatly
-    newMu <- array(dim = nbOverlap)
-    cpt <- 1L
-    for(position in 1:nbOverlap){
-        ## Extract nucleosomes present in the current overlapping region
-        current <- subjectHits(overlapsPeak)[queryHits(overlapsPeak) ==
-                                                    uniqueOverlap[position]]
-        if(length(current) > 1) {
-            ## When more than one nucleosome present, use mean position
-            valCentral <- mean(resultRJMCMC$mu[current])
-            a <- min(resultRJMCMC$mu[current]) # - (74 + extendingSize)
-            b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
-
-            if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
-                            segReads$yF <= (b - minLimit)]) >= minReads &
-                length(segReads$yR[segReads$yR >= (a + minLimit) &
-                            segReads$yR <= (b + maxLimit)]) >= minReads) {
-                ## Calculate the new position of the nucleosome
-                newMu[cpt] <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                segReads$yF <= (b - minLimit)]) +
+        result <- sapply(uniqueOverlap, FUN = function(x) {
+            current <- subjectHits(overlapsPeak)[allOverlap == x]
+            if(length(current) > 1) {
+                ## When more than one nucleosome present, use mean position
+                valCentral <- mean(resultRJMCMC$mu[current])
+                a <- min(resultRJMCMC$mu[current]) # - (74 + extendingSize)
+                b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
+                ## A miminum number of reads is needed closed to the position
+                if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
+                                segReads$yF <= (b - minLimit)]) >= minReads &
+                        length(segReads$yR[segReads$yR >= (a + minLimit) &
+                                segReads$yR <= (b + maxLimit)]) >= minReads) {
+                    ## Calculate the new position of the nucleosome
+                    newMu <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) &
+                            segReads$yF <= (b - minLimit)]) +
                             (mean(segReads$yR[segReads$yR >= (a + minLimit) &
-                                segReads$yR <= (b + maxLimit)]) -
+                            segReads$yR <= (b + maxLimit)]) -
                             mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                segReads$yF <= (b - minLimit) ]))/2)
-                cpt <- cpt + 1L
+                            segReads$yF <= (b - minLimit) ]))/2)
+                    return(newMu)
+                } else {
+                    ## Nucleosomes that do not respect condition are flushed
+                    return(NA)
+                }
+            } else {
+                ## Return the current mu
+                return(resultRJMCMC$mu[current])
             }
-            ## Nucleosomes not respecting the condition are flushed
-        } else {
-            newMu[cpt] <- resultRJMCMC$mu[current]
-            cpt <- cpt + 1L
+        })
+
+        if (!all(is.na(result))) {
+            finalResult <- as.numeric(result[!is.na(result)])
         }
-    }
-
-    finalResult <- NULL
-
-    if (!all(is.na(newMu))) {
-        finalResult <- as.numeric(newMu[!is.na(newMu)])
     }
 
     return(finalResult)

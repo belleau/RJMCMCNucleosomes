@@ -53,14 +53,15 @@ group closely positioned nucleosomes.
 
 ## Loading dataset
 data(RJMCMC_result)
-data(reads_demo)
+data(reads_demo_02)
 
 ## Results before post-treatment
 RJMCMC_result$mu
 
 ## Post-treatment function which merged closely positioned nucleosomes
 postResult <- RJMCMCNucleosomes:::postMerge(startPosForwardReads =
-reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
+reads_demo_02$readsForward,
+startPosReverseReads = reads_demo_02$readsReverse,
 resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 
 ## Results after post-treatment
