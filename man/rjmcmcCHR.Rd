@@ -112,7 +112,7 @@ sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
              delta=50, maxLength=1200,
              nbrIterations = 1000, lambda = 3, kMax = 30,
              minInterval = 146, maxInterval = 292, minReads = 5,
-             vSeed = 10113, saveAsRDS = FALSE)}
+             vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)}
 
 
 }

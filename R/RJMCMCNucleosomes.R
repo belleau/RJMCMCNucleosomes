@@ -46,7 +46,7 @@ NULL
 
 #' Forward reads and reverse reads in \code{numeric} format (for demo purpose).
 #'
-#' A group of froward and reverse reads that can be used to test the
+#' A group of forward and reverse reads that can be used to test the
 #' \code{rjmcmc} function.
 #'
 #' @name reads_demo
@@ -100,7 +100,7 @@ NULL
 #' Forward reads and reverse reads in \code{integer} format
 #' (for demo purpose).
 #'
-#' A group of froward and reverse reads that can be used to test the
+#' A group of forward and reverse reads that can be used to test the
 #' \code{rjmcmc} function.
 #'
 #' @name reads_demo_02

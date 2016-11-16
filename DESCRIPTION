@@ -29,9 +29,9 @@ Imports:
     BiocGenerics,
     GenomeInfoDb,
     S4Vectors,
+    BiocParallel,
     stats,
     graphics,
-    parallel,
     methods,
     grDevices
 Suggests:

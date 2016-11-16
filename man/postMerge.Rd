@@ -10,6 +10,9 @@ postMerge(startPosForwardReads, startPosReverseReads, resultRJMCMC,
   extendingSize, chrLength, minReads = 5)
 }
 \arguments{
+\item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
+start position of all the forward reads.}
+
 \item{startPosReverseReads}{a \code{vector} of \code{numeric}, the
 start position of all the reverse reads. Beware that the start position of
 a reverse read is always higher that the end positition.}
@@ -32,9 +35,6 @@ located inside the chromosome.}
 number of reads in a potential canditate region. Non-integer values
 of \code{minReads} will be casted to \code{integer} and truncated towards
 zero. Default: 5.}
-
-\item{startPosFrowardReads}{a \code{vector} of \code{numeric}, the
-start position of all the forward reads.}
 }
 \value{
 a \code{array} of \code{numeric}, the updated values of the
