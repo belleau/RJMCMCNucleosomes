@@ -13,23 +13,23 @@
 namespace space_process {
 
 class NucleoDirichletPA: public NucleoDirichlet {
-	double d_aF, d_aR;
-	double d_avg;
-	public:
-		NucleoDirichletPA(double mu, int df, SegmentSeq const &segSeq, gsl_rng *rng);
-		NucleoDirichletPA(double mu, SegmentSeq const &segSeq, gsl_rng *rng);
-		virtual ~NucleoDirichletPA();
+    double d_aF, d_aR;
+    double d_avg;
+    public:
+        NucleoDirichletPA(double mu, int df, SegmentSeq const &segSeq, gsl_rng *rng);
+        NucleoDirichletPA(double mu, SegmentSeq const &segSeq, gsl_rng *rng);
+        virtual ~NucleoDirichletPA();
 
-		double aF();
-		void setAF(double aF);
-		double aR();
-		void setAR(double aR);
+        double aF();
+        void setAF(double aF);
+        double aR();
+        void setAR(double aR);
 
-		void setAvg(double avg);
-		double avg();
+        void setAvg(double avg);
+        double avg();
 
-		double testT();
-		void testFRStart();
+        double testT();
+        void testFRStart();
 
 };
 
