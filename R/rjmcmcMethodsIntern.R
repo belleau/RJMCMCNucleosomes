@@ -652,7 +652,7 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #' The function uses the Bioconductor \code{package} \code{consensusSeeker} to
 #' group closely positioned nucleosomes.
 #'
-#' @param startPosFrowardReads a \code{vector} of \code{numeric}, the
+#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
 #' start position of all the forward reads.
 #'
 #' @param startPosReverseReads a \code{vector} of \code{numeric}, the
