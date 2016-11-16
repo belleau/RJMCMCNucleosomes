@@ -623,11 +623,11 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #'              delta=50, maxLength=1200,
 #'              nbrIterations = 1000, lambda = 3, kMax = 30,
 #'              minInterval = 146, maxInterval = 292, minReads = 5,
-#'              vSeed = 10113, saveAsRDS = FALSE)}
+#'              vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)}
 #'
 #'
 #' @author Pascal Belleau, Astrid Deschenes
-#' @importFrom parallel mclapply
+#' @importFrom BiocParallel bplapply SnowParam
 #' @importFrom GenomicRanges strand
 #' @export
 rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
@@ -664,12 +664,13 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
 
     nbSeg <- length(seg)
 
-    a <- mclapply(1:nbSeg, FUN = runCHR, seg, niter = nbrIterations,
+    param <- SnowParam(workers = nbCores, stop.on.error = TRUE)
+
+    a <- bplapply(1:nbSeg, FUN = runCHR, seg, niter = nbrIterations,
                     kmax = kMax, lambda = lambda, ecartmin = minInterval,
                     ecartmax = maxInterval, minReads = minReads,
                     adaptNbrIterations = adaptIterationsToReads,
-                    vSeed = vSeed, saveAsRDS = saveAsRDS, mc.cores = nbCores,
-                    mc.preschedule = FALSE)
+                    vSeed = vSeed, saveAsRDS = saveAsRDS, BPPARAM = param)
 
     results <- mergeAllRDSFilesFromDirectory(dirResults)
 
