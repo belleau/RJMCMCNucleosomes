@@ -3,8 +3,8 @@
 \docType{data}
 \name{RJMCMC_result}
 \alias{RJMCMC_result}
-\title{Nucleosomes obtained by running RJMCMC function
-(for demo purpose).}
+\title{Nucleosomes obtained by running RJMCMC function using reads
+from reads_demo_02 dataset (for demo purpose).}
 \format{A \code{list} of \code{class} "rjmcmcNucleosomes" containing:
 \itemize{
 \item \code{call} the matched call.
@@ -48,9 +48,12 @@ data(reads_demo_02)
 ## Results before post-treatment
 RJMCMC_result$mu
 
+forward <- start(reads_demo_02[strand(reads_demo_02) == "+"])
+reverse <- end(reads_demo_02[strand(reads_demo_02) == "-"])
+
 ## Post-treatment function which merged closely positioned nucleosomes
-postResult <- postTreatment(startPosForwardReads = reads_demo_02$readsForward,
-    startPosReverseReads = reads_demo_02$readsReverse, extendingSize = 60,
+postResult <- postTreatment(startPosForwardReads = forward,
+    startPosReverseReads = reverse, extendingSize = 60,
     chrLength = 100000, resultRJMCMC = RJMCMC_result)
 
 ## Results after post-treatment

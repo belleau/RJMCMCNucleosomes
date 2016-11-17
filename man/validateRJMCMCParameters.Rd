@@ -5,17 +5,15 @@
 \title{Parameters validation for the \code{\link{rjmcmc}}
 function}
 \usage{
-validateRJMCMCParameters(startPosForwardReads, startPosReverseReads,
-  nbrIterations, kMax, lambda, minInterval, maxInterval, minReads,
-  adaptIterationsToReads, vSeed)
+validateRJMCMCParameters(forwardandReverseReads, nbrIterations, kMax, lambda,
+  minInterval, maxInterval, minReads, adaptIterationsToReads, vSeed)
 }
 \arguments{
-\item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
-start position of all the forward reads.}
-
-\item{startPosReverseReads}{a \code{vector} of positive \code{integer}, the
-positions of all the reverse reads. Beware that the start position of
-a reverse read is always higher that the end positition.}
+\item{forwardandReverseReads}{a \code{GRanges} containing all forward
+and reverse reads.The start positions of both reads are going to be used
+for the analysis. Beware that the start position of
+a reverse read is always higher that the end positition. The \code{GRanges}
+should at least contain one read.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of
@@ -57,16 +55,19 @@ Validation of all parameters needed by the public
 }
 \examples{
 
+reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+    ranges = IRanges(101:110, end = 111:120, names = head(letters, 10)),
+    strand = Rle(strand(c("-", "+", "-", "+", "-")), c(1, 2, 2, 3, 2)))
+
 ## The function returns 0 when all paramaters are valid
-RJMCMCNucleosomes:::validateRJMCMCParameters(startPosForwardReads = c(72400,
-72431, 72428, 72429, 72426), startPosReverseReads = c(72520, 72523, 72521,
-72533, 72511), nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1,
+RJMCMCNucleosomes:::validateRJMCMCParameters(forwardandReverseReads = reads,
+nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1,
 minInterval = 100, maxInterval = 200, adaptIterationsToReads = TRUE,
 vSeed = 100)
 
 ## The function raises an error when at least one paramater is not valid
-\dontrun{RJMCMCNucleosomes:::validateRJMCMCParameters(startPosForwardReads =
-c(72400, 72431, 72428, 72429, 72426), startPosReverseReads = NA,
+\dontrun{RJMCMCNucleosomes:::validateRJMCMCParameters(
+forwardandReverseReads = NA,
 nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
 maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 

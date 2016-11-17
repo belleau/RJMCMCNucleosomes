@@ -24,7 +24,7 @@ file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 data_002 <- readRDS(file_002)
 
 data(RJMCMC_result)
-data(reads_demo)
+data(reads_demo_01)
 data(reads_demo_02)
 data(syntheticNucleosomeReads)
 
@@ -250,11 +250,13 @@ test.validatePrepMergeParameters_all_valid <- function() {
 
 ## Test the result when nbrIterations is NA
 test.validateRJMCMCParameters_nbrIterations_NA <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                    ranges = IRanges(101:110, end = 111:120,
+                                        names = head(letters, 10)),
+                    strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                        c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                    72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                    72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = NA,
         kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -268,11 +270,13 @@ test.validateRJMCMCParameters_nbrIterations_NA <- function() {
 
 ## Test the result when nbrIterations is zero
 test.validateRJMCMCParameters_nbrIterations_zero <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 0,
         kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -286,11 +290,13 @@ test.validateRJMCMCParameters_nbrIterations_zero <- function() {
 
 ## Test the result when nbrIterations is negative
 test.validateRJMCMCParameters_nbrIterations_negative <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = -1,
         kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -304,11 +310,13 @@ test.validateRJMCMCParameters_nbrIterations_negative <- function() {
 
 ## Test the result when kMax is NA
 test.validateRJMCMCParameters_kMax_NA <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = NA, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -322,11 +330,13 @@ test.validateRJMCMCParameters_kMax_NA <- function() {
 
 ## Test the result when kMax is zero
 test.validateRJMCMCParameters_kMax_zero <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters (
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 0, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -340,11 +350,13 @@ test.validateRJMCMCParameters_kMax_zero <- function() {
 
 ## Test the result when kMax is negative
 test.validateRJMCMCParameters_kMax_negative <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters (
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = -1, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -358,11 +370,13 @@ test.validateRJMCMCParameters_kMax_negative <- function() {
 
 ## Test the result when minReads is NA
 test.validateRJMCMCParameters_minReads_NA <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = NA, minInterval = 146,
         maxInterval = 292,
@@ -376,11 +390,13 @@ test.validateRJMCMCParameters_minReads_NA <- function() {
 
 ## Test the result when minReads is zero
 test.validateRJMCMCParameters_minReads_zero <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 0, minInterval = 146,
         maxInterval = 292,
@@ -394,11 +410,13 @@ test.validateRJMCMCParameters_minReads_zero <- function() {
 
 ## Test the result when minReads is negative
 test.validateRJMCMCParameters_minReads_negative <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 3, lambda = 1, minReads = -1, minInterval = 146,
         maxInterval = 292,
@@ -412,11 +430,13 @@ test.validateRJMCMCParameters_minReads_negative <- function() {
 
 ## Test the result when lambda is NA
 test.validateRJMCMCParameters_lambda_NA <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 10, lambda = NA, minReads = 2, minInterval = 146,
         maxInterval = 292,
@@ -430,11 +450,13 @@ test.validateRJMCMCParameters_lambda_NA <- function() {
 
 ## Test the result when lambda is zero
 test.validateRJMCMCParameters_lambda_zero <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 10, lambda = 0, minReads = 3, minInterval = 146,
         maxInterval = 292,
@@ -448,11 +470,13 @@ test.validateRJMCMCParameters_lambda_zero <- function() {
 
 ## Test the result when lambda is negative
 test.validateRJMCMCParameters_lambda_negative <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 10, lambda = -1, minReads = 1, minInterval = 146,
         maxInterval = 292,
@@ -464,85 +488,46 @@ test.validateRJMCMCParameters_lambda_negative <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when startPosForwardReads is NA
-test.validateRJMCMCParameters_startPosForwardReads_NA <- function() {
+## Test the result when forwardandReverseReads is NA
+test.validateRJMCMCParameters_forwardandReverseReads_NA <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = NA,
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = NA,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
-    exp <- paste0("startPosForwardReads must be a non-empty vector of ",
-                  "numeric values.")
-    message <- paste0(" test.validateParameters_startPosForwardReads_NA() ",
-                      "- NA value for startPosForwardReads did not  ",
+    exp <- paste0("forwardandReverseReads must be a GRanges")
+    message <- paste0(" test.validateRJMCMCParameters_forwardandReverseReads_NA() ",
+                      "- NA value for forwardandReverseReads did not  ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when startPosForwardReads is empty array
-test.validateRJMCMCParameters_startPosForwardReads_empty <- function() {
+## Test the result when forwardandReverseReads is empty
+test.validateRJMCMCParameters_forwardandReverseReads_empty <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = GRanges(),
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
-        maxInterval = 292,
+        maxInterval = 292, vSeed = -1,
         adaptIterationsToReads = FALSE), error=conditionMessage)
-    exp <- paste0("startPosForwardReads must be a non-empty vector of ",
-                  "numeric values.")
-    message <- paste0(" test.validateParameters_startPosForwardReads_empty() ",
-                        "- Empty array for startPosForwardReads did not  ",
+    exp <- paste0("forwardandReverseReads must be a non-empty GRanges")
+    message <- paste0(" test.validateRJMCMCParameters_forwardandReverseReads_empty() ",
+                        "- Empty GRanges for forwardandReverseReads did not  ",
                         "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when startPosReverseReads is NA
-test.validateRJMCMCParameters_startPosReverseReads_NA <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = NA,
-        nbrIterations = 2,
-        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
-        maxInterval = 292,
-        adaptIterationsToReads = FALSE), error=conditionMessage)
-    exp <- paste0("startPosReverseReads must be a non-empty vector of ",
-                  "numeric values.")
-    message <- paste0(" test.validateParameters_startPosReverseReads_NA() ",
-                        "- NA value for startPosReverseReads did not  ",
-                        "generated expected message.")
-    checkEquals(obs, exp, msg = message)
-}
-
-## Test the result when startPosReverseReads is empty array
-test.validateRJMCMCParameters_startPosReverseReads_empty_array <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(),
-        nbrIterations = 2,
-        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
-        maxInterval = 292,
-        adaptIterationsToReads = FALSE), error=conditionMessage)
-    exp <- paste0("startPosReverseReads must be a non-empty vector of ",
-                  "numeric values.")
-    message <- paste0(" test.validateParameters_startPosReverseReads_empty_array() ",
-                        "- Empty array for startPosReverseReads did not  ",
-                        "generated expected message.")
-    checkEquals(obs, exp, msg = message)
-}
 
 ## Test the result when adaptIterationsToReads is string
 test.validateRJMCMCParameters_adaptIterationsToReads_string <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
@@ -556,11 +541,13 @@ test.validateRJMCMCParameters_adaptIterationsToReads_string <- function() {
 
 ## Test the result when adaptIterationsToReads is number
 test.validateRJMCMCParameters_adaptIterationsToReads_number <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
@@ -574,11 +561,13 @@ test.validateRJMCMCParameters_adaptIterationsToReads_number <- function() {
 
 ## Test the result when vSeed is not a number
 test.validateRJMCMCParameters_vSeed_number <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
@@ -592,11 +581,13 @@ test.validateRJMCMCParameters_vSeed_number <- function() {
 
 ## Test the result when all parameters are valid
 test.validateRJMCMCParameters_all_valid <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
     obs <- RJMCMCNucleosomes:::validateRJMCMCParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
@@ -1028,27 +1019,17 @@ test.validateSegmentationParameters_all_valid <- function() {
 
 ## Test the result of postMerge() function
 test.postMerge_good_01 <- function() {
-    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo_02$readsForward,
-                                startPosReverseReads = reads_demo_02$readsReverse,
+
+    forward <- start(reads_demo_02[strand(reads_demo_02) == "+"])
+    reverse <- end(reads_demo_02[strand(reads_demo_02) == "-"])
+
+    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = forward,
+                                startPosReverseReads = reverse,
                                 resultRJMCMC = RJMCMC_result,
                                 extendingSize = 10, chrLength = 80000)
-    exp <- c(18747.497431393061561, 18891.529184734645241,
-                19447.663942274604779, 19554.286613321939512)
+    exp <- c(10076.947481311099182, 10241.462264150943156,
+                10676.973012005168130)
     message <- paste0(" test.postMerge_good_01() ",
-                      "- postMerge() did not generated expected message.")
-    checkEquals(obs, exp, msg = message)
-}
-
-
-## Test the result of postMerge() function
-test.postMerge_good_NULL_returned <- function() {
-    ## Reads are not located where the nucleosomes are
-    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo$readsForward,
-                              startPosReverseReads = reads_demo$readsReverse,
-                              resultRJMCMC = RJMCMC_result,
-                              extendingSize = 100, chrLength = 80000)
-    exp <- NULL
-    message <- paste0(" test.postMerge_good_NULL_returned() ",
                       "- postMerge() did not generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -1058,9 +1039,12 @@ test.postMerge_mu_NA_returned <- function() {
 
     testRJMCMC <- RJMCMC_result
     testRJMCMC$mu <- NA
+    forward <- start(reads_demo_01[strand(reads_demo_01) == "+"])
+    reverse <- end(reads_demo_01[strand(reads_demo_01) == "-"])
+
     ## Reads are not located where the nucleosomes are
-    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo$readsForward,
-                                        startPosReverseReads = reads_demo$readsReverse,
+    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = forward,
+                                        startPosReverseReads = reverse,
                                         resultRJMCMC = testRJMCMC,
                                         extendingSize = 100, chrLength = 80000)
     exp <- NULL
@@ -1074,9 +1058,12 @@ test.postMerge_mu_empty_returned <- function() {
 
     testRJMCMC <- RJMCMC_result
     testRJMCMC$mu <- c()
+    forward <- start(reads_demo_01[strand(reads_demo_01) == "+"])
+    reverse <- end(reads_demo_01[strand(reads_demo_01) == "-"])
+
     ## Reads are not located where the nucleosomes are
-    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = reads_demo$readsForward,
-                                        startPosReverseReads = reads_demo$readsReverse,
+    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = forward,
+                                        startPosReverseReads = reverse,
                                         resultRJMCMC = testRJMCMC,
                                         extendingSize = 100, chrLength = 80000)
     exp <- NULL

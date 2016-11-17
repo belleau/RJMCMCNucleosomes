@@ -75,12 +75,15 @@ mapping function that is implemented in C++.
 }
 \examples{
 
-data(reads_demo)
+data(reads_demo_01)
+
+forward <- start(reads_demo_01[strand(reads_demo_01) == "+"])
+reverse <- end(reads_demo_01[strand(reads_demo_01) == "-"])
 
 ## Run nucleosome positioning
 result <- RJMCMCNucleosomes:::rjmcmcNucleo(
-            startPosForwardReads = reads_demo$readsForward,
-            startPosReverseReads = reads_demo$readsReverse,
+            startPosForwardReads = forward,
+            startPosReverseReads = reverse,
             nbrIterations = 1000, lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 292, minReads = 5,
             adaptIterationsToReads = TRUE, vSeed = -1)

@@ -41,7 +41,10 @@ Validation of all parameters needed by the public
 \examples{
 
 ## Load dataset containing forward and reverse reads
-data(reads_demo)
+data(reads_demo_01)
+
+forward <- start(reads_demo_01[strand(reads_demo_01) == "+"])
+reverse <- end(reads_demo_01[strand(reads_demo_01) == "-"])
 
 ## Load dataset containing nucleosome information
 file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
@@ -50,7 +53,7 @@ nucleosome_info <- readRDS(file_002)
 
 ## The function returns 0 when all parameters are valid
 RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads =
-reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
+forward, startPosReverseReads = reverse,
 resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 
 ## The function raises an error when at least one paramater is not valid

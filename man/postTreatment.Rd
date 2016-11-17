@@ -45,21 +45,23 @@ Beware that each chromosome must be treated separatly.
 \examples{
 
 ## Loading dataset
-data(reads_demo)
+data(reads_demo_02)
 
 ## Nucleosome positioning, running both merge and split functions
-result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-            startPosReverseReads = reads_demo$readsReverse,
+result <- rjmcmc(forwardandReverseReads = reads_demo_02,
             nbrIterations = 1000, lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
 
 ## Before post-treatment
 result
 
+forward <- start(reads_demo_02[strand(reads_demo_02) == "+"])
+reverse <- end(reads_demo_02[strand(reads_demo_02) == "-"])
+
 ## Post-treatment function which merged closely positioned nucleosomes
-postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-            startPosReverseReads = reads_demo$readsReverse,
-            result, 74, 73500)
+postResult <- postTreatment(startPosForwardReads = forward,
+            startPosReverseReads = reverse,
+            result, 100, 73500)
 
 ## After post-treatment
 postResult

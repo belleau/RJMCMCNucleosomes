@@ -166,15 +166,12 @@ of iterations. On real data, the number of iterations should be higher
 (easily 1000000 iterations).
 
 ```{r runRJMCMC01 , warning=FALSE, collapse=TRUE} 
-## Extract forward and reverse reads associated to the first segment
+## Extract the first segment 
 segment01 <- sampleSegmented[[1]]
-readsForward <- start(segment01[strand(segment01) == "+"])
-readsReverse <- end(segment01[strand(segment01) == "-"])
 
 ## Run RJMCMC analysis
 ## A higher number of iterations is recommanded for real analysis
-resultSegment01 <- rjmcmc(startPosForwardReads = readsForward,
-                            startPosReverseReads = readsReverse,
+resultSegment01 <- rjmcmc(forwardandReverseReads  = segment01,
                             nbrIterations = 100000, lambda = 3, kMax = 30,
                             minInterval = 100, maxInterval = 200, minReads = 5,
                             vSeed = 1921)
