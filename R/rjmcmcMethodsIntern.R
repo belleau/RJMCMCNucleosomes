@@ -367,12 +367,11 @@ validateDirectoryParameters <- function(directory) {
 #' @description Validation of all parameters needed by the public
 #' \code{\link{postMerge}} function.
 #'
-#' @param startPosForwardReads a \code{vector} of positive \code{integer}, the
-#' start position of all the forward reads.
-#'
-#' @param startPosReverseReads a \code{vector} of positive \code{integer}, the
-#' positions of all the reverse reads. Beware that the start position of
-#' a reverse read is always higher that the end position.
+#' @param forwardandReverseReads a \code{GRanges} containing all forward
+#' and reverse reads.The start positions of both reads are going to be used
+#' for the analysis. Beware that the start position of
+#' a reverse read is always higher that the end positition. The \code{GRanges}
+#' should at least contain one read.
 #'
 #' @param resultRJMCMC an object of \code{class}
 #' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge" that contain information
@@ -397,23 +396,19 @@ validateDirectoryParameters <- function(directory) {
 #' ## Load dataset containing forward and reverse reads
 #' data(reads_demo_01)
 #'
-#' forward <- start(reads_demo_01[strand(reads_demo_01) == "+"])
-#' reverse <- end(reads_demo_01[strand(reads_demo_01) == "-"])
-#'
 #' ## Load dataset containing nucleosome information
 #' file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 #' pattern = "newSeg_2.rds", full.names = TRUE)
 #' nucleosome_info <- readRDS(file_002)
 #'
 #' ## The function returns 0 when all parameters are valid
-#' RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads =
-#' forward, startPosReverseReads = reverse,
+#' RJMCMCNucleosomes:::validatePrepMergeParameters(forwardandReverseReads =
+#' reads_demo_01,
 #' resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 #'
 #' ## The function raises an error when at least one paramater is not valid
 #' \dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(
-#' startPosForwardReads = c(72400, 72431, 72428, 72429, 72426),
-#' startPosReverseReads = c(72522, 72531, 72528, 72559, 72546),
+#' forwardandReverseReads = c(72400, 72431, 72428, 72429, 72426),
 #' resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 #'
 #' @author Astrid Deschenes
@@ -421,27 +416,18 @@ validateDirectoryParameters <- function(directory) {
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 #'
-validatePrepMergeParameters <- function(startPosForwardReads,
-                                            startPosReverseReads,
+validatePrepMergeParameters <- function(forwardandReverseReads,
                                             resultRJMCMC, extendingSize,
                                             chrLength) {
 
-    ## Validate that the startPosForwardReads has at least one read
-    ## and that the values are integer
-    if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads)
-        || length(startPosForwardReads) < 1)
-    {
-        stop(paste0("startPosForwardReads must be a non-empty vector of ",
-                    "numeric values."))
+    ## Validate that the forwardandReverseReads is a GRanges
+    if (!(class(forwardandReverseReads) == "GRanges" )) {
+        stop(paste0("forwardandReverseReads must be a GRanges"))
     }
 
-    ## Validate that the startPosReverseReads has at least one read
-    ## and that the values are integer
-    if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads)
-        || length(startPosReverseReads) < 1)
-    {
-        stop(paste0("startPosReverseReads must be a non-empty vector of ",
-                    "numeric values."))
+    ## Validate that the forwardandReverseReads is not empty
+    if (length(forwardandReverseReads) == 0 ) {
+        stop(paste0("forwardandReverseReads must be a non-empty GRanges"))
     }
 
     ## Validate the resultRJMCMC parameter
@@ -656,12 +642,11 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #' The function uses the Bioconductor \code{package} \code{consensusSeeker} to
 #' group closely positioned nucleosomes.
 #'
-#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
-#' start position of all the forward reads.
-#'
-#' @param startPosReverseReads a \code{vector} of \code{numeric}, the
-#' start position of all the reverse reads. Beware that the start position of
-#' a reverse read is always higher that the end positition.
+#' @param forwardandReverseReads a \code{GRanges} containing all forward
+#' and reverse reads.The start positions of both reads are going to be used
+#' for the analysis. Beware that the start position of
+#' a reverse read is always higher that the end positition. The \code{GRanges}
+#' should at least contain one read.
 #'
 #' @param resultRJMCMC an object of class 'rjmcmcNucleosomes' or
 #' 'rjmcmcNucleosomesMerge' containing informations about nucleosomes.
@@ -697,9 +682,8 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #' RJMCMC_result$mu
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- RJMCMCNucleosomes:::postMerge(startPosForwardReads =
-#' reads_demo_02$readsForward,
-#' startPosReverseReads = reads_demo_02$readsReverse,
+#' postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads =
+#' reads_demo_02,
 #' resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 #'
 #' ## Results after post-treatment
@@ -714,13 +698,15 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #' @importFrom BiocGenerics sapply
 #' @keywords internal
 #'
-postMerge <- function(startPosForwardReads, startPosReverseReads,
+postMerge <- function(forwardandReverseReads,
                         resultRJMCMC, extendingSize, chrLength, minReads = 5)
 {
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
-    segReads$yF <- startPosForwardReads
-    segReads$yR <- startPosReverseReads
+    segReads$yF <- start(forwardandReverseReads[strand(forwardandReverseReads)
+                                        == "+" ])
+    segReads$yR <- end(forwardandReverseReads[strand(forwardandReverseReads)
+                                                == "-" ])
 
     ## Prepare Seqinfo object using chromosome length
     seqinfo <- Seqinfo(c("chrI"), c(chrLength), FALSE, "mock1")

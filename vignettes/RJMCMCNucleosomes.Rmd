@@ -228,20 +228,16 @@ value could cause the possible merge of true nucleosomes.
 
 ```{r postProcess01, collapse=TRUE, message=FALSE}
 ## Split reads from the initial sample data into forward and reverse subsets
-allReadsForward <- subset(sample$dataIP, strand == "+")
-allReadsReverse <- subset(sample$dataIP, strand == "-")
+reads <- GRanges(sample$dataIP)
 
 ## Number of nucleosomes before the post-treatment
 resultsAllMerged$k
 
 ## Use the post-treatment function
-resultsPostTreatment <- postTreatment(startPosForwardReads =  
-                                allReadsForward$start,
-                                startPosReverseReads = allReadsReverse$end, 
-                                resultRJMCMC = resultsAllMerged,
-                                extendingSize = 15,
-                                chrLength = max(allReadsForward$start, 
-                                                    allReadsReverse$start))
+resultsPostTreatment <- postTreatment(forwardandReverseReads = reads,
+                            resultRJMCMC = resultsAllMerged,
+                            extendingSize = 15,
+                            chrLength = max(start(reads), end(reads)) + 1000)
 
 
 ## Number of nucleosomes after the post-treatment

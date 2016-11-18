@@ -32,99 +32,41 @@ data(syntheticNucleosomeReads)
 ## validatePrepMergeParameters() function
 #########################################################
 
-## Test the result when startPosForwardReads is NA
-test.validatePrepMergeParameters_startPosForwardReads_NA <- function() {
+## Test the result when forwardandReverseReads is NA
+test.validatePrepMergeParameters_forwardandReverseReads_NA <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-                        startPosForwardReads = NA,
-                        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                        72429.24, 72426.08),
+                        forwardandReverseReads = NA,
                         resultRJMCMC = data_002, extendingSize = 11,
                         chrLength = 1000000), error=conditionMessage)
-    exp <- paste0("startPosForwardReads must be a non-empty vector of ",
-                    "numeric values.")
-    message <- paste0(" test.validatePrepMergeParameters_startPosForwardReads_NA() ",
-                      "- NA for startPosForwardReads did not  ",
+    exp <- paste0("forwardandReverseReads must be a GRanges")
+    message <- paste0(" test.validatePrepMergeParameters_forwardandReverseReads_NA() ",
+                      "- NA for forwardandReverseReads did not  ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when startPosForwardReads is empty
-test.validatePrepMergeParameters_startPosForwardReads_empty <- function() {
+## Test the result when forwardandReverseReads is empty GRanges
+test.validatePrepMergeParameters_forwardandReverseReads_empty <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = GRanges(),
         resultRJMCMC = data_002, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
-    exp <- paste0("startPosForwardReads must be a non-empty vector of ",
-                  "numeric values.")
-    message <- paste0(" test.validatePrepMergeParameters_startPosForwardReads_empty() ",
-                      "- empty startPosForwardReads did not  ",
+    exp <- paste0("forwardandReverseReads must be a non-empty GRanges")
+    message <- paste0(" test.validatePrepMergeParameters_forwardandReverseReads_empty() ",
+                      "- forwardandReverseReads as empty GRanges did not  ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when startPosForwardReads is not number
-test.validatePrepMergeParameters_startPosForwardReads_not_number <- function() {
+## Test the result when forwardandReverseReads is not GRanges
+test.validatePrepMergeParameters_forwardandReverseReads_not_GRanges <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c("A", "B"),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = c("A", "B"),
         resultRJMCMC = data_002, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
-    exp <- paste0("startPosForwardReads must be a non-empty vector of ",
-                  "numeric values.")
-    message <- paste0(" test.validatePrepMergeParameters_startPosForwardReads_not_number() ",
-                      "- not number startPosForwardReads did not  ",
-                      "generated expected message.")
-    checkEquals(obs, exp, msg = message)
-}
-
-## Test the result when startPosReverseReads is NA
-test.validatePrepMergeParameters_startPosReverseReads_NA <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = NA,
-        resultRJMCMC = data_002, extendingSize = 11,
-        chrLength = 1000000), error=conditionMessage)
-    exp <- paste0("startPosReverseReads must be a non-empty vector of ",
-                  "numeric values.")
-    message <- paste0(" test.validatePrepMergeParameters_startPosReverseReads_NA() ",
-                      "- NA for startPosReverseReads did not  ",
-                      "generated expected message.")
-    checkEquals(obs, exp, msg = message)
-}
-
-## Test the result when startPosReverseReads is empty
-test.validatePrepMergeParameters_startPosReverseReads_empty <- function() {
-    seqinfo <- GenomeInfoDb::Seqinfo(c("chr1"), c(1000000), NA, "mock1")
-    obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(),
-        resultRJMCMC = data_002, extendingSize = 11,
-        chrLength = 1000000), error=conditionMessage)
-    exp <- paste0("startPosReverseReads must be a non-empty vector of ",
-                  "numeric values.")
-    message <- paste0(" test.validatePrepMergeParameters_startPosReverseReads_empty() ",
-                      "- empty startPosReverseReads did not  ",
-                      "generated expected message.")
-    checkEquals(obs, exp, msg = message)
-}
-
-## Test the result when startPosReverseReads is not number
-test.validatePrepMergeParameters_startPosReverseReads_not_number <- function() {
-    obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c("A", "B"),
-        resultRJMCMC = data_002, extendingSize = 11,
-        chrLength = 1000000), error=conditionMessage)
-    exp <- paste0("startPosReverseReads must be a non-empty vector of ",
-                  "numeric values.")
-    message <- paste0(" test.validatePrepMergeParameters_startPosReverseReads_not_number() ",
-                      "- not number startPosReverseReads did not  ",
+    exp <- paste0("forwardandReverseReads must be a GRanges")
+    message <- paste0(" test.validatePrepMergeParameters_forwardandReverseReads_not_GRanges() ",
+                      "- not GRanges forwardandReverseReads did not  ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -132,10 +74,7 @@ test.validatePrepMergeParameters_startPosReverseReads_not_number <- function() {
 ## Test the result when resultRJMCMC is NA
 test.validatePrepMergeParameters_resultRJMCMC_NA <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads_demo_02,
         resultRJMCMC = NA, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("resultRJMCMC must be an object of class",
@@ -149,10 +88,7 @@ test.validatePrepMergeParameters_resultRJMCMC_NA <- function() {
 ## Test the result when resultRJMCMC is a number
 test.validatePrepMergeParameters_resultRJMCMC_number <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads_demo_02,
         resultRJMCMC = 33, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("resultRJMCMC must be an object of class",
@@ -166,10 +102,7 @@ test.validatePrepMergeParameters_resultRJMCMC_number <- function() {
 ## Test the result when nbBase is a string
 test.validatePrepMergeParameters_nbBase_string <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads_demo_02,
         resultRJMCMC = data_002, extendingSize = "ALLO",
         chrLength = 1000000), error=conditionMessage)
     exp <- "extendingSize must be a positive integer or numeric"
@@ -182,10 +115,7 @@ test.validatePrepMergeParameters_nbBase_string <- function() {
 ## Test the result when nbBase is an array
 test.validatePrepMergeParameters_nbBase_array <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads_demo_02,
         resultRJMCMC = data_002, extendingSize = c(10, 11),
         chrLength = 1000000), error=conditionMessage)
     exp <- "extendingSize must be a positive integer or numeric"
@@ -198,10 +128,7 @@ test.validatePrepMergeParameters_nbBase_array <- function() {
 ## Test the result when chrLength is a string
 test.validatePrepMergeParameters_chrLength_string <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads_demo_02,
         resultRJMCMC = data_002, extendingSize = 74,
         chrLength = "5000"), error=conditionMessage)
     exp <- "chrLength must be a positive integer or numeric"
@@ -214,10 +141,7 @@ test.validatePrepMergeParameters_chrLength_string <- function() {
 ## Test the result when chrLength is an array
 test.validatePrepMergeParameters_chrLength_array <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads_demo_02,
         resultRJMCMC = data_002, extendingSize = 74,
         chrLength = c(100, 200)), error=conditionMessage)
     exp <- "chrLength must be a positive integer or numeric"
@@ -230,10 +154,7 @@ test.validatePrepMergeParameters_chrLength_array <- function() {
 ## Test the result when all parameters are valid
 test.validatePrepMergeParameters_all_valid <- function() {
     obs <- RJMCMCNucleosomes:::validatePrepMergeParameters(
-        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
-        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                 72429.24, 72426.08),
+        forwardandReverseReads = reads_demo_02,
         resultRJMCMC = data_002, extendingSize = 74,
         chrLength = 200000)
     exp <- 0
@@ -1020,11 +941,7 @@ test.validateSegmentationParameters_all_valid <- function() {
 ## Test the result of postMerge() function
 test.postMerge_good_01 <- function() {
 
-    forward <- start(reads_demo_02[strand(reads_demo_02) == "+"])
-    reverse <- end(reads_demo_02[strand(reads_demo_02) == "-"])
-
-    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = forward,
-                                startPosReverseReads = reverse,
+    obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_02,
                                 resultRJMCMC = RJMCMC_result,
                                 extendingSize = 10, chrLength = 80000)
     exp <- c(10076.947481311099182, 10241.462264150943156,
@@ -1039,12 +956,9 @@ test.postMerge_mu_NA_returned <- function() {
 
     testRJMCMC <- RJMCMC_result
     testRJMCMC$mu <- NA
-    forward <- start(reads_demo_01[strand(reads_demo_01) == "+"])
-    reverse <- end(reads_demo_01[strand(reads_demo_01) == "-"])
 
     ## Reads are not located where the nucleosomes are
-    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = forward,
-                                        startPosReverseReads = reverse,
+    obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_01,
                                         resultRJMCMC = testRJMCMC,
                                         extendingSize = 100, chrLength = 80000)
     exp <- NULL
@@ -1058,12 +972,9 @@ test.postMerge_mu_empty_returned <- function() {
 
     testRJMCMC <- RJMCMC_result
     testRJMCMC$mu <- c()
-    forward <- start(reads_demo_01[strand(reads_demo_01) == "+"])
-    reverse <- end(reads_demo_01[strand(reads_demo_01) == "-"])
 
     ## Reads are not located where the nucleosomes are
-    obs <- RJMCMCNucleosomes:::postMerge(startPosForwardReads = forward,
-                                        startPosReverseReads = reverse,
+    obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_01,
                                         resultRJMCMC = testRJMCMC,
                                         extendingSize = 100, chrLength = 80000)
     exp <- NULL

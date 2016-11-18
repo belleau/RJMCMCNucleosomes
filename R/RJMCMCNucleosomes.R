@@ -202,9 +202,8 @@ NULL
 #' reverse <- end(reads_demo_02[strand(reads_demo_02) == "-"])
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- postTreatment(startPosForwardReads = forward,
-#'     startPosReverseReads = reverse, extendingSize = 60,
-#'     chrLength = 100000, resultRJMCMC = RJMCMC_result)
+#' postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
+#'     extendingSize = 60, chrLength = 100000, resultRJMCMC = RJMCMC_result)
 #'
 #' ## Results after post-treatment
 #' postResult

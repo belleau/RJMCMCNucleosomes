@@ -269,12 +269,8 @@ mergeRDSFiles <- function(RDSFiles) {
 #' to rectify the over splitting and provide a more conservative approach.
 #' Beware that each chromosome must be treated separatly.
 #'
-#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
-#' start position of all the forward reads.
-#'
-#' @param startPosReverseReads a \code{vector} of \code{numeric}, the
-#' start position of all the reverse reads. Beware that the start position of
-#' a reverse read is always higher that the end positition.
+#' @param forwardandReverseReads a \code{GRanges} containing forward and
+#' reverse reads. The \code{GRanges} should contain at least one read.
 #'
 #' @param resultRJMCMC an object of \code{class}
 #' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge", the information
@@ -309,12 +305,8 @@ mergeRDSFiles <- function(RDSFiles) {
 #' ## Before post-treatment
 #' result
 #'
-#' forward <- start(reads_demo_02[strand(reads_demo_02) == "+"])
-#' reverse <- end(reads_demo_02[strand(reads_demo_02) == "-"])
-#'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- postTreatment(startPosForwardReads = forward,
-#'             startPosReverseReads = reverse,
+#' postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
 #'             result, 100, 73500)
 #'
 #' ## After post-treatment
@@ -322,15 +314,15 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
-postTreatment <- function(startPosForwardReads, startPosReverseReads,
+postTreatment <- function(forwardandReverseReads,
                             resultRJMCMC, extendingSize = 74L, chrLength) {
 
     ## Validate parameters
-    validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,
+    validatePrepMergeParameters(forwardandReverseReads,
                                         resultRJMCMC, extendingSize, chrLength)
 
     ## Run post merging function and return results
-    return(postMerge(startPosForwardReads, startPosReverseReads,
+    return(postMerge(forwardandReverseReads,
                 resultRJMCMC, extendingSize, chrLength))
 }
 
@@ -524,7 +516,8 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #' \code{GRanges} segments that can be run by the
 #' \code{rjmcmc} function. All those steps are done automatically.
 #'
-#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#' @param forwardandReverseReads a \code{GRanges}, the forward and reverse
+#' reads that need to be segmented.
 #'
 #' @param zeta a positive \code{integer} or \code{numeric}, the length
 #' of the nucleosomes. Default: 147.
@@ -609,8 +602,8 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #'     strand = syntheticNucleosomeReads$dataIP$strand)
 #'
 #' ## Run nucleosome detection on the entire sample
-#' \dontrun{result <- rjmcmcCHR(dataIP=sampleGRanges, zeta = 147,
-#'              delta=50, maxLength=1200,
+#' \dontrun{result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges,
+#'              zeta = 147, delta=50, maxLength=1200,
 #'              nbrIterations = 1000, lambda = 3, kMax = 30,
 #'              minInterval = 146, maxInterval = 292, minReads = 5,
 #'              vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)}
@@ -620,7 +613,7 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #' @importFrom BiocParallel bplapply SnowParam
 #' @importFrom GenomicRanges strand
 #' @export
-rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
+rjmcmcCHR <- function(forwardandReverseReads, zeta = 147, delta, maxLength,
                         nbrIterations, kMax, lambda = 3,
                         minInterval, maxInterval, minReads = 5,
                         adaptIterationsToReads = TRUE, vSeed = -1,
@@ -642,7 +635,7 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
         dir.create(dirDone)
     }
 
-    seg <- segmentation(dataIP, zeta, delta, maxLength)
+    seg <- segmentation(forwardandReverseReads, zeta, delta, maxLength)
 
     if(saveSEG){
         options(digits.secs = 2)
@@ -664,14 +657,11 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
 
     results <- mergeAllRDSFilesFromDirectory(dirResults)
 
-    allReadsForward <- start(dataIP[strand(dataIP) == "+"])
-    allReadsReverse <- end(dataIP[strand(dataIP) == "-"])
-
-    resultPostTreatement <- postTreatment(startPosForwardReads=allReadsForward,
-                                        startPosReverseReads=allReadsReverse,
-                                        results,
-                                        chrLength=max(allReadsForward,
-                                                            allReadsReverse))
+    resultPostTreatement <- postTreatment(forwardandReverseReads =
+                                                forwardandReverseReads,
+                                results,
+                                chrLength=max(start(forwardandReverseReads),
+                                        end(forwardandReverseReads)) + 1000)
 
     results$muPost <- resultPostTreatement
 

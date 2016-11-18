@@ -257,11 +257,7 @@ test.mergeRDSFiles_good <- function() {
 
 test.postTreatment_good_01 <- function() {
 
-    forward <- start(reads_demo_02[strand(reads_demo_02) == "+"])
-    reverse <- end(reads_demo_02[strand(reads_demo_02) == "-"])
-
-    obs <- postTreatment(startPosForwardReads = forward,
-                              startPosReverseReads = reverse,
+    obs <- postTreatment(forwardandReverseReads  = reads_demo_02,
                               resultRJMCMC = RJMCMC_result,
                               extendingSize = 20,
                               chrLength = 80000)
