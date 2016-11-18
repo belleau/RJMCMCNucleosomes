@@ -432,7 +432,7 @@ test.validateRJMCMCParameters_forwardandReverseReads_empty <- function() {
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292, vSeed = -1,
         adaptIterationsToReads = FALSE), error=conditionMessage)
-    exp <- paste0("forwardandReverseReads must be a non-empty GRanges")
+    exp <- 0
     message <- paste0(" test.validateRJMCMCParameters_forwardandReverseReads_empty() ",
                         "- Empty GRanges for forwardandReverseReads did not  ",
                         "generated expected message.")

@@ -101,22 +101,24 @@ rjmcmc <- function(forwardandReverseReads,
                             adaptIterationsToReads = adaptIterationsToReads,
                             vSeed = vSeed)
 
-    startPosForwardReads <- start(forwardandReverseReads[
+    resultRJMCMC <- NULL
+
+    if (length(forwardandReverseReads) > 0) {
+
+        startPosForwardReads <- start(forwardandReverseReads[
                                         strand(forwardandReverseReads) == "+"])
 
-    startPosReverseReads <- end(forwardandReverseReads[
+        startPosReverseReads <- end(forwardandReverseReads[
                             strand(forwardandReverseReads) == "-"])
 
-    # Find nucleosome positions
-    if(length(startPosForwardReads) > 0 & length(startPosReverseReads) > 0){
-        resultRJMCMC <- rjmcmcNucleo(startPosForwardReads,
+        # Find nucleosome positions
+        if(length(startPosForwardReads) > 0 & length(startPosReverseReads) > 0){
+            resultRJMCMC <- rjmcmcNucleo(startPosForwardReads,
                                         startPosReverseReads,
                                         nbrIterations, kMax, lambda,
                                         minInterval, maxInterval, minReads,
                                         adaptIterationsToReads, vSeed)
-    }
-    else{
-        resultRJMCMC <- NULL
+        }
     }
 
     # Save output in a RDS file
@@ -653,6 +655,7 @@ rjmcmcCHR <- function(forwardandReverseReads, zeta = 147, delta, maxLength,
                     kmax = kMax, lambda = lambda, ecartmin = minInterval,
                     ecartmax = maxInterval, minReads = minReads,
                     adaptNbrIterations = adaptIterationsToReads,
+                    dirOut = dirOut,
                     vSeed = vSeed, saveAsRDS = saveAsRDS, BPPARAM = param)
 
     results <- mergeAllRDSFilesFromDirectory(dirResults)

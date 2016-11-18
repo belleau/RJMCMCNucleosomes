@@ -331,3 +331,39 @@ test.segmentation_good_02  <- function() {
     checkTrue(is(obs[[3]],"GRanges"), ms = message)
 }
 
+
+###########################################################
+## rjmcmcCHR() function
+###########################################################
+
+test.rjmcmcCHR_good_01 <- function() {
+    tryCatch({
+
+            reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
+            obs <- rjmcmcCHR(forwardandReverseReads = reads,
+                        zeta = 147, delta = 50, maxLength = 1200,
+                        dirOut = "rjmcmcCHR_good_01",
+                        nbrIterations = 1000, lambda = 3, kMax = 30,
+                        minInterval = 146, maxInterval = 292, minReads = 5,
+                        vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)
+            message <- paste0(" test.rjmcmcCHR_good_01() ",
+                        "- rjmcmcCHR() did not generated expected result.")
+            exp.k <- 2
+            exp.kPost <- 1
+            exp.mu <- c(1081.739501947609369, 1193.472696571378037)
+            exp.muPost <- c(1187.924603174603135)
+            checkTrue(is.list(obs), ms = message)
+            checkEquals(obs$k, exp.k, ms = message)
+            checkEquals(obs$kPost, exp.kPost, ms = message)
+            checkEquals(obs$mu, exp.mu, ms = message)
+        }, finally = {
+            if (dir.exists("rjmcmcCHR_good_01")) {
+                unlink("rjmcmcCHR_good_01", recursive = TRUE, force = FALSE)
+            }
+        }
+    )
+    ## Double check
+    if (dir.exists("rjmcmcCHR_good_01")) {
+        unlink("rjmcmcCHR_good_01", recursive = TRUE, force = FALSE)
+    }
+}

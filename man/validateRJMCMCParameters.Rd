@@ -12,8 +12,7 @@ validateRJMCMCParameters(forwardandReverseReads, nbrIterations, kMax, lambda,
 \item{forwardandReverseReads}{a \code{GRanges} containing all forward
 and reverse reads.The start positions of both reads are going to be used
 for the analysis. Beware that the start position of
-a reverse read is always higher that the end positition. The \code{GRanges}
-should at least contain one read.}
+a reverse read is always higher that the end positition.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of

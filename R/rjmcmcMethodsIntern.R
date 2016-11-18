@@ -111,8 +111,7 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #' @param forwardandReverseReads a \code{GRanges} containing all forward
 #' and reverse reads.The start positions of both reads are going to be used
 #' for the analysis. Beware that the start position of
-#' a reverse read is always higher that the end positition. The \code{GRanges}
-#' should at least contain one read.
+#' a reverse read is always higher that the end positition.
 #'
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
@@ -176,11 +175,6 @@ validateRJMCMCParameters <- function(forwardandReverseReads,
     ## Validate that the forwardandReverseReads is a GRanges
     if (!(class(forwardandReverseReads) == "GRanges" )) {
         stop(paste0("forwardandReverseReads must be a GRanges"))
-    }
-
-    ## Validate that the forwardandReverseReads is not empty
-    if (length(forwardandReverseReads) == 0 ) {
-        stop(paste0("forwardandReverseReads must be a non-empty GRanges"))
     }
 
     ## Validate the nbrIterations parameter
