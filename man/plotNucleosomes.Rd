@@ -43,27 +43,15 @@ using the same reads.
 }
 \examples{
 
-## Generate a synthetic sample with 10 well-positioned nucleosomes, 2 fuzzy
-## nucleosomes and 2 deleted nucleosomes using a Student distribution
-## with a variance of 10 for the well-positioned nucleosomes,
-## a variance of 20 for the fuzzy nucleosomes
-library(nucleoSim)
-nucleosomeSample <- syntheticNucReadsFromDist(wp.num=10, wp.del=2,
-wp.var=10, fuz.num=2, fuz.var=20, max.cover=100, dist="Student",
-nuc.len=147, len.var=12, read.len=45, lin.len=20, rnd.seed=155, offset=100)
+data(reads_demo_01)
 
-dataIP <-nucleosomeSample$dataIP
-
-forwardReads <- dataIP[dataIP$strand == "+",]$start
-reverseReads <- dataIP[dataIP$strand == "-",]$end
-
-result <- rjmcmc(startPosForwardReads = forwardReads,
-            startPosReverseReads = reverseReads,
+result <- rjmcmc(forwardandReverseReads = reads_demo_01,
             nbrIterations = 4000, lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 292, minReads = 5,
             vSeed = 10213)
 
-reads <-IRanges(start = dataIP$start, end=dataIP$end)
+reads <-IRanges(start = start(reads_demo_01),
+            end = end(reads_demo_01))
 
 ## Create graph using the synthetic map
 plotNucleosomes(nucleosomePositions = result$mu, reads = reads)

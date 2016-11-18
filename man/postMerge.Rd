@@ -6,16 +6,15 @@
 nucleosomes, from the same chromosome,
 identified by the \code{\link{rjmcmc}} function}
 \usage{
-postMerge(startPosForwardReads, startPosReverseReads, resultRJMCMC,
-  extendingSize, chrLength, minReads = 5)
+postMerge(forwardandReverseReads, resultRJMCMC, extendingSize, chrLength,
+  minReads = 5)
 }
 \arguments{
-\item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
-start position of all the forward reads.}
-
-\item{startPosReverseReads}{a \code{vector} of \code{numeric}, the
-start position of all the reverse reads. Beware that the start position of
-a reverse read is always higher that the end positition.}
+\item{forwardandReverseReads}{a \code{GRanges} containing all forward
+and reverse reads.The start positions of both reads are going to be used
+for the analysis. Beware that the start position of
+a reverse read is always higher that the end positition. The \code{GRanges}
+should at least contain one read.}
 
 \item{resultRJMCMC}{an object of class 'rjmcmcNucleosomes' or
 'rjmcmcNucleosomesMerge' containing informations about nucleosomes.}
@@ -59,9 +58,8 @@ data(reads_demo_02)
 RJMCMC_result$mu
 
 ## Post-treatment function which merged closely positioned nucleosomes
-postResult <- RJMCMCNucleosomes:::postMerge(startPosForwardReads =
-reads_demo_02$readsForward,
-startPosReverseReads = reads_demo_02$readsReverse,
+postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads =
+reads_demo_02,
 resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 
 ## Results after post-treatment

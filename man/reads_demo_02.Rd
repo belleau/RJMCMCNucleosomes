@@ -5,28 +5,12 @@
 \alias{reads_demo_02}
 \title{Forward reads and reverse reads in \code{integer} format
 (for demo purpose).}
-\format{A \code{list} containing:
-\itemize{
-    \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
-    the start positions of the forward reads.
-    \item \code{readsReverse} a \code{vector} of non-negative
-    \code{numeric}, the start
-    positions of the reverse reads. Beware that the start position of
-    a reverse read is always higher that the end positition.
-}}
+\format{A \code{GRanges} containing forward and reverse reads.}
 \usage{
 data(reads_demo_02)
 }
 \value{
-A \code{list} containing:
-\itemize{
-    \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
-    the start positions of the forward reads.
-    \item \code{readsReverse} a \code{vector} of non-negative
-    \code{numeric}, the start
-    positions of the reverse reads. Beware that the start position of
-    a reverse read is always higher that the end positition.
-}
+A \code{GRanges} containing forward and reverse reads.
 }
 \description{
 A group of forward and reverse reads that can be used to test the
@@ -38,8 +22,7 @@ A group of forward and reverse reads that can be used to test the
 data(reads_demo_02)
 
 ## Nucleosome positioning
-rjmcmc(startPosForwardReads = reads_demo_02$readsForward,
-            startPosReverseReads = reads_demo_02$readsReverse,
+rjmcmc(forwardandReverseReads = reads_demo_02,
             nbrIterations = 150, lambda = 3, kMax = 30,
             minInterval = 144, maxInterval = 290, minReads = 6)
 

@@ -4,17 +4,13 @@
 \alias{rjmcmc}
 \title{Nucleosome positioning mapping on a segment}
 \usage{
-rjmcmc(startPosForwardReads, startPosReverseReads, nbrIterations, kMax,
-  lambda = 3, minInterval, maxInterval, minReads = 5,
-  adaptIterationsToReads = TRUE, vSeed = -1, saveAsRDS = FALSE)
+rjmcmc(forwardandReverseReads, nbrIterations, kMax, lambda = 3, minInterval,
+  maxInterval, minReads = 5, adaptIterationsToReads = TRUE, vSeed = -1,
+  saveAsRDS = FALSE)
 }
 \arguments{
-\item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
-start position of all the forward reads.}
-
-\item{startPosReverseReads}{a \code{vector} of \code{numeric}, the
-start position of all the reverse reads. Beware that the start position of
-a reverse read is always higher that the end positition.}
+\item{forwardandReverseReads}{a \code{GRanges} containing forward and
+reverse reads.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of
@@ -75,11 +71,10 @@ on segments that are smaller sections of the chromosome.
 \examples{
 
 ## Loading dataset
-data(reads_demo)
+data(reads_demo_01)
 
 ## Nucleosome positioning, running both merge and split functions
-result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-            startPosReverseReads = reads_demo$readsReverse,
+result <- rjmcmc(forwardandReverseReads = reads_demo_01,
             nbrIterations = 1000, lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 292, minReads = 5,
             vSeed = 10113, saveAsRDS = FALSE)

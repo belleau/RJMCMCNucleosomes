@@ -44,54 +44,37 @@
 #' @keywords package
 NULL
 
-#' Forward reads and reverse reads in \code{numeric} format (for demo purpose).
+#' A \code{GRanges} containing forward and reverse reads (for demo purpose).
 #'
-#' A group of forward and reverse reads that can be used to test the
-#' \code{rjmcmc} function.
+#' A group of forward and reverse reads, in a \code{GRanges}, that can be
+#' used to test the \code{rjmcmc} function.
 #'
-#' @name reads_demo
+#' @name reads_demo_01
 #'
 #' @docType data
 #'
-#' @aliases reads_demo
+#' @aliases reads_demo_01
 #'
-#' @format A \code{list} containing:
-#' \itemize{
-#'     \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
-#'     the start positions of the forward reads.
-#'     \item \code{readsReverse} a \code{vector} of non-negative
-#'     \code{numeric}, the start
-#'     positions of the reverse reads. Beware that the start position of
-#'     a reverse read is always higher that the end positition.
-#' }
+#' @format A \code{GRanges} containing forward and reverse reads.
 #'
-#' @return A \code{list} containing:
-#' \itemize{
-#'     \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
-#'     the start positions of the forward reads.
-#'     \item \code{readsReverse} a \code{vector} of non-negative
-#'     \code{numeric}, the start
-#'     positions of the reverse reads. Beware that the start position of
-#'     a reverse read is always higher that the end positition.
-#' }
+#' @return A \code{GRanges} containing forward and reverse reads.
 #'
 #' @seealso
 #' \itemize{
 #'     \item \code{\link{rjmcmc}} {for profiling of nucleosome positions}
 #' }
 #'
-#' @usage data(reads_demo)
+#' @usage data(reads_demo_01)
 #'
 #' @keywords datasets
 #'
 #' @examples
 #'
 #' ## Loading dataset
-#' data(reads_demo)
+#' data(reads_demo_01)
 #'
 #' ## Nucleosome positioning
-#' rjmcmc(startPosForwardReads = reads_demo$readsForward,
-#'             startPosReverseReads = reads_demo$readsReverse,
+#' rjmcmc(forwardandReverseReads = reads_demo_01,
 #'             nbrIterations = 100, lambda = 3, kMax = 30,
 #'             minInterval = 146, maxInterval = 292, minReads = 5)
 #'
@@ -109,25 +92,9 @@ NULL
 #'
 #' @aliases reads_demo_02
 #'
-#' @format A \code{list} containing:
-#' \itemize{
-#'     \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
-#'     the start positions of the forward reads.
-#'     \item \code{readsReverse} a \code{vector} of non-negative
-#'     \code{numeric}, the start
-#'     positions of the reverse reads. Beware that the start position of
-#'     a reverse read is always higher that the end positition.
-#' }
+#' @format A \code{GRanges} containing forward and reverse reads.
 #'
-#' @return A \code{list} containing:
-#' \itemize{
-#'     \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
-#'     the start positions of the forward reads.
-#'     \item \code{readsReverse} a \code{vector} of non-negative
-#'     \code{numeric}, the start
-#'     positions of the reverse reads. Beware that the start position of
-#'     a reverse read is always higher that the end positition.
-#' }
+#' @return A \code{GRanges} containing forward and reverse reads.
 #'
 #' @seealso
 #' \itemize{
@@ -156,15 +123,14 @@ NULL
 #' data(reads_demo_02)
 #'
 #' ## Nucleosome positioning
-#' rjmcmc(startPosForwardReads = reads_demo_02$readsForward,
-#'             startPosReverseReads = reads_demo_02$readsReverse,
+#' rjmcmc(forwardandReverseReads = reads_demo_02,
 #'             nbrIterations = 150, lambda = 3, kMax = 30,
 #'             minInterval = 144, maxInterval = 290, minReads = 6)
 #'
 NULL
 
-#' Nucleosomes obtained by running RJMCMC function
-#' (for demo purpose).
+#' Nucleosomes obtained by running RJMCMC function using reads
+#' from reads_demo_02 dataset (for demo purpose).
 #'
 #' A \code{list} of \code{class}
 #' "rjmcmcNucleosomes" which contains the information about the
@@ -232,10 +198,12 @@ NULL
 #' ## Results before post-treatment
 #' RJMCMC_result$mu
 #'
+#' forward <- start(reads_demo_02[strand(reads_demo_02) == "+"])
+#' reverse <- end(reads_demo_02[strand(reads_demo_02) == "-"])
+#'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- postTreatment(startPosForwardReads = reads_demo_02$readsForward,
-#'     startPosReverseReads = reads_demo_02$readsReverse, extendingSize = 60,
-#'     chrLength = 100000, resultRJMCMC = RJMCMC_result)
+#' postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
+#'     extendingSize = 60, chrLength = 100000, resultRJMCMC = RJMCMC_result)
 #'
 #' ## Results after post-treatment
 #' postResult
