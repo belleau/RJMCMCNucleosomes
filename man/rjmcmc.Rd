@@ -10,7 +10,7 @@ rjmcmc(forwardandReverseReads, nbrIterations, kMax, lambda = 3, minInterval,
 }
 \arguments{
 \item{forwardandReverseReads}{a \code{GRanges} containing forward and
-reverse reads. The \code{GRanges} should contain at least one read.}
+reverse reads.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of

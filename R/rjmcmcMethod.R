@@ -7,7 +7,7 @@
 #' on segments that are smaller sections of the chromosome.
 #'
 #' @param forwardandReverseReads a \code{GRanges} containing forward and
-#' reverse reads. The \code{GRanges} should contain at least one read.
+#' reverse reads.
 #'
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
