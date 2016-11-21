@@ -40,7 +40,7 @@ test.validatePrepMergeParameters_forwardandReverseReads_NA <- function() {
                         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("forwardandReverseReads must be a GRanges")
     message <- paste0(" test.validatePrepMergeParameters_forwardandReverseReads_NA() ",
-                      "- NA for forwardandReverseReads did not  ",
+                      "- NA for forwardandReverseReads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -53,7 +53,7 @@ test.validatePrepMergeParameters_forwardandReverseReads_empty <- function() {
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("forwardandReverseReads must be a non-empty GRanges")
     message <- paste0(" test.validatePrepMergeParameters_forwardandReverseReads_empty() ",
-                      "- forwardandReverseReads as empty GRanges did not  ",
+                      "- forwardandReverseReads as empty GRanges did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -66,7 +66,7 @@ test.validatePrepMergeParameters_forwardandReverseReads_not_GRanges <- function(
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("forwardandReverseReads must be a GRanges")
     message <- paste0(" test.validatePrepMergeParameters_forwardandReverseReads_not_GRanges() ",
-                      "- not GRanges forwardandReverseReads did not  ",
+                      "- not GRanges forwardandReverseReads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -80,7 +80,7 @@ test.validatePrepMergeParameters_resultRJMCMC_NA <- function() {
     exp <- paste0("resultRJMCMC must be an object of class",
                   "\'rjmcmcNucleosomes\' or \'rjmcmcNucleosomesMerge\'.")
     message <- paste0(" test.validatePrepMergeParameters_startPosReverseReads_not_number() ",
-                      "- NA resultRJMCMC did not  ",
+                      "- NA resultRJMCMC did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -94,7 +94,7 @@ test.validatePrepMergeParameters_resultRJMCMC_number <- function() {
     exp <- paste0("resultRJMCMC must be an object of class",
                   "\'rjmcmcNucleosomes\' or \'rjmcmcNucleosomesMerge\'.")
     message <- paste0(" test.validatePrepMergeParameters_resultRJMCMC_number() ",
-                      "- number resultRJMCMC did not  ",
+                      "- number resultRJMCMC did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -107,7 +107,7 @@ test.validatePrepMergeParameters_nbBase_string <- function() {
         chrLength = 1000000), error=conditionMessage)
     exp <- "extendingSize must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_nbBase_number() ",
-                      "- string nbBase did not  ",
+                      "- string nbBase did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -120,7 +120,7 @@ test.validatePrepMergeParameters_nbBase_array <- function() {
         chrLength = 1000000), error=conditionMessage)
     exp <- "extendingSize must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_nbBase_string() ",
-                      "- array nbBase did not  ",
+                      "- array nbBase did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -133,7 +133,7 @@ test.validatePrepMergeParameters_chrLength_string <- function() {
         chrLength = "5000"), error=conditionMessage)
     exp <- "chrLength must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_chrLength_string() ",
-                      "- string chrLength did not  ",
+                      "- string chrLength did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -146,7 +146,7 @@ test.validatePrepMergeParameters_chrLength_array <- function() {
         chrLength = c(100, 200)), error=conditionMessage)
     exp <- "chrLength must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_chrLength_string() ",
-                      "- array chrLength did not  ",
+                      "- array chrLength did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -159,7 +159,7 @@ test.validatePrepMergeParameters_all_valid <- function() {
         chrLength = 200000)
     exp <- 0
     message <- paste0(" test.validatePrepMergeParameters_all_valid() ",
-                      "- All valid parameters did not  ",
+                      "- All valid parameters did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -177,14 +177,14 @@ test.validateRJMCMCParameters_nbrIterations_NA <- function() {
                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                         c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = NULL,
         nbrIterations = NA,
         kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "nbrIterations must be a positive integer or numeric"
     message <- paste0(" test.validateParameters_nbrIterations_NA() ",
-                      "- NA for nbrIterations did not  ",
+                      "- NA for nbrIterations did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -197,14 +197,14 @@ test.validateRJMCMCParameters_nbrIterations_zero <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = NULL,
         nbrIterations = 0,
         kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "nbrIterations must be a positive integer or numeric"
     message <- paste0(" test.validateParameters_nbrIterations_zero() ",
-                      "- Zero for nbrIterations did not  ",
+                      "- Zero for nbrIterations did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -217,14 +217,14 @@ test.validateRJMCMCParameters_nbrIterations_negative <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = -1,
         kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "nbrIterations must be a positive integer or numeric"
     message <- paste0(" test.validateParameters_nbrIterations_zero() ",
-                      "- Negative value for nbrIterations did not  ",
+                      "- Negative value for nbrIterations did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -237,14 +237,14 @@ test.validateRJMCMCParameters_kMax_NA <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = NA, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "kMax must be a positive integer or numeric"
     message <- paste0(" test.validateParameters_kMax_NA() ",
-                      "- NA value for kMax did not  ",
+                      "- NA value for kMax did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -257,14 +257,14 @@ test.validateRJMCMCParameters_kMax_zero <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters (
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 0, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "kMax must be a positive integer or numeric"
     message <- paste0(" test.validateParameters_kMax_zero() ",
-                      "- Zero value for kMax did not  ",
+                      "- Zero value for kMax did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -277,14 +277,14 @@ test.validateRJMCMCParameters_kMax_negative <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters (
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = -1, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "kMax must be a positive integer or numeric"
     message <- paste0(" test.validateParameters_kMax_negative() ",
-                      "- Negative value for kMax did not  ",
+                      "- Negative value for kMax did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -297,14 +297,14 @@ test.validateRJMCMCParameters_minReads_NA <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = NULL,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = NA, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "minReads must be a positive integer or numeric"
     message <- paste0(" test.validateParameters_minReads_NA() ",
-                      "- NA value for minReads did not  ",
+                      "- NA value for minReads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -317,14 +317,14 @@ test.validateRJMCMCParameters_minReads_zero <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 0, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "minReads must be a positive integer or numeric"
     message <- paste0(" test.validateParameters_minReads_zero() ",
-                      "- Zero value for minReads did not  ",
+                      "- Zero value for minReads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -337,14 +337,14 @@ test.validateRJMCMCParameters_minReads_negative <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 3, lambda = 1, minReads = -1, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "minReads must be a positive integer or numeric"
     message <- paste0(" test.validateParameters_minReads_negative() ",
-                      "- Negative value for minReads did not  ",
+                      "- Negative value for minReads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -357,14 +357,14 @@ test.validateRJMCMCParameters_lambda_NA <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = NA, minReads = 2, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "lambda must be a positive numeric"
     message <- paste0(" test.validateParameters_minReads_NA() ",
-                      "- NA value for lambda did not  ",
+                      "- NA value for lambda did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -377,14 +377,14 @@ test.validateRJMCMCParameters_lambda_zero <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = NULL,
         nbrIterations = 2,
         kMax = 10, lambda = 0, minReads = 3, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "lambda must be a positive numeric"
     message <- paste0(" test.validateParameters_minReads_zero() ",
-                      "- Zero value for lambda did not  ",
+                      "- Zero value for lambda did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -397,14 +397,14 @@ test.validateRJMCMCParameters_lambda_negative <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = -1, minReads = 1, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- "lambda must be a positive numeric"
     message <- paste0(" test.validateParameters_minReads_negative() ",
-                      "- Negative value for lambda did not  ",
+                      "- Negative value for lambda did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -419,7 +419,7 @@ test.validateRJMCMCParameters_forwardandReverseReads_NA <- function() {
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- paste0("forwardandReverseReads must be a GRanges")
     message <- paste0(" test.validateRJMCMCParameters_forwardandReverseReads_NA() ",
-                      "- NA value for forwardandReverseReads did not  ",
+                      "- NA value for forwardandReverseReads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -427,18 +427,38 @@ test.validateRJMCMCParameters_forwardandReverseReads_NA <- function() {
 ## Test the result when forwardandReverseReads is empty
 test.validateRJMCMCParameters_forwardandReverseReads_empty <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = GRanges(),
+        forwardandReverseReads = GRanges(), seqName = NULL,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292, vSeed = -1,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- 0
     message <- paste0(" test.validateRJMCMCParameters_forwardandReverseReads_empty() ",
-                        "- Empty GRanges for forwardandReverseReads did not  ",
+                        "- Empty GRanges for forwardandReverseReads did not ",
                         "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
+## Test the result when seqName is NULL with GRanges with multiples chromosomes
+test.validateRJMCMCParameters_seqName_NULL_GRanges_complex <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1", "chr2"), c(8,2)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
+        forwardandReverseReads = reads, seqName = NULL,
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292, vSeed = -1,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- paste0("seqName must be the name of one of the chromosomes ",
+                  "present in the GRanges")
+    message <- paste0(" test.validateRJMCMCParameters_seqName_NULL_GRanges_complex() ",
+                      "- Complex GRanges for forwardandReverseReads ",
+                      "and NULL for seqName did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
 
 ## Test the result when adaptIterationsToReads is string
 test.validateRJMCMCParameters_adaptIterationsToReads_string <- function() {
@@ -448,14 +468,14 @@ test.validateRJMCMCParameters_adaptIterationsToReads_string <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = "allo"), error=conditionMessage)
     exp <- "adaptIterationsToReads must be a logical."
     message <- paste0(" test.validateParameters_adaptIterationsToReads_string() ",
-                        "- String for adaptIterationsToReads did not  ",
+                        "- String for adaptIterationsToReads did not ",
                         "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -468,14 +488,14 @@ test.validateRJMCMCParameters_adaptIterationsToReads_number <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = NULL,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = 33), error=conditionMessage)
     exp <- "adaptIterationsToReads must be a logical."
     message <- paste0(" test.validateParameters_adaptIterationsToReads_number() ",
-                        "- Number value for adaptIterationsToReads did not  ",
+                        "- Number value for adaptIterationsToReads did not ",
                         "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -488,14 +508,14 @@ test.validateRJMCMCParameters_vSeed_number <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE, vSeed = "Allo"), error=conditionMessage)
     exp <- "vSeed must be a numeric value."
     message <- paste0(" test.validateRJMCMCParameters_vSeed_number() ",
-                      "- String value for vSeed did not  ",
+                      "- String value for vSeed did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -508,14 +528,14 @@ test.validateRJMCMCParameters_all_valid <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads,
+        forwardandReverseReads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = TRUE, vSeed = 1002)
     exp <- 0
     message <- paste0(" test.validateParameters_all_valid() ",
-                      "- All valid parameters did not  ",
+                      "- All valid parameters did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -530,7 +550,7 @@ test.validateRDSFilesParameters_RDSFiles_NA <- function() {
         RDSFiles = NA), error=conditionMessage)
     exp <- "RDSFiles must be a list of valid RDS files"
     message <- paste0(" test.validateRDSFilesParameters_RDSFiles_NA() ",
-                        "- NA for RDSFiles did not  ",
+                        "- NA for RDSFiles did not ",
                         "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -541,7 +561,7 @@ test.validateRDSFilesParameters_RDSFiles_empty_array <- function() {
         RDSFiles = c()), error=conditionMessage)
     exp <- "RDSFiles must be a list of valid RDS files"
     message <- paste0(" test.validateRDSFilesParameters_RDSFiles_empty_array() ",
-                        "- Empty array for RDSFiles did not  ",
+                        "- Empty array for RDSFiles did not ",
                         "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -559,7 +579,7 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_NA <- function() {
         error=conditionMessage)
     exp <- "nucleosomePositions can only contain numerical values"
     message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_NA() ",
-                      "- NA for nucleosomePositions did not  ",
+                      "- NA for nucleosomePositions did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -572,7 +592,7 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_empty_vector <- funct
         error=conditionMessage)
     exp <- "nucleosomePositions must be a \'list\' or a \'vector\' of numeric values"
     message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_empty_vector() ",
-                      "- Empty vector for nucleosomePositions did not  ",
+                      "- Empty vector for nucleosomePositions did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -585,7 +605,7 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_not_numerical <- func
         error=conditionMessage)
     exp <- "nucleosomePositions can only contain numerical values"
     message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_not_numerical() ",
-                      "- Not numeric for nucleosomePositions did not  ",
+                      "- Not numeric for nucleosomePositions did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -598,7 +618,7 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical <-
         error=conditionMessage)
     exp <- "nucleosomePositions can only contain numerical values"
     message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical() ",
-                      "- Not list of numeric for nucleosomePositions did not  ",
+                      "- Not list of numeric for nucleosomePositions did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -611,7 +631,7 @@ test.validatePlotNucleosomesParameters_reads_null <- function() {
         error=conditionMessage)
     exp <- "reads must be an object of class \'IRanges\'"
     message <- paste0(" test.validatePlotNucleosomesParameters_reads_null() ",
-                      "- Not list of numeric for reads did not  ",
+                      "- Not list of numeric for reads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -624,7 +644,7 @@ test.validatePlotNucleosomesParameters_reads_not_IRanges <- function() {
         error=conditionMessage)
     exp <- "reads must be an object of class \'IRanges\'"
     message <- paste0(" test.validatePlotNucleosomesParameters_reads_not_IRanges() ",
-                      "- Not IRanges for reads did not  ",
+                      "- Not IRanges for reads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -638,7 +658,7 @@ test.validatePlotNucleosomesParameters_xlab_not_string <- function() {
         error=conditionMessage)
     exp <- "xlab must be a character string"
     message <- paste0(" test.validatePlotNucleosomesParameters_xlab_not_string() ",
-                      "- Not character string for xlab did not  ",
+                      "- Not character string for xlab did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -652,7 +672,7 @@ test.validatePlotNucleosomesParameters_ylab_not_string <- function() {
         error=conditionMessage)
     exp <- "ylab must be a character string"
     message <- paste0(" test.validatePlotNucleosomesParameters_xylab_not_string() ",
-                      "- Not character string for xlab did not  ",
+                      "- Not character string for xlab did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -666,7 +686,7 @@ test.validatePlotNucleosomesParameters_names_not_string <- function() {
         error=conditionMessage)
     exp <- "names must be a vector of one character string"
     message <- paste0(" test.validatePlotNucleosomesParameters_names_not_string() ",
-                      "- Not character string for names did not  ",
+                      "- Not character string for names did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -681,7 +701,7 @@ test.validatePlotNucleosomesParameters_names_not_good_length_01 <- function() {
     exp <- "names must be a vector containing the same number of character string as the number of entries in nucleosomesPositions list"
     message <- paste0(" test.validatePlotNucleosomesParameters_names_not_good_length_01
                       () ",
-                      "- Not good length for names did not  ",
+                      "- Not good length for names did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -695,7 +715,7 @@ test.validatePlotNucleosomesParameters_names_not_good_length_02 <- function() {
         error=conditionMessage)
     exp <- "names must be a vector containing the same number of character string as the number of entries in nucleosomesPositions list"
     message <- paste0(" test.validatePlotNucleosomesParameters_names_not_good_length_02() ",
-                      "- Not good length for names did not  ",
+                      "- Not good length for names did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -709,7 +729,7 @@ test.validatePlotNucleosomesParameters_all_good  <- function() {
         error=conditionMessage)
     exp <- 0
     message <- paste0(" test.validatePlotNucleosomesParameters_all_good() ",
-                      "- All good parameters did not  ",
+                      "- All good parameters did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -726,7 +746,7 @@ test.validateSegmentationParameters_dataIP_NA <- function() {
         error=conditionMessage)
     exp <- "dataIP must be \'GRanges\' object."
     message <- paste0(" test.validateSegmentationParameters_dataIP_NA() ",
-                      "- NA for dataIP did not  ",
+                      "- NA for dataIP did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -738,7 +758,7 @@ test.validateSegmentationParameters_dataIP_not_GRanges <- function() {
         error=conditionMessage)
     exp <- "dataIP must be \'GRanges\' object."
     message <- paste0(" test.validateSegmentationParameters_dataIP_not_GRanges() ",
-                      "- Not GRanges for dataIP did not  ",
+                      "- Not GRanges for dataIP did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -757,7 +777,7 @@ test.validateSegmentationParameters_zeta_vector <- function() {
         error=conditionMessage)
     exp <- "zeta must be a positive integer or numeric"
     message <- paste0(" test.validateSegmentationParameters_zeta_vector() ",
-                      "- Vector for zeta did not  ",
+                      "- Vector for zeta did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -776,7 +796,7 @@ test.validateSegmentationParameters_zeta_zero <- function() {
         error=conditionMessage)
     exp <- "zeta must be a positive integer or numeric"
     message <- paste0(" test.validateSegmentationParameters_zeta_zero() ",
-                      "- Zero value for zeta did not  ",
+                      "- Zero value for zeta did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -795,7 +815,7 @@ test.validateSegmentationParameters_zeta_negative <- function() {
         error=conditionMessage)
     exp <- "zeta must be a positive integer or numeric"
     message <- paste0(" test.validateSegmentationParameters_zeta_negative() ",
-                      "- Negative value for zeta did not  ",
+                      "- Negative value for zeta did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -814,7 +834,7 @@ test.validateSegmentationParameters_delta_vector <- function() {
         error=conditionMessage)
     exp <- "delta must be a positive integer or numeric"
     message <- paste0(" test.validateSegmentationParameters_delta_vector() ",
-                      "- Vector for delta did not  ",
+                      "- Vector for delta did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -833,7 +853,7 @@ test.validateSegmentationParameters_delta_zero <- function() {
         error=conditionMessage)
     exp <- "delta must be a positive integer or numeric"
     message <- paste0(" test.validateSegmentationParameters_delta_zero() ",
-                      "- Zero value for delta did not  ",
+                      "- Zero value for delta did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -852,7 +872,7 @@ test.validateSegmentationParameters_delta_negative <- function() {
         error=conditionMessage)
     exp <- "delta must be a positive integer or numeric"
     message <- paste0(" test.validateSegmentationParameters_delta_negative() ",
-                      "- Negative value for delta did not  ",
+                      "- Negative value for delta did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -871,7 +891,7 @@ test.validateSegmentationParameters_maxLength_vector <- function() {
         error=conditionMessage)
     exp <- "maxLength must be a positive integer or numeric"
     message <- paste0(" test.validateSegmentationParameters_maxLength_vector() ",
-                      "- Vector for maxLength did not  ",
+                      "- Vector for maxLength did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -890,7 +910,7 @@ test.validateSegmentationParameters_maxLength_zero <- function() {
         error=conditionMessage)
     exp <- "maxLength must be a positive integer or numeric"
     message <- paste0(" test.validateSegmentationParameters_maxLength_zero() ",
-                      "- Zero value for maxLength did not  ",
+                      "- Zero value for maxLength did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -909,7 +929,7 @@ test.validateSegmentationParameters_maxLength_negative <- function() {
         error=conditionMessage)
     exp <- "maxLength must be a positive integer or numeric"
     message <- paste0(" test.validateSegmentationParameters_maxLength_negative() ",
-                      "- Negative value for maxLength did not  ",
+                      "- Negative value for maxLength did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -928,7 +948,7 @@ test.validateSegmentationParameters_all_valid <- function() {
         error=conditionMessage)
     exp <- 0
     message <- paste0(" test.validateSegmentationParameters_all_valid() ",
-                      "- All valid parameters did not  ",
+                      "- All valid parameters did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }

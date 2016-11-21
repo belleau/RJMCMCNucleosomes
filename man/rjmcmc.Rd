@@ -4,13 +4,18 @@
 \alias{rjmcmc}
 \title{Nucleosome positioning mapping on a segment}
 \usage{
-rjmcmc(forwardandReverseReads, nbrIterations, kMax, lambda = 3, minInterval,
-  maxInterval, minReads = 5, adaptIterationsToReads = TRUE, vSeed = -1,
-  saveAsRDS = FALSE)
+rjmcmc(forwardandReverseReads, seqName = NULL, nbrIterations, kMax,
+  lambda = 3, minInterval, maxInterval, minReads = 5,
+  adaptIterationsToReads = TRUE, vSeed = -1, saveAsRDS = FALSE)
 }
 \arguments{
 \item{forwardandReverseReads}{a \code{GRanges} containing forward and
 reverse reads.}
+
+\item{seqName}{a \code{character} string containing the label,in the
+\code{GRanges} object, of the chromosome, in the \code{GRanges} object,
+to analyse. The \code{NULL} value is accepted when only one seqname is
+present in the \code{GRanges}; the only seqname present will be used.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of
@@ -75,6 +80,7 @@ data(reads_demo_01)
 
 ## Nucleosome positioning, running both merge and split functions
 result <- rjmcmc(forwardandReverseReads = reads_demo_01,
+            seqName = "chr_SYNTHETIC",
             nbrIterations = 1000, lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 292, minReads = 5,
             vSeed = 10113, saveAsRDS = FALSE)

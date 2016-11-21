@@ -113,6 +113,10 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #' for the analysis. Beware that the start position of
 #' a reverse read is always higher that the end positition.
 #'
+#' @param seqName a a \code{character} string containing the label,in the
+#' \code{GRanges} object, of the chromosome, in the \code{GRanges} object,
+#' to analyse.
+#'
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
 #' \code{nbrIterations} will be casted to \code{integer} and truncated towards
@@ -154,27 +158,44 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #'
 #' ## The function returns 0 when all paramaters are valid
 #' RJMCMCNucleosomes:::validateRJMCMCParameters(forwardandReverseReads = reads,
-#' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1,
+#' seqName = "chr1", nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1,
 #' minInterval = 100, maxInterval = 200, adaptIterationsToReads = TRUE,
 #' vSeed = 100)
 #'
 #' ## The function raises an error when at least one paramater is not valid
 #' \dontrun{RJMCMCNucleosomes:::validateRJMCMCParameters(
-#' forwardandReverseReads = NA,
+#' forwardandReverseReads = NA, seqName = "chr1",
 #' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
 #' maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 #'
 #' @author Astrid Deschenes
-#' @importFrom S4Vectors isSingleInteger isSingleNumber
+#' @importFrom S4Vectors isSingleInteger isSingleNumber runValue
 #' @keywords internal
 validateRJMCMCParameters <- function(forwardandReverseReads,
-                                        nbrIterations, kMax, lambda,
+                                        seqName, nbrIterations, kMax, lambda,
                                         minInterval, maxInterval, minReads,
                                         adaptIterationsToReads, vSeed) {
 
     ## Validate that the forwardandReverseReads is a GRanges
     if (!(class(forwardandReverseReads) == "GRanges" )) {
         stop(paste0("forwardandReverseReads must be a GRanges"))
+    }
+
+    if (is.null(seqName) &&
+        (length(runValue(seqnames(forwardandReverseReads))) > 1)) {
+        stop(paste0("seqName must be the name of one of the chromosomes ",
+                "present in the GRanges"))
+    }
+
+    if (!is.null(seqName) && !is.character(seqName)) {
+        stop(paste0("seqName must be a character string corresponding to the
+                    name of one of the chromosomes present in the GRanges"))
+    }
+
+    if (!is.null(seqName) && is.character(seqName) && !(seqName %in%
+                            runValue(seqnames(forwardandReverseReads)))) {
+        stop(paste0("seqName must be a character string corresponding to the
+                    name of one of the chromosomes present in the GRanges"))
     }
 
     ## Validate the nbrIterations parameter
