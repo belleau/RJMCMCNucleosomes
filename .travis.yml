@@ -5,7 +5,7 @@ sudo: required
 r: bioc-release
 
 # Package caching only makes sense for the release versions.
-cache: packages
+# cache: packages
 
 # Packages from Bioconductor needed
 bioc_required: true
