@@ -188,14 +188,14 @@ validateRJMCMCParameters <- function(forwardandReverseReads,
     }
 
     if (!is.null(seqName) && !is.character(seqName)) {
-        stop(paste0("seqName must be a character string corresponding to the
-                    name of one of the chromosomes present in the GRanges"))
+        stop(paste0("seqName must be a character string corresponding to the ",
+                    "name of one of the chromosomes present in the GRanges"))
     }
 
     if (!is.null(seqName) && is.character(seqName) && !(seqName %in%
                             runValue(seqnames(forwardandReverseReads)))) {
-        stop(paste0("seqName must be a character string corresponding to the
-                    name of one of the chromosomes present in the GRanges"))
+        stop(paste0("seqName must be a character string corresponding to the ",
+                    "name of one of the chromosomes present in the GRanges"))
     }
 
     ## Validate the nbrIterations parameter

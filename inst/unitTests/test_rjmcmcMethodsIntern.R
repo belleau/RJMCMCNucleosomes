@@ -460,6 +460,49 @@ test.validateRJMCMCParameters_seqName_NULL_GRanges_complex <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
+## Test the result when seqName not in GRanges
+test.validateRJMCMCParameters_seqName_not_string <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1", "chr2"), c(8,2)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
+        forwardandReverseReads = reads, seqName = 333,
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292, vSeed = -1,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- paste0("seqName must be a character string corresponding to the ",
+                  "name of one of the chromosomes present in the GRanges")
+    message <- paste0(" test.validateRJMCMCParameters_seqName_not_string() ",
+                      "- seqName not a string ",
+                      "did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when seqName not in GRanges
+test.validateRJMCMCParameters_seqName_not_in_GRanges <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1", "chr2"), c(8,2)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
+    obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
+        forwardandReverseReads = reads, seqName = "chr3",
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292, vSeed = -1,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- paste0("seqName must be a character string corresponding to the ",
+                  "name of one of the chromosomes present in the GRanges")
+    message <- paste0(" test.validateRJMCMCParameters_seqName_not_in_GRanges() ",
+                      "- seqName not in GRanges ",
+                      "did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+
 ## Test the result when adaptIterationsToReads is string
 test.validateRJMCMCParameters_adaptIterationsToReads_string <- function() {
     reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
