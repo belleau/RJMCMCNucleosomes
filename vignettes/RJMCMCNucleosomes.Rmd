@@ -11,11 +11,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r style, echo = FALSE, results = 'asis'}
-BiocStyle::markdown()
-library(knitr)
-```
-
 <br />
 **Package**: `r Rpackage("RJMCMCNucleosomes")`<br />
 **Authors**: `r packageDescription("RJMCMCNucleosomes")[["Author"]]`<br />
