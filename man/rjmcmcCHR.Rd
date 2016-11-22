@@ -4,13 +4,14 @@
 \alias{rjmcmcCHR}
 \title{Nucleosome positioning mapping on a large segment, up to a chromosome}
 \usage{
-rjmcmcCHR(dataIP, zeta = 147, delta, maxLength, nbrIterations, kMax,
-  lambda = 3, minInterval, maxInterval, minReads = 5,
+rjmcmcCHR(forwardandReverseReads, zeta = 147, delta, maxLength, nbrIterations,
+  kMax, lambda = 3, minInterval, maxInterval, minReads = 5,
   adaptIterationsToReads = TRUE, vSeed = -1, nbCores = 1,
   dirOut = "out", saveAsRDS = FALSE, saveSEG = TRUE)
 }
 \arguments{
-\item{dataIP}{a \code{GRanges}, the reads that need to be segmented.}
+\item{forwardandReverseReads}{a \code{GRanges}, the forward and reverse
+reads that need to be segmented.}
 
 \item{zeta}{a positive \code{integer} or \code{numeric}, the length
 of the nucleosomes. Default: 147.}
@@ -108,8 +109,8 @@ sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
     strand = syntheticNucleosomeReads$dataIP$strand)
 
 ## Run nucleosome detection on the entire sample
-\dontrun{result <- rjmcmcCHR(dataIP=sampleGRanges, zeta = 147,
-             delta=50, maxLength=1200,
+\dontrun{result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges,
+             zeta = 147, delta=50, maxLength=1200,
              nbrIterations = 1000, lambda = 3, kMax = 30,
              minInterval = 146, maxInterval = 292, minReads = 5,
              vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)}

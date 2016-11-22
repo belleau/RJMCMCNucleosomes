@@ -4,16 +4,15 @@
 \alias{validatePrepMergeParameters}
 \title{Parameters validation for the \code{\link{postMerge}} function}
 \usage{
-validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,
-  resultRJMCMC, extendingSize, chrLength)
+validatePrepMergeParameters(forwardandReverseReads, resultRJMCMC, extendingSize,
+  chrLength)
 }
 \arguments{
-\item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
-start position of all the forward reads.}
-
-\item{startPosReverseReads}{a \code{vector} of positive \code{integer}, the
-positions of all the reverse reads. Beware that the start position of
-a reverse read is always higher that the end position.}
+\item{forwardandReverseReads}{a \code{GRanges} containing all forward
+and reverse reads.The start positions of both reads are going to be used
+for the analysis. Beware that the start position of
+a reverse read is always higher that the end positition. The \code{GRanges}
+should at least contain one read.}
 
 \item{resultRJMCMC}{an object of \code{class}
 "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge" that contain information
@@ -41,7 +40,7 @@ Validation of all parameters needed by the public
 \examples{
 
 ## Load dataset containing forward and reverse reads
-data(reads_demo)
+data(reads_demo_01)
 
 ## Load dataset containing nucleosome information
 file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
@@ -49,14 +48,13 @@ pattern = "newSeg_2.rds", full.names = TRUE)
 nucleosome_info <- readRDS(file_002)
 
 ## The function returns 0 when all parameters are valid
-RJMCMCNucleosomes:::validatePrepMergeParameters(startPosForwardReads =
-reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
+RJMCMCNucleosomes:::validatePrepMergeParameters(forwardandReverseReads =
+reads_demo_01,
 resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 
 ## The function raises an error when at least one paramater is not valid
 \dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(
-startPosForwardReads = c(72400, 72431, 72428, 72429, 72426),
-startPosReverseReads = c(72522, 72531, 72528, 72559, 72546),
+forwardandReverseReads = c(72400, 72431, 72428, 72429, 72426),
 resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 
 }

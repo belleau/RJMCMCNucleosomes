@@ -6,12 +6,8 @@
 #' chromosome must be treated separatly. This function is optimized to run
 #' on segments that are smaller sections of the chromosome.
 #'
-#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
-#' start position of all the forward reads.
-#'
-#' @param startPosReverseReads a \code{vector} of \code{numeric}, the
-#' start position of all the reverse reads. Beware that the start position of
-#' a reverse read is always higher that the end positition.
+#' @param forwardandReverseReads a \code{GRanges} containing forward and
+#' reverse reads.
 #'
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
@@ -64,11 +60,10 @@
 #' @examples
 #'
 #' ## Loading dataset
-#' data(reads_demo)
+#' data(reads_demo_01)
 #'
 #' ## Nucleosome positioning, running both merge and split functions
-#' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-#'             startPosReverseReads = reads_demo$readsReverse,
+#' result <- rjmcmc(forwardandReverseReads = reads_demo_01,
 #'             nbrIterations = 1000, lambda = 2, kMax = 30,
 #'             minInterval = 146, maxInterval = 292, minReads = 5,
 #'             vSeed = 10113, saveAsRDS = FALSE)
@@ -86,7 +81,7 @@
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @importFrom stats aggregate
 #' @export
-rjmcmc <- function(startPosForwardReads, startPosReverseReads,
+rjmcmc <- function(forwardandReverseReads,
                     nbrIterations, kMax, lambda = 3,
                     minInterval, maxInterval, minReads = 5,
                     adaptIterationsToReads = TRUE, vSeed = -1,
@@ -96,8 +91,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     cl <- match.call()
 
     # Parameters validation
-    validateRJMCMCParameters(startPosForwardReads = startPosForwardReads,
-                            startPosReverseReads = startPosReverseReads,
+    validateRJMCMCParameters(forwardandReverseReads = forwardandReverseReads,
                             nbrIterations = nbrIterations,
                             kMax = kMax,
                             lambda = lambda,
@@ -107,16 +101,24 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                             adaptIterationsToReads = adaptIterationsToReads,
                             vSeed = vSeed)
 
-    # Find nucleosome positions
-    if(length(startPosForwardReads) > 0 & length(startPosReverseReads) > 0){
-        resultRJMCMC <- rjmcmcNucleo(startPosForwardReads,
+    resultRJMCMC <- NULL
+
+    if (length(forwardandReverseReads) > 0) {
+
+        startPosForwardReads <- start(forwardandReverseReads[
+                                        strand(forwardandReverseReads) == "+"])
+
+        startPosReverseReads <- end(forwardandReverseReads[
+                            strand(forwardandReverseReads) == "-"])
+
+        # Find nucleosome positions
+        if(length(startPosForwardReads) > 0 & length(startPosReverseReads) > 0){
+            resultRJMCMC <- rjmcmcNucleo(startPosForwardReads,
                                         startPosReverseReads,
                                         nbrIterations, kMax, lambda,
                                         minInterval, maxInterval, minReads,
                                         adaptIterationsToReads, vSeed)
-    }
-    else{
-        resultRJMCMC <- NULL
+        }
     }
 
     # Save output in a RDS file
@@ -269,12 +271,8 @@ mergeRDSFiles <- function(RDSFiles) {
 #' to rectify the over splitting and provide a more conservative approach.
 #' Beware that each chromosome must be treated separatly.
 #'
-#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
-#' start position of all the forward reads.
-#'
-#' @param startPosReverseReads a \code{vector} of \code{numeric}, the
-#' start position of all the reverse reads. Beware that the start position of
-#' a reverse read is always higher that the end positition.
+#' @param forwardandReverseReads a \code{GRanges} containing forward and
+#' reverse reads. The \code{GRanges} should contain at least one read.
 #'
 #' @param resultRJMCMC an object of \code{class}
 #' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge", the information
@@ -299,11 +297,10 @@ mergeRDSFiles <- function(RDSFiles) {
 #' @examples
 #'
 #' ## Loading dataset
-#' data(reads_demo)
+#' data(reads_demo_02)
 #'
 #' ## Nucleosome positioning, running both merge and split functions
-#' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-#'             startPosReverseReads = reads_demo$readsReverse,
+#' result <- rjmcmc(forwardandReverseReads = reads_demo_02,
 #'             nbrIterations = 1000, lambda = 2, kMax = 30,
 #'             minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
 #'
@@ -311,24 +308,23 @@ mergeRDSFiles <- function(RDSFiles) {
 #' result
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-#'             startPosReverseReads = reads_demo$readsReverse,
-#'             result, 74, 73500)
+#' postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
+#'             result, 100, 73500)
 #'
 #' ## After post-treatment
 #' postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
-postTreatment <- function(startPosForwardReads, startPosReverseReads,
+postTreatment <- function(forwardandReverseReads,
                             resultRJMCMC, extendingSize = 74L, chrLength) {
 
     ## Validate parameters
-    validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,
+    validatePrepMergeParameters(forwardandReverseReads,
                                         resultRJMCMC, extendingSize, chrLength)
 
     ## Run post merging function and return results
-    return(postMerge(startPosForwardReads, startPosReverseReads,
+    return(postMerge(forwardandReverseReads,
                 resultRJMCMC, extendingSize, chrLength))
 }
 
@@ -368,27 +364,15 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 #'
 #' @examples
 #'
-#' ## Generate a synthetic sample with 10 well-positioned nucleosomes, 2 fuzzy
-#' ## nucleosomes and 2 deleted nucleosomes using a Student distribution
-#' ## with a variance of 10 for the well-positioned nucleosomes,
-#' ## a variance of 20 for the fuzzy nucleosomes
-#' library(nucleoSim)
-#' nucleosomeSample <- syntheticNucReadsFromDist(wp.num=10, wp.del=2,
-#' wp.var=10, fuz.num=2, fuz.var=20, max.cover=100, dist="Student",
-#' nuc.len=147, len.var=12, read.len=45, lin.len=20, rnd.seed=155, offset=100)
+#' data(reads_demo_01)
 #'
-#' dataIP <-nucleosomeSample$dataIP
-#'
-#' forwardReads <- dataIP[dataIP$strand == "+",]$start
-#' reverseReads <- dataIP[dataIP$strand == "-",]$end
-#'
-#' result <- rjmcmc(startPosForwardReads = forwardReads,
-#'             startPosReverseReads = reverseReads,
+#' result <- rjmcmc(forwardandReverseReads = reads_demo_01,
 #'             nbrIterations = 4000, lambda = 2, kMax = 30,
 #'             minInterval = 146, maxInterval = 292, minReads = 5,
 #'             vSeed = 10213)
 #'
-#' reads <-IRanges(start = dataIP$start, end=dataIP$end)
+#' reads <-IRanges(start = start(reads_demo_01),
+#'             end = end(reads_demo_01))
 #'
 #' ## Create graph using the synthetic map
 #' plotNucleosomes(nucleosomePositions = result$mu, reads = reads)
@@ -534,7 +518,8 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #' \code{GRanges} segments that can be run by the
 #' \code{rjmcmc} function. All those steps are done automatically.
 #'
-#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#' @param forwardandReverseReads a \code{GRanges}, the forward and reverse
+#' reads that need to be segmented.
 #'
 #' @param zeta a positive \code{integer} or \code{numeric}, the length
 #' of the nucleosomes. Default: 147.
@@ -619,8 +604,8 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #'     strand = syntheticNucleosomeReads$dataIP$strand)
 #'
 #' ## Run nucleosome detection on the entire sample
-#' \dontrun{result <- rjmcmcCHR(dataIP=sampleGRanges, zeta = 147,
-#'              delta=50, maxLength=1200,
+#' \dontrun{result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges,
+#'              zeta = 147, delta=50, maxLength=1200,
 #'              nbrIterations = 1000, lambda = 3, kMax = 30,
 #'              minInterval = 146, maxInterval = 292, minReads = 5,
 #'              vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)}
@@ -630,7 +615,7 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #' @importFrom BiocParallel bplapply SnowParam
 #' @importFrom GenomicRanges strand
 #' @export
-rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
+rjmcmcCHR <- function(forwardandReverseReads, zeta = 147, delta, maxLength,
                         nbrIterations, kMax, lambda = 3,
                         minInterval, maxInterval, minReads = 5,
                         adaptIterationsToReads = TRUE, vSeed = -1,
@@ -652,7 +637,7 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
         dir.create(dirDone)
     }
 
-    seg <- segmentation(dataIP, zeta, delta, maxLength)
+    seg <- segmentation(forwardandReverseReads, zeta, delta, maxLength)
 
     if(saveSEG){
         options(digits.secs = 2)
@@ -670,18 +655,16 @@ rjmcmcCHR <- function(dataIP, zeta = 147, delta, maxLength,
                     kmax = kMax, lambda = lambda, ecartmin = minInterval,
                     ecartmax = maxInterval, minReads = minReads,
                     adaptNbrIterations = adaptIterationsToReads,
+                    dirOut = dirOut,
                     vSeed = vSeed, saveAsRDS = saveAsRDS, BPPARAM = param)
 
     results <- mergeAllRDSFilesFromDirectory(dirResults)
 
-    allReadsForward <- start(dataIP[strand(dataIP) == "+"])
-    allReadsReverse <- end(dataIP[strand(dataIP) == "-"])
-
-    resultPostTreatement <- postTreatment(startPosForwardReads=allReadsForward,
-                                        startPosReverseReads=allReadsReverse,
-                                        results,
-                                        chrLength=max(allReadsForward,
-                                                            allReadsReverse))
+    resultPostTreatement <- postTreatment(forwardandReverseReads =
+                                                forwardandReverseReads,
+                                results,
+                                chrLength=max(start(forwardandReverseReads),
+                                        end(forwardandReverseReads)) + 1000)
 
     results$muPost <- resultPostTreatement
 

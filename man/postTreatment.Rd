@@ -5,16 +5,12 @@
 \title{A post-treatment function to merge closely positioned nucleosomes,
 from the same chromosome, identified by the \code{\link{rjmcmc}} function.}
 \usage{
-postTreatment(startPosForwardReads, startPosReverseReads, resultRJMCMC,
-  extendingSize = 74L, chrLength)
+postTreatment(forwardandReverseReads, resultRJMCMC, extendingSize = 74L,
+  chrLength)
 }
 \arguments{
-\item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
-start position of all the forward reads.}
-
-\item{startPosReverseReads}{a \code{vector} of \code{numeric}, the
-start position of all the reverse reads. Beware that the start position of
-a reverse read is always higher that the end positition.}
+\item{forwardandReverseReads}{a \code{GRanges} containing forward and
+reverse reads. The \code{GRanges} should contain at least one read.}
 
 \item{resultRJMCMC}{an object of \code{class}
 "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge", the information
@@ -45,11 +41,10 @@ Beware that each chromosome must be treated separatly.
 \examples{
 
 ## Loading dataset
-data(reads_demo)
+data(reads_demo_02)
 
 ## Nucleosome positioning, running both merge and split functions
-result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-            startPosReverseReads = reads_demo$readsReverse,
+result <- rjmcmc(forwardandReverseReads = reads_demo_02,
             nbrIterations = 1000, lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
 
@@ -57,9 +52,8 @@ result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
 result
 
 ## Post-treatment function which merged closely positioned nucleosomes
-postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-            startPosReverseReads = reads_demo$readsReverse,
-            result, 74, 73500)
+postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
+            result, 100, 73500)
 
 ## After post-treatment
 postResult

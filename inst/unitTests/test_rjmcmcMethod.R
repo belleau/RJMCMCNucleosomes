@@ -12,11 +12,12 @@
 if(FALSE) {
     library( "RUnit" )
     library( "RJMCMCNucleosomes" )
+    library( "GenomicRanges")
 }
 
 ### }}}
 
-data(reads_demo)
+data(reads_demo_01)
 data(reads_demo_02)
 data(RJMCMC_result)
 data(syntheticNucleosomeReads)
@@ -42,15 +43,18 @@ file_003 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 
 test.rjmcmc_one_read_forward_and_one_read_reverse <- function() {
 
-    obs <- rjmcmc(startPosForwardReads = c(1),
-                    startPosReverseReads = c(2),
+    reads <- GRanges(seqnames = Rle(c("chr1"), c(2)),
+                            ranges = IRanges(101:102, end = 111:112,
+                                        names = head(letters, 2)),
+                            strand = Rle(strand(c("-", "+")), c(1, 1)))
+    obs <- rjmcmc(forwardandReverseReads = reads,
                     nbrIterations = 210, lambda = 3, kMax = 30,
                     minInterval = 100, maxInterval = 200, minReads = 10,
                     vSeed = 2211)
 
     exp.k           <- 1
     exp.k_max       <- 1
-    exp.mu          <- c(1.017962247133255)
+    exp.mu          <- c(102.161660224199295)
 
     message     <- paste0(" test.rjmcmc_one_read_forward_and_one_read_reverse() ",
                             "- RJMCMC did not generated expected values")
@@ -63,15 +67,14 @@ test.rjmcmc_one_read_forward_and_one_read_reverse <- function() {
 
 test.rjmcmc_good_result_01 <- function() {
 
-    obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-                        startPosReverseReads = reads_demo$readsReverse,
+    obs <- rjmcmc(forwardandReverseReads = reads_demo_01,
                         nbrIterations = 100, lambda = 2, kMax = 30,
                         minInterval = 146, maxInterval = 292, minReads = 5,
                         vSeed = 1001)
 
-    exp.k           <- 4
-    exp.k_max       <- 5
-    exp.mu          <- c(72393.0264332128, 72457.6656495946, 72555.4429585791, 72990.7142984954)
+    exp.k           <- 2
+    exp.k_max       <- 2
+    exp.mu          <- c(10079.596676761868366, 10145.584928975207731)
 
     message     <- paste0(" rjmcmc_good_result_01() ",
                         "- RJMCMC did not generated expected values")
@@ -83,16 +86,14 @@ test.rjmcmc_good_result_01 <- function() {
 
 test.rjmcmc_good_result_02 <- function() {
 
-    obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-                    startPosReverseReads = reads_demo$readsReverse,
+    obs <- rjmcmc(forwardandReverseReads  = reads_demo_01,
                     nbrIterations = 200, lambda = 3, kMax = 30,
                     minInterval = 146, maxInterval = 292, minReads = 5,
                     vSeed = 201)
 
-    exp.k           <- 4
-    exp.k_max       <- 4
-    exp.mu          <- c(72325.7014073403, 72357.7522020026,
-                            72678.9998565154, 72875.6569724952)
+    exp.k           <- 1
+    exp.k_max       <- 3
+    exp.mu          <- c(10055.606842049734041)
 
     message     <- paste0(" rjmcmc_good_result_02() ",
                         "- RJMCMC did not generated expected values")
@@ -105,15 +106,14 @@ test.rjmcmc_good_result_02 <- function() {
 
 test.rjmcmc_good_result_03 <- function() {
 
-    obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-                  startPosReverseReads = reads_demo$readsReverse,
+    obs <- rjmcmc(forwardandReverseReads = reads_demo_01,
                   nbrIterations = 110, lambda = 3, kMax = 30,
                   minInterval = 100, maxInterval = 200, minReads = 335,
                   vSeed = 2011)
 
-    exp.k           <- 4
+    exp.k           <- 2
     exp.k_max       <- 4
-    exp.mu          <- c(72564.6044994216, 72863.5808919129, 72972.7389043033, 73207.8950726675)
+    exp.mu          <- c(10057.818967865589002, 10453.014142343075946)
 
     message     <- paste0(" rjmcmc_good_result_03() ",
                            "- RJMCMC did not generated expected values")
@@ -125,15 +125,14 @@ test.rjmcmc_good_result_03 <- function() {
 
 test.rjmcmc_good_result_04 <- function() {
 
-    obs <- rjmcmc(startPosForwardReads = reads_demo_02$readsForward,
-                  startPosReverseReads = reads_demo_02$readsReverse,
+    obs <- rjmcmc(forwardandReverseReads = reads_demo_01,
                   nbrIterations = 210, lambda = 3, kMax = 30,
                   minInterval = 100, maxInterval = 200, minReads = 10,
                   vSeed = 2211)
 
-    exp.k           <- 5
-    exp.k_max       <- 6
-    exp.mu          <- c(18839.4528131919, 19201.6625115471, 19343.2693614808, 19415.4983810908, 19515.0250764107)
+    exp.k           <- 1
+    exp.k_max       <- 2
+    exp.mu          <- c(10077.161153993813059)
 
     message     <- paste0(" test.rjmcmc_good_result_04() ",
                           "- RJMCMC did not generated expected values")
@@ -149,6 +148,7 @@ test.rjmcmc_good_result_04 <- function() {
 ###########################################################
 
 test.mergeAllRDSFilesFromDirectory_notExisting <- function() {
+
     dir_01 <- "/toto1/toto2/toto3/toto4/toto5/"
     dir_02 <- "/toto5/toto4/toto3/toto2/toto1/"
 
@@ -257,37 +257,19 @@ test.mergeRDSFiles_good <- function() {
 
 test.postTreatment_good_01 <- function() {
 
-    obs <- postTreatment(startPosForwardReads = reads_demo_02$readsForward,
-                              startPosReverseReads = reads_demo_02$readsReverse,
+    obs <- postTreatment(forwardandReverseReads  = reads_demo_02,
                               resultRJMCMC = RJMCMC_result,
                               extendingSize = 20,
                               chrLength = 80000)
 
-    exp <- c(18747.497431393061561, 18891.529184734645241,
-                19447.663942274604779, 19554.286613321939512)
+    exp <- c(10076.947481311099182, 10241.462264150943156,
+             10676.973012005168130)
 
     message <- paste0(" test.postTreatment_good_01() ",
                       "- posTreatment() did not generated expected result.")
 
     checkEquals(obs, exp, msg = message)
 }
-
-test.postTreatment_good_NULL_result <- function() {
-    ## Reads are not located where the nucleosomes are
-    obs <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-                        startPosReverseReads = reads_demo$readsReverse,
-                        resultRJMCMC = RJMCMC_result,
-                        extendingSize = 200,
-                        chrLength = 80000)
-
-    exp <- NULL
-
-    message <- paste0(" test.postTreatment_good_NULL_result() ",
-                      "- posTreatment() did not generated expected result.")
-
-    checkEquals(obs, exp, msg = message)
-}
-
 
 ###########################################################
 ## segmentation() function
@@ -349,3 +331,39 @@ test.segmentation_good_02  <- function() {
     checkTrue(is(obs[[3]],"GRanges"), ms = message)
 }
 
+
+###########################################################
+## rjmcmcCHR() function
+###########################################################
+
+test.rjmcmcCHR_good_01 <- function() {
+    tryCatch({
+
+            reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
+            obs <- rjmcmcCHR(forwardandReverseReads = reads,
+                        zeta = 147, delta = 50, maxLength = 1200,
+                        dirOut = "rjmcmcCHR_good_01",
+                        nbrIterations = 1000, lambda = 3, kMax = 30,
+                        minInterval = 146, maxInterval = 292, minReads = 5,
+                        vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)
+            message <- paste0(" test.rjmcmcCHR_good_01() ",
+                        "- rjmcmcCHR() did not generated expected result.")
+            exp.k <- 2
+            exp.kPost <- 1
+            exp.mu <- c(1081.739501947609369, 1193.472696571378037)
+            exp.muPost <- c(1187.924603174603135)
+            checkTrue(is.list(obs), ms = message)
+            checkEquals(obs$k, exp.k, ms = message)
+            checkEquals(obs$kPost, exp.kPost, ms = message)
+            checkEquals(obs$mu, exp.mu, ms = message)
+        }, finally = {
+            if (dir.exists("rjmcmcCHR_good_01")) {
+                unlink("rjmcmcCHR_good_01", recursive = TRUE, force = FALSE)
+            }
+        }
+    )
+    ## Double check
+    if (dir.exists("rjmcmcCHR_good_01")) {
+        unlink("rjmcmcCHR_good_01", recursive = TRUE, force = FALSE)
+    }
+}

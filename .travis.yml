@@ -34,4 +34,4 @@ before_script:
 
 # To send info to codecov
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - Rscript -e 'library(covr); codecov()'
