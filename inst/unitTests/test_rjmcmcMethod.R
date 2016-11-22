@@ -337,12 +337,14 @@ test.segmentation_good_02  <- function() {
 ###########################################################
 
 test.rjmcmcCHR_good_01 <- function() {
-    tryCatch({
+
+        temp_dir <- "test_rjmcmcCHR_good_01"
+        tryCatch({
 
             reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
             obs <- rjmcmcCHR(forwardandReverseReads = reads,
                         zeta = 147, delta = 50, maxLength = 1200,
-                        dirOut = "rjmcmcCHR_good_01",
+                        dirOut = temp_dir,
                         nbrIterations = 1000, lambda = 3, kMax = 30,
                         minInterval = 146, maxInterval = 292, minReads = 5,
                         vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)
@@ -357,13 +359,13 @@ test.rjmcmcCHR_good_01 <- function() {
             checkEquals(obs$kPost, exp.kPost, ms = message)
             checkEquals(obs$mu, exp.mu, ms = message)
         }, finally = {
-            if (dir.exists("rjmcmcCHR_good_01")) {
-                unlink("rjmcmcCHR_good_01", recursive = TRUE, force = FALSE)
+            if (dir.exists(temp_dir)) {
+                unlink(temp_dir, recursive = TRUE, force = FALSE)
             }
         }
     )
     ## Double check
-    if (dir.exists("rjmcmcCHR_good_01")) {
-        unlink("rjmcmcCHR_good_01", recursive = TRUE, force = FALSE)
+    if (dir.exists(temp_dir)) {
+        unlink(temp_dir, recursive = TRUE, force = FALSE)
     }
 }

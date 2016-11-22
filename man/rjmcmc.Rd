@@ -12,10 +12,11 @@ rjmcmc(forwardandReverseReads, seqName = NULL, nbrIterations, kMax,
 \item{forwardandReverseReads}{a \code{GRanges} containing forward and
 reverse reads.}
 
-\item{seqName}{a \code{character} string containing the label,in the
-\code{GRanges} object, of the chromosome, in the \code{GRanges} object,
-to analyse. The \code{NULL} value is accepted when only one seqname is
-present in the \code{GRanges}; the only seqname present will be used.}
+\item{seqName}{a \code{character} string containing the label of the
+chromosome, present in the \code{GRanges} object, that will be used. The
+\code{NULL} value is accepted when only one seqname is
+present in the \code{GRanges}; the only seqname present will be used.
+Default: \code{NULL}.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of

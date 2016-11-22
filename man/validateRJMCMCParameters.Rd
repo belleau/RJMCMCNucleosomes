@@ -14,9 +14,10 @@ and reverse reads.The start positions of both reads are going to be used
 for the analysis. Beware that the start position of
 a reverse read is always higher that the end positition.}
 
-\item{seqName}{a a \code{character} string containing the label,in the
-\code{GRanges} object, of the chromosome, in the \code{GRanges} object,
-to analyse.}
+\item{seqName}{a \code{character} string containing the label of the
+chromosome, present in the \code{GRanges} object, that will be used. The
+\code{NULL} value is accepted when only one seqname is
+present in the \code{GRanges}; the only seqname present will be used.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of

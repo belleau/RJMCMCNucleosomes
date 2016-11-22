@@ -113,9 +113,10 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #' for the analysis. Beware that the start position of
 #' a reverse read is always higher that the end positition.
 #'
-#' @param seqName a a \code{character} string containing the label,in the
-#' \code{GRanges} object, of the chromosome, in the \code{GRanges} object,
-#' to analyse.
+#' @param seqName a \code{character} string containing the label of the
+#' chromosome, present in the \code{GRanges} object, that will be used. The
+#' \code{NULL} value is accepted when only one seqname is
+#' present in the \code{GRanges}; the only seqname present will be used.
 #'
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
@@ -388,6 +389,11 @@ validateDirectoryParameters <- function(directory) {
 #' a reverse read is always higher that the end positition. The \code{GRanges}
 #' should at least contain one read.
 #'
+#' @param seqName a \code{character} string containing the label of the
+#' chromosome, present in the \code{GRanges} object, that will be used. The
+#' \code{NULL} value is accepted when only one seqname is
+#' present in the \code{GRanges}; the only seqname present will be used.
+#'
 #' @param resultRJMCMC an object of \code{class}
 #' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge" that contain information
 #'  about nucleosome positioning for an entire chromosome.
@@ -418,7 +424,7 @@ validateDirectoryParameters <- function(directory) {
 #'
 #' ## The function returns 0 when all parameters are valid
 #' RJMCMCNucleosomes:::validatePrepMergeParameters(forwardandReverseReads =
-#' reads_demo_01,
+#' reads_demo_01, seqName = "chr_SYNTHETIC",
 #' resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 #'
 #' ## The function raises an error when at least one paramater is not valid
@@ -431,7 +437,7 @@ validateDirectoryParameters <- function(directory) {
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 #'
-validatePrepMergeParameters <- function(forwardandReverseReads,
+validatePrepMergeParameters <- function(forwardandReverseReads, seqName,
                                             resultRJMCMC, extendingSize,
                                             chrLength) {
 
@@ -443,6 +449,27 @@ validatePrepMergeParameters <- function(forwardandReverseReads,
     ## Validate that the forwardandReverseReads is not empty
     if (length(forwardandReverseReads) == 0 ) {
         stop(paste0("forwardandReverseReads must be a non-empty GRanges"))
+    }
+
+    ## Validate that when seqName is NULL, only one seqname
+    ## is present in GRanges
+    if (is.null(seqName) &&
+        (length(runValue(seqnames(forwardandReverseReads))) > 1)) {
+        stop(paste0("seqName must be the name of one of the chromosomes ",
+                    "present in the GRanges"))
+    }
+
+    ## Validate that when not NULL, seqName is a string
+    if (!is.null(seqName) && !is.character(seqName)) {
+        stop(paste0("seqName must be a character string corresponding to the ",
+                    "name of one of the chromosomes present in the GRanges"))
+    }
+
+    ## Validate that the seqName is present in the GRanges
+    if (!is.null(seqName) && is.character(seqName) && !(seqName %in%
+                            runValue(seqnames(forwardandReverseReads)))) {
+        stop(paste0("seqName must be a character string corresponding to the ",
+                    "name of one of the chromosomes present in the GRanges"))
     }
 
     ## Validate the resultRJMCMC parameter

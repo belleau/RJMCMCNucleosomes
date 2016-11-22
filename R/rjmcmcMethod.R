@@ -9,10 +9,11 @@
 #' @param forwardandReverseReads a \code{GRanges} containing forward and
 #' reverse reads.
 #'
-#' @param seqName a \code{character} string containing the label,in the
-#' \code{GRanges} object, of the chromosome, in the \code{GRanges} object,
-#' to analyse. The \code{NULL} value is accepted when only one seqname is
+#' @param seqName a \code{character} string containing the label of the
+#' chromosome, present in the \code{GRanges} object, that will be used. The
+#' \code{NULL} value is accepted when only one seqname is
 #' present in the \code{GRanges}; the only seqname present will be used.
+#' Default: \code{NULL}.
 #'
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
@@ -112,19 +113,29 @@ rjmcmc <- function(forwardandReverseReads, seqName = NULL,
 
     if (length(forwardandReverseReads) > 0) {
 
-        startPosForwardReads <- start(forwardandReverseReads[
+        ## Only keep reads associated to the specified chromosome
+        if (!is.null(seqName)) {
+            forwardandReverseReads <- forwardandReverseReads[
+                            seqnames(forwardandReverseReads) == seqName]
+        }
+
+        if (length(forwardandReverseReads) > 0) {
+
+            startPosForwardReads <- start(forwardandReverseReads[
                                         strand(forwardandReverseReads) == "+"])
 
-        startPosReverseReads <- end(forwardandReverseReads[
+            startPosReverseReads <- end(forwardandReverseReads[
                             strand(forwardandReverseReads) == "-"])
 
-        # Find nucleosome positions
-        if(length(startPosForwardReads) > 0 & length(startPosReverseReads) > 0){
-            resultRJMCMC <- rjmcmcNucleo(startPosForwardReads,
+            # Find nucleosome positions
+            if(length(startPosForwardReads) > 0 &
+                            length(startPosReverseReads) > 0){
+                resultRJMCMC <- rjmcmcNucleo(startPosForwardReads,
                                         startPosReverseReads,
                                         nbrIterations, kMax, lambda,
                                         minInterval, maxInterval, minReads,
                                         adaptIterationsToReads, vSeed)
+            }
         }
     }
 
@@ -281,6 +292,12 @@ mergeRDSFiles <- function(RDSFiles) {
 #' @param forwardandReverseReads a \code{GRanges} containing forward and
 #' reverse reads. The \code{GRanges} should contain at least one read.
 #'
+#' @param seqName a \code{character} string containing the label of the
+#' chromosome, present in the \code{GRanges} object, that will be used. The
+#' \code{NULL} value is accepted when only one seqname is
+#' present in the \code{GRanges}; the only seqname present will be used.
+#' Default: \code{NULL}.
+#'
 #' @param resultRJMCMC an object of \code{class}
 #' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge", the information
 #' about nucleosome positioning for an entire chromosome or a region that must
@@ -308,7 +325,8 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' ## Nucleosome positioning, running both merge and split functions
 #' result <- rjmcmc(forwardandReverseReads = reads_demo_02,
-#'             nbrIterations = 1000, lambda = 2, kMax = 30,
+#'             seqName = "chr_SYNTHETIC", nbrIterations = 1000,
+#'          lambda = 2, kMax = 30,
 #'             minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
 #'
 #' ## Before post-treatment
@@ -316,19 +334,25 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' ## Post-treatment function which merged closely positioned nucleosomes
 #' postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
-#'             result, 100, 73500)
+#'                 seqName = "chr_SYNTHETIC", result, 100, 73500)
 #'
 #' ## After post-treatment
 #' postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
-postTreatment <- function(forwardandReverseReads,
+postTreatment <- function(forwardandReverseReads, seqName = NULL,
                             resultRJMCMC, extendingSize = 74L, chrLength) {
 
     ## Validate parameters
-    validatePrepMergeParameters(forwardandReverseReads,
+    validatePrepMergeParameters(forwardandReverseReads, seqName,
                                         resultRJMCMC, extendingSize, chrLength)
+
+    ## Only keep reads associated to the specified chromosome
+    if (!is.null(seqName)) {
+        forwardandReverseReads <- forwardandReverseReads[
+                    seqnames(forwardandReverseReads) == seqName]
+    }
 
     ## Run post merging function and return results
     return(postMerge(forwardandReverseReads,
@@ -528,6 +552,12 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #' @param forwardandReverseReads a \code{GRanges}, the forward and reverse
 #' reads that need to be segmented.
 #'
+#' @param seqName a \code{character} string containing the label of the
+#' chromosome, present in the \code{GRanges} object, that will be used. The
+#' \code{NULL} value is accepted when only one seqname is
+#' present in the \code{GRanges}; the only seqname present will be used.
+#' Default: \code{NULL}.
+#'
 #' @param zeta a positive \code{integer} or \code{numeric}, the length
 #' of the nucleosomes. Default: 147.
 #'
@@ -622,7 +652,8 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #' @importFrom BiocParallel bplapply SnowParam
 #' @importFrom GenomicRanges strand
 #' @export
-rjmcmcCHR <- function(forwardandReverseReads, zeta = 147, delta, maxLength,
+rjmcmcCHR <- function(forwardandReverseReads, seqName = NULL, zeta = 147,
+                        delta, maxLength,
                         nbrIterations, kMax, lambda = 3,
                         minInterval, maxInterval, minReads = 5,
                         adaptIterationsToReads = TRUE, vSeed = -1,
@@ -642,6 +673,12 @@ rjmcmcCHR <- function(forwardandReverseReads, zeta = 147, delta, maxLength,
 
     if(!dir.exists(dirDone)){
         dir.create(dirDone)
+    }
+
+    ## Only keep reads associated to the specified chromosome
+    if (!is.null(seqName)) {
+        forwardandReverseReads <- forwardandReverseReads[
+            seqnames(forwardandReverseReads) == seqName]
     }
 
     seg <- segmentation(forwardandReverseReads, zeta, delta, maxLength)
@@ -669,6 +706,7 @@ rjmcmcCHR <- function(forwardandReverseReads, zeta = 147, delta, maxLength,
 
     resultPostTreatement <- postTreatment(forwardandReverseReads =
                                                 forwardandReverseReads,
+                                seqName = seqName,
                                 results,
                                 chrLength=max(start(forwardandReverseReads),
                                         end(forwardandReverseReads)) + 1000)
