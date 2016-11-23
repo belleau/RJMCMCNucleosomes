@@ -13,7 +13,7 @@ bioc_required: true
 # Be strict when checking package
 warnings_are_errors: true
 
-r_build_args: "--no-manual --no-resave-data"
+r_build_args: "--no-manual --no-resave-data --keep-empty-dirs"
 r_check_args: "--no-build-vignettes --no-manual --timings"
 
 # Package dependencies installed using apt-get
