@@ -2,7 +2,7 @@ language: r
 sudo: required
 
 # R version
-r: bioc-devel
+r: bioc-release
 
 # Package caching only makes sense for the release versions.
 # cache: packages
@@ -23,6 +23,9 @@ addons:
       - gsl-bin
       - libgsl0-dev
       - libgsl0ldbl
+
+r_github_packages:
+   - Bioconductor-mirror/BiocStyle
 
 # Package dependencies from CRAN not in DESCRIPTION file
 r_binary_packages:
