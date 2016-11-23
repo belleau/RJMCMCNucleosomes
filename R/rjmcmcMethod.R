@@ -635,10 +635,7 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 #' data(syntheticNucleosomeReads)
 #'
 #' ## Use dataset of reads to create GRanges object
-#' sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-#'     ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-#'     end = syntheticNucleosomeReads$dataIP$end),
-#'     strand = syntheticNucleosomeReads$dataIP$strand)
+#' sampleGRanges <- GRanges(syntheticNucleosomeReads$dataIP)
 #'
 #' ## Run nucleosome detection on the entire sample
 #' \dontrun{result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges,
