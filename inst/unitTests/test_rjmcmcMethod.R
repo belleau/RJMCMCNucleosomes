@@ -142,6 +142,29 @@ test.rjmcmc_good_result_04 <- function() {
     checkEqualsNumeric(obs$mu, exp.mu, msg = message)
 }
 
+test.rjmcmc_good_result_with_GRanges_with_multiple_names  <- function() {
+
+    reads <- GRanges(seqnames = Rle(c("chr1", "chr2"), c(5, 5)),
+                     ranges = IRanges(start=c(11:15, 1106:1110), end = c(21:25, 1116:1120),
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")), c(2, 2, 2, 2, 2)))
+    obs <- rjmcmc(forwardandReverseReads = reads, seqName = "chr2",
+                  nbrIterations = 210, lambda = 3, kMax = 30,
+                  minInterval = 100, maxInterval = 200, minReads = 10,
+                  vSeed = 2211)
+
+    exp.k           <- 1
+    exp.k_max       <- 1
+    exp.mu          <- c(1107.233509212732315)
+
+    message     <- paste0(" test.rjmcmc_good_result_with_GRanges_with_multiple_names() ",
+                          "- RJMCMC did not generated expected values")
+
+    checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
+    checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+}
+
 
 ###########################################################
 ## mergeAllRDSFilesFromDirectory() function
