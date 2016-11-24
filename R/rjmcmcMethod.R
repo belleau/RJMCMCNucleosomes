@@ -528,12 +528,10 @@ segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
     posMin <- min(start(dataIP))
     posMax <- max(end(dataIP))
 
-    # Segment GRanges
-    lapply(seq(posMin, posMax, by = (maxLength - (zeta + delta))),
-            function(x, dataIP, zeta, delta, maxLength){
-                dataIP[start(dataIP) >= x & start(dataIP) <= (x + maxLength)]
-            },
-            dataIP=dataIP, zeta=zeta, delta=delta, maxL = maxLength)
+    starts = seq(posMin, posMax, by = (maxLength - (zeta + delta)))
+    subject = GRanges(seqlevels(dataIP), IRanges(starts, width=maxLength))
+    hits = findOverlaps(dataIP, subject)
+    splitAsList(dataIP[queryHits(hits)], subjectHits(hits))
 }
 
 #' @title Nucleosome positioning mapping on a large segment, up to a chromosome
