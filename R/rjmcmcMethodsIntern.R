@@ -794,16 +794,16 @@ postMerge <- function(forwardandReverseReads,
                 b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
                 ## A miminum number of reads is needed closed to the position
                 if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                segReads$yF <= (b - minLimit)]) >= minReads &
-                        length(segReads$yR[segReads$yR >= (a + minLimit) &
-                                segReads$yR <= (b + maxLimit)]) >= minReads) {
+                                  segReads$yF <= (b - minLimit)]) >= minReads &
+                   length(segReads$yR[segReads$yR >= (a + minLimit) &
+                                  segReads$yR <= (b + maxLimit)]) >= minReads) {
                     ## Calculate the new position of the nucleosome
                     newMu <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                            segReads$yF <= (b - minLimit)]) +
-                            (mean(segReads$yR[segReads$yR >= (a + minLimit) &
-                            segReads$yR <= (b + maxLimit)]) -
-                            mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                            segReads$yF <= (b - minLimit) ]))/2)
+                                               segReads$yF <= (b - minLimit)]) +
+                              (mean(segReads$yR[segReads$yR >= (a + minLimit) &
+                                            segReads$yR <= (b + maxLimit)]) -
+                               mean(segReads$yF[segReads$yF >= (a - maxLimit) &
+                                            segReads$yF <= (b - minLimit) ]))/2)
                     return(newMu)
                 } else {
                     ## Nucleosomes that do not respect condition are flushed
@@ -822,6 +822,8 @@ postMerge <- function(forwardandReverseReads,
 
     return(finalResult)
 }
+
+
 
 #' @title Run \code{\link{rjmcmc}} on multiples segments and merge results.
 #'
