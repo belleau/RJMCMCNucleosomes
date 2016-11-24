@@ -11,11 +11,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r style, echo = FALSE, results = 'asis'}
-BiocStyle::markdown()
-library(knitr)
-```
-
 <br />
 **Package**: `r Rpackage("RJMCMCNucleosomes")`<br />
 **Authors**: `r packageDescription("RJMCMCNucleosomes")[["Author"]]`<br />
@@ -255,9 +250,10 @@ is available in the **RJMCMCNucleosomes** package.
 
 The \code{plotNucleosomes} function needs the nucleosome positions as well as 
 the reads, in a \code{IRanges} format, to create a graph. When reads are used 
-to predict more than one set of nucleosome positions (as example, before and
+to predict more than one set of nucleosome positions (as examples, before and
 after post-treatment or results from different software), the predictions can
-be merged in a \code{list} so that all predictions can be plot simultaneously.
+be merged in a \code{list} so that all predictions can be plotted 
+simultaneously.
 
 ```{r visualisation, collapse=TRUE, message=FALSE, fig.height=6.5, fig.width=8}
 ## Extract reads to create an IRange

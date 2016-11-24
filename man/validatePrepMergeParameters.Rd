@@ -4,8 +4,8 @@
 \alias{validatePrepMergeParameters}
 \title{Parameters validation for the \code{\link{postMerge}} function}
 \usage{
-validatePrepMergeParameters(forwardandReverseReads, resultRJMCMC, extendingSize,
-  chrLength)
+validatePrepMergeParameters(forwardandReverseReads, seqName, resultRJMCMC,
+  extendingSize, chrLength)
 }
 \arguments{
 \item{forwardandReverseReads}{a \code{GRanges} containing all forward
@@ -13,6 +13,11 @@ and reverse reads.The start positions of both reads are going to be used
 for the analysis. Beware that the start position of
 a reverse read is always higher that the end positition. The \code{GRanges}
 should at least contain one read.}
+
+\item{seqName}{a \code{character} string containing the label of the
+chromosome, present in the \code{GRanges} object, that will be used. The
+\code{NULL} value is accepted when only one seqname is
+present in the \code{GRanges}; the only seqname present will be used.}
 
 \item{resultRJMCMC}{an object of \code{class}
 "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge" that contain information
@@ -49,7 +54,7 @@ nucleosome_info <- readRDS(file_002)
 
 ## The function returns 0 when all parameters are valid
 RJMCMCNucleosomes:::validatePrepMergeParameters(forwardandReverseReads =
-reads_demo_01,
+reads_demo_01, seqName = "chr_SYNTHETIC",
 resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 
 ## The function raises an error when at least one paramater is not valid

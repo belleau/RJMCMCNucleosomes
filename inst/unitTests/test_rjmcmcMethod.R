@@ -142,6 +142,29 @@ test.rjmcmc_good_result_04 <- function() {
     checkEqualsNumeric(obs$mu, exp.mu, msg = message)
 }
 
+test.rjmcmc_good_result_with_GRanges_with_multiple_names  <- function() {
+
+    reads <- GRanges(seqnames = Rle(c("chr1", "chr2"), c(5, 5)),
+                     ranges = IRanges(start=c(11:15, 1106:1110), end = c(21:25, 1116:1120),
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")), c(2, 2, 2, 2, 2)))
+    obs <- rjmcmc(forwardandReverseReads = reads, seqName = "chr2",
+                  nbrIterations = 210, lambda = 3, kMax = 30,
+                  minInterval = 100, maxInterval = 200, minReads = 10,
+                  vSeed = 2211)
+
+    exp.k           <- 1
+    exp.k_max       <- 1
+    exp.mu          <- c(1107.233509212732315)
+
+    message     <- paste0(" test.rjmcmc_good_result_with_GRanges_with_multiple_names() ",
+                          "- RJMCMC did not generated expected values")
+
+    checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
+    checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+}
+
 
 ###########################################################
 ## mergeAllRDSFilesFromDirectory() function
@@ -337,12 +360,14 @@ test.segmentation_good_02  <- function() {
 ###########################################################
 
 test.rjmcmcCHR_good_01 <- function() {
-    tryCatch({
+
+        temp_dir <- "test_rjmcmcCHR_good_01"
+        tryCatch({
 
             reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
             obs <- rjmcmcCHR(forwardandReverseReads = reads,
                         zeta = 147, delta = 50, maxLength = 1200,
-                        dirOut = "rjmcmcCHR_good_01",
+                        dirOut = temp_dir,
                         nbrIterations = 1000, lambda = 3, kMax = 30,
                         minInterval = 146, maxInterval = 292, minReads = 5,
                         vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)
@@ -357,13 +382,13 @@ test.rjmcmcCHR_good_01 <- function() {
             checkEquals(obs$kPost, exp.kPost, ms = message)
             checkEquals(obs$mu, exp.mu, ms = message)
         }, finally = {
-            if (dir.exists("rjmcmcCHR_good_01")) {
-                unlink("rjmcmcCHR_good_01", recursive = TRUE, force = FALSE)
+            if (dir.exists(temp_dir)) {
+                unlink(temp_dir, recursive = TRUE, force = FALSE)
             }
         }
     )
     ## Double check
-    if (dir.exists("rjmcmcCHR_good_01")) {
-        unlink("rjmcmcCHR_good_01", recursive = TRUE, force = FALSE)
+    if (dir.exists(temp_dir)) {
+        unlink(temp_dir, recursive = TRUE, force = FALSE)
     }
 }
