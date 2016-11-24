@@ -4,14 +4,20 @@
 \alias{rjmcmcCHR}
 \title{Nucleosome positioning mapping on a large segment, up to a chromosome}
 \usage{
-rjmcmcCHR(forwardandReverseReads, zeta = 147, delta, maxLength, nbrIterations,
-  kMax, lambda = 3, minInterval, maxInterval, minReads = 5,
-  adaptIterationsToReads = TRUE, vSeed = -1, nbCores = 1,
+rjmcmcCHR(forwardandReverseReads, seqName = NULL, zeta = 147, delta,
+  maxLength, nbrIterations, kMax, lambda = 3, minInterval, maxInterval,
+  minReads = 5, adaptIterationsToReads = TRUE, vSeed = -1, nbCores = 1,
   dirOut = "out", saveAsRDS = FALSE, saveSEG = TRUE)
 }
 \arguments{
 \item{forwardandReverseReads}{a \code{GRanges}, the forward and reverse
 reads that need to be segmented.}
+
+\item{seqName}{a \code{character} string containing the label of the
+chromosome, present in the \code{GRanges} object, that will be used. The
+\code{NULL} value is accepted when only one seqname is
+present in the \code{GRanges}; the only seqname present will be used.
+Default: \code{NULL}.}
 
 \item{zeta}{a positive \code{integer} or \code{numeric}, the length
 of the nucleosomes. Default: 147.}
@@ -103,10 +109,7 @@ The function will process by splittingg the \code{GRanges} of reads
 data(syntheticNucleosomeReads)
 
 ## Use dataset of reads to create GRanges object
-sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-    ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-    end = syntheticNucleosomeReads$dataIP$end),
-    strand = syntheticNucleosomeReads$dataIP$strand)
+sampleGRanges <- GRanges(syntheticNucleosomeReads$dataIP)
 
 ## Run nucleosome detection on the entire sample
 \dontrun{result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges,

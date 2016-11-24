@@ -5,12 +5,18 @@
 \title{A post-treatment function to merge closely positioned nucleosomes,
 from the same chromosome, identified by the \code{\link{rjmcmc}} function.}
 \usage{
-postTreatment(forwardandReverseReads, resultRJMCMC, extendingSize = 74L,
-  chrLength)
+postTreatment(forwardandReverseReads, seqName = NULL, resultRJMCMC,
+  extendingSize = 74L, chrLength)
 }
 \arguments{
 \item{forwardandReverseReads}{a \code{GRanges} containing forward and
 reverse reads. The \code{GRanges} should contain at least one read.}
+
+\item{seqName}{a \code{character} string containing the label of the
+chromosome, present in the \code{GRanges} object, that will be used. The
+\code{NULL} value is accepted when only one seqname is
+present in the \code{GRanges}; the only seqname present will be used.
+Default: \code{NULL}.}
 
 \item{resultRJMCMC}{an object of \code{class}
 "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge", the information
@@ -45,7 +51,8 @@ data(reads_demo_02)
 
 ## Nucleosome positioning, running both merge and split functions
 result <- rjmcmc(forwardandReverseReads = reads_demo_02,
-            nbrIterations = 1000, lambda = 2, kMax = 30,
+            seqName = "chr_SYNTHETIC", nbrIterations = 1000,
+         lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
 
 ## Before post-treatment
@@ -53,7 +60,7 @@ result
 
 ## Post-treatment function which merged closely positioned nucleosomes
 postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
-            result, 100, 73500)
+                seqName = "chr_SYNTHETIC", result, 100, 73500)
 
 ## After post-treatment
 postResult
