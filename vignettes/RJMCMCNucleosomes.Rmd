@@ -239,7 +239,7 @@ resultsPostTreatment <- postTreatment(forwardandReverseReads = reads,
 length(resultsPostTreatment)
 ```
 
-The \code{postTreatment} function can significantly reduces the number of 
+The `postTreatment` function can significantly reduces the number of 
 nucleosomes by merging closely positioned nucleosomes.
 
 
@@ -248,11 +248,11 @@ nucleosomes by merging closely positioned nucleosomes.
 Visualisation of the predicted nucleosomes, with its associated read coverage, 
 is available in the **RJMCMCNucleosomes** package.
 
-The \code{plotNucleosomes} function needs the nucleosome positions as well as 
-the reads, in a \code{IRanges} format, to create a graph. When reads are used 
+The `plotNucleosomes` function needs the nucleosome positions as well as 
+the reads, in an `IRanges` format, to create a graph. When reads are used 
 to predict more than one set of nucleosome positions (as examples, before and
 after post-treatment or results from different software), the predictions can
-be merged in a \code{list} so that all predictions can be plotted 
+be merged in a `list` so that all predictions can be plotted 
 simultaneously.
 
 ```{r visualisation, collapse=TRUE, message=FALSE, fig.height=6.5, fig.width=8}
@@ -274,6 +274,40 @@ resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos,
 plotNucleosomes(resultsBeforeAndAfter, reads, 
                     names=c("Sample", "RJMCMC", "After Post-Treatment"))
 ```
+
+# RJMCMCNucleosomes analysis of one chromosome in one step
+
+The \code{rjmcmcCHR} can analyse an entire chromosome by automatically 
+split the reads into segments, run \code{rjmcmc} on each segment, merge and
+post-process the results. The intermediary steps are conserved in a 
+directory set by the \code{dirOut} parameter.
+
+```{r rjmcmcCHR, collapse=TRUE, message=FALSE, eval=FALSE}
+## Load synthetic dataset of reads
+data(syntheticNucleosomeReads)
+
+## Number of reads in the dataset
+nrow(syntheticNucleosomeReads$dataIP)
+
+## Use the dataset to create a GRanges object
+sampleGRanges <- GRanges(syntheticNucleosomeReads$dataIP)
+
+## All reads are related to one chromosome called "chr_SYNTHETIC"
+seqnames(sampleGRanges)
+
+## Run RJMCMC on all reads
+result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges, 
+                seqName = "chr_SYNTHETIC", dirOut = "testRJMCMCCHR",
+                zeta = 147, delta=50, maxLength=1200,
+                nbrIterations = 500, lambda = 3, kMax = 30,
+                minInterval = 146, maxInterval = 292, minReads = 5,
+                vSeed = 10113, nbCores = 2, saveAsRDS = FALSE, 
+                saveSEG = FALSE)
+
+result
+```
+When the `saveSEG` parameter is set to `TRUE`, the segments created
+during the segmentation step are saved in RDS files.
 
 
 # Session info
