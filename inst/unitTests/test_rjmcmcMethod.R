@@ -312,10 +312,10 @@ test.segmentation_good_01 <- function() {
 
     exp.len = 3
     exp.01.len = 10504
-    exp.02.len = 11818
+    exp.02.len = 11873
     exp.03.len = 9686
 
-    checkTrue(is.list(obs), ms = message)
+    checkTrue(class(obs)=="GRangesList", ms = message)
     checkEquals(length(obs), exp.len, ms = message)
     checkEquals(length(obs[[1]]), exp.01.len, ms = message)
     checkTrue(is(obs[[1]],"GRanges"), ms = message)
@@ -340,11 +340,11 @@ test.segmentation_good_02  <- function() {
 
     exp.len = 4
     exp.01.len = 7972
-    exp.02.len = 8496
+    exp.02.len = 8572
     exp.03.len = 9362
     exp.04.len = 6390
 
-    checkTrue(is.list(obs), ms = message)
+    checkTrue(class(obs)=="GRangesList", ms = message)
     checkEquals(length(obs), exp.len, ms = message)
     checkEquals(length(obs[[1]]), exp.01.len, ms = message)
     checkTrue(is(obs[[1]],"GRanges"), ms = message)
