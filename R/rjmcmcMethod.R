@@ -378,7 +378,7 @@ postTreatment <- function(forwardandReverseReads, seqName = NULL,
 #' after post-treatment or results from different software), a \code{list} with
 #' one entry per prediction is used.
 #'
-#' @param forwardandReverseReads a \code{GRanges} containing forward and
+#' @param reads a \code{GRanges} containing forward and
 #' reverse reads. The \code{GRanges} should contain at least one read.
 #'
 #' @param seqName a \code{character} string containing the label of the
@@ -412,7 +412,7 @@ postTreatment <- function(forwardandReverseReads, seqName = NULL,
 #'
 #' ## Create graph using the synthetic map
 #' plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
-#'             forwardandReverseReads = reads_demo_01)
+#'             reads = reads_demo_01)
 #'
 #' @author Astrid Deschenes
 #' @importFrom IRanges coverage
@@ -420,22 +420,19 @@ postTreatment <- function(forwardandReverseReads, seqName = NULL,
 #' @importFrom grDevices rainbow
 #' @importFrom BiocGenerics start end
 #' @export
-plotNucleosomes <- function(nucleosomePositions, forwardandReverseReads,
+plotNucleosomes <- function(nucleosomePositions, reads,
                                 seqName = NULL, xlab = "position",
                                 ylab = "coverage", names=NULL) {
 
     validatePlotNucleosomesParameters(nucleosomePositions,
-                        forwardandReverseReads, seqName, xlab, ylab, names)
+                        reads, seqName, xlab, ylab, names)
 
     ## Only keep reads associated to the specified chromosome
     if (!is.null(seqName)) {
-        forwardandReverseReads <- forwardandReverseReads[
-            seqnames(forwardandReverseReads) == seqName]
+        reads <- reads[seqnames(reads) == seqName]
     } else {
-        seqName <- as.character(seqnames(forwardandReverseReads))[1]
+        seqName <- as.character(seqnames(reads))[1]
     }
-
-
 
     ## Set variables differently if vector or list
     if (!is.atomic(nucleosomePositions)) {
@@ -458,7 +455,7 @@ plotNucleosomes <- function(nucleosomePositions, forwardandReverseReads,
 
     posNames <- c(extraNames, "Coverage")
 
-    coverageSeqName <- coverage(forwardandReverseReads)[[seqName]]
+    coverageSeqName <- coverage(reads)[[seqName]]
 
     ## Set Y axis maximum range
     y_max <- max(coverageSeqName, na.rm = TRUE) + 10
@@ -470,11 +467,9 @@ plotNucleosomes <- function(nucleosomePositions, forwardandReverseReads,
     y_min <- -1 - (step * nbrItems)
 
     ## Set X axis minimum ans maximum
-    x_min <- min(c(unlist(nucleosomePositions), start(forwardandReverseReads),
-                    end(forwardandReverseReads)))
+    x_min <- min(c(unlist(nucleosomePositions), start(reads), end(reads)))
     x_min <- floor(x_min)
-    x_max <- max(c(unlist(nucleosomePositions), start(forwardandReverseReads),
-                    end(forwardandReverseReads)))
+    x_max <- max(c(unlist(nucleosomePositions), start(reads), end(reads)))
     x_max <- ceiling(x_max)
 
     # Plot coverage

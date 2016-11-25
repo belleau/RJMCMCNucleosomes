@@ -4,7 +4,7 @@
 \alias{plotNucleosomes}
 \title{Generate a graph of nucleosome positions with read coverage}
 \usage{
-plotNucleosomes(nucleosomePositions, forwardandReverseReads, seqName = NULL,
+plotNucleosomes(nucleosomePositions, reads, seqName = NULL,
   xlab = "position", ylab = "coverage", names = NULL)
 }
 \arguments{
@@ -16,7 +16,7 @@ is used. In presence of more thant one predictions (as example, before and
 after post-treatment or results from different software), a \code{list} with
 one entry per prediction is used.}
 
-\item{forwardandReverseReads}{a \code{GRanges} containing forward and
+\item{reads}{a \code{GRanges} containing forward and
 reverse reads. The \code{GRanges} should contain at least one read.}
 
 \item{seqName}{a \code{character} string containing the label of the
@@ -60,7 +60,7 @@ result <- rjmcmc(forwardandReverseReads = reads_demo_01,
 
 ## Create graph using the synthetic map
 plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
-            forwardandReverseReads = reads_demo_01)
+            reads = reads_demo_01)
 
 }
 \author{

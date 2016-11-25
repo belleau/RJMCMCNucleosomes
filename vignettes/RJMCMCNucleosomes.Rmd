@@ -272,8 +272,7 @@ resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos,
 ## 1. nucleosomes from the sample
 ## 2. nucleosomes detected by rjmcmc() function
 ## 3. nucleosomes obtained after post-treament 
-plotNucleosomes(nucleosomePositions = resultsBeforeAndAfter, 
-                    forwardandReverseReads = reads, 
+plotNucleosomes(nucleosomePositions = resultsBeforeAndAfter, reads = reads, 
                     names=c("Sample", "RJMCMC", "After Post-Treatment"))
 ```
 
