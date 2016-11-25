@@ -4,8 +4,8 @@
 \alias{validatePlotNucleosomesParameters}
 \title{Parameters validation for the \code{\link{plotNucleosomes}} function}
 \usage{
-validatePlotNucleosomesParameters(nucleosomePositions, forwardandReverseReads,
-  seqName, xlab, ylab, names)
+validatePlotNucleosomesParameters(nucleosomePositions, reads, seqName, xlab,
+  ylab, names)
 }
 \arguments{
 \item{nucleosomePositions}{a \code{list} or a \code{vector} of
@@ -16,7 +16,7 @@ is used. In presence of more thant one predictions (as example, before and
 after post-treatment or results from different software), a \code{list} with
 one entry per prediction is used.}
 
-\item{forwardandReverseReads}{a \code{GRanges} containing forward and
+\item{reads}{a \code{GRanges} containing forward and
 reverse reads. The \code{GRanges} should contain at least one read.}
 
 \item{seqName}{a \code{character} string containing the label of the
@@ -51,17 +51,16 @@ nucleosomes <- c(1001)
 
 ## The function returns 0 when all parameters are valid
 RJMCMCNucleosomes:::validatePlotNucleosomesParameters(nucleosomePositions =
-nucleosomes, forwardandReverseReads = reads_demo_01,
-seqName = "chr_SYNTHETIC",  xlab = "position",
-ylab = "coverage", names = c("test"))
+nucleosomes, reads = reads_demo_01, seqName = "chr_SYNTHETIC",
+xlab = "position", ylab = "coverage", names = c("test"))
 
 ## The function raises an error when at least one paramater is not valid
 #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#nucleosomePositions = c("hi"), forwardandReverseReads = reads,
+#nucleosomePositions = c("hi"), reads = reads,
 #xlab = "position", ylab = "coverage", names = c("test"))}
 
 #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#nucleosomePositions = nucleosomes, forwardandReverseReads = reads,
+#nucleosomePositions = nucleosomes, reads = reads,
 #xlab = "position", ylab = "coverage", names = c("test_one", "test_false"))}
 
 }

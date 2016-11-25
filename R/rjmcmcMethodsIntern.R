@@ -511,7 +511,7 @@ validatePrepMergeParameters <- function(forwardandReverseReads, seqName,
 #' after post-treatment or results from different software), a \code{list} with
 #' one entry per prediction is used.
 #'
-#' @param forwardandReverseReads a \code{GRanges} containing forward and
+#' @param reads a \code{GRanges} containing forward and
 #' reverse reads. The \code{GRanges} should contain at least one read.
 #'
 #' @param seqName a \code{character} string containing the label of the
@@ -541,24 +541,23 @@ validatePrepMergeParameters <- function(forwardandReverseReads, seqName,
 #'
 #' ## The function returns 0 when all parameters are valid
 #' RJMCMCNucleosomes:::validatePlotNucleosomesParameters(nucleosomePositions =
-#' nucleosomes, forwardandReverseReads = reads_demo_01,
-#' seqName = "chr_SYNTHETIC",  xlab = "position",
-#' ylab = "coverage", names = c("test"))
+#' nucleosomes, reads = reads_demo_01, seqName = "chr_SYNTHETIC",
+#' xlab = "position", ylab = "coverage", names = c("test"))
 #'
 #' ## The function raises an error when at least one paramater is not valid
 #' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#' #nucleosomePositions = c("hi"), forwardandReverseReads = reads,
+#' #nucleosomePositions = c("hi"), reads = reads,
 #' #xlab = "position", ylab = "coverage", names = c("test"))}
 #'
 #' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#' #nucleosomePositions = nucleosomes, forwardandReverseReads = reads,
+#' #nucleosomePositions = nucleosomes, reads = reads,
 #' #xlab = "position", ylab = "coverage", names = c("test_one", "test_false"))}
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
 #'
 validatePlotNucleosomesParameters <- function(nucleosomePositions,
-                    forwardandReverseReads, seqName, xlab, ylab, names) {
+                    reads, seqName, xlab, ylab, names) {
 
     ## Validate that nucleosomePositions is a vector
     if (!is.vector(nucleosomePositions)) {
@@ -571,20 +570,20 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions,
         stop("nucleosomePositions can only contain numerical values")
     }
 
-    ## Validate that forwardandReverseReads is a GRanges object
-    if (!(class(forwardandReverseReads) == "GRanges")) {
-        stop("forwardandReverseReads must be an object of class \'GRanges\'")
+    ## Validate that reads is a GRanges object
+    if (!(class(reads) == "GRanges")) {
+        stop("reads must be an object of class \'GRanges\'")
     }
 
-    ## Validate that the forwardandReverseReads is not empty
-    if (length(forwardandReverseReads) == 0 ) {
-        stop(paste0("forwardandReverseReads must be a non-empty GRanges"))
+    ## Validate that the reads is not empty
+    if (length(reads) == 0 ) {
+        stop(paste0("reads must be a non-empty GRanges"))
     }
 
     ## Validate that when seqName is NULL, only one seqname
     ## must be present in GRanges
     if (is.null(seqName) &&
-        (length(runValue(seqnames(forwardandReverseReads))) > 1)) {
+        (length(runValue(seqnames(reads))) > 1)) {
         stop(paste0("seqName must be the name of one of the chromosomes ",
                     "present in the GRanges when more than one chromosome is ",
                     "present"))
@@ -593,7 +592,7 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions,
     ## When seqName present, it needs to be the name of one of the
     ## chromosomes present in the GRanges
     if (!is.null(seqName) && is.character(seqName) && !(seqName %in%
-                    runValue(seqnames(forwardandReverseReads)))) {
+                    runValue(seqnames(reads)))) {
         stop(paste0("seqName must be a character string corresponding to the ",
                     "name of one of the chromosomes present in the GRanges"))
     }
