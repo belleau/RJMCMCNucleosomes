@@ -640,7 +640,7 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions,
 #' @description Validation of all parameters needed by the public
 #' \code{\link{segmentation}} function.
 #'
-#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#' @param reads a \code{GRanges}, the reads that need to be segmented.
 #'
 #' @param zeta a positive \code{integer} or \code{numeric}, the length
 #' of the nucleosomes. Default: 147.
@@ -667,26 +667,26 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions,
 #' strand = syntheticNucleosomeReads$dataIP$strand)
 #'
 #' ## The function returns 0 when all parameters are valid
-#' RJMCMCNucleosomes:::validateSegmentationParameters(dataIP = sampleGRanges,
+#' RJMCMCNucleosomes:::validateSegmentationParameters(reads = sampleGRanges,
 #' zeta = 147, delta = 30, maxLength = 12000)
 #'
 #' ## The function raises an error when at least one paramater is not valid
 #' #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
-#' #dataIP = c(100), zeta = 147, delta = 30, maxLength = 12000)}
+#' #reads = c(100), zeta = 147, delta = 30, maxLength = 12000)}
 #'
 #' #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
-#' #dataIP = sampleGRanges, zeta = "hi", delta = 30, maxLength = 12000)}
+#' #reads = sampleGRanges, zeta = "hi", delta = 30, maxLength = 12000)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 #'
-validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
+validateSegmentationParameters <- function(reads, zeta = 147, delta,
                                             maxLength) {
     # Validate that dataIP is a GRanges
-    if(!is(dataIP,"GRanges"))
+    if(!is(reads,"GRanges"))
     {
-        stop("dataIP must be \'GRanges\' object.")
+        stop("reads must be \'GRanges\' object.")
     }
 
     ## Validate the zeta parameter

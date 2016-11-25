@@ -4,10 +4,10 @@
 \alias{validateSegmentationParameters}
 \title{Parameters validation for the \code{\link{segmentation}} function}
 \usage{
-validateSegmentationParameters(dataIP, zeta = 147, delta, maxLength)
+validateSegmentationParameters(reads, zeta = 147, delta, maxLength)
 }
 \arguments{
-\item{dataIP}{a \code{GRanges}, the reads that need to be segmented.}
+\item{reads}{a \code{GRanges}, the reads that need to be segmented.}
 
 \item{zeta}{a positive \code{integer} or \code{numeric}, the length
 of the nucleosomes. Default: 147.}
@@ -39,15 +39,15 @@ end = syntheticNucleosomeReads$dataIP$end),
 strand = syntheticNucleosomeReads$dataIP$strand)
 
 ## The function returns 0 when all parameters are valid
-RJMCMCNucleosomes:::validateSegmentationParameters(dataIP = sampleGRanges,
+RJMCMCNucleosomes:::validateSegmentationParameters(reads = sampleGRanges,
 zeta = 147, delta = 30, maxLength = 12000)
 
 ## The function raises an error when at least one paramater is not valid
 #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
-#dataIP = c(100), zeta = 147, delta = 30, maxLength = 12000)}
+#reads = c(100), zeta = 147, delta = 30, maxLength = 12000)}
 
 #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
-#dataIP = sampleGRanges, zeta = "hi", delta = 30, maxLength = 12000)}
+#reads = sampleGRanges, zeta = "hi", delta = 30, maxLength = 12000)}
 
 }
 \author{
