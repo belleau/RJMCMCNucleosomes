@@ -10,7 +10,7 @@ postTreatment(forwardandReverseReads, seqName = NULL, resultRJMCMC,
 }
 \arguments{
 \item{forwardandReverseReads}{a \code{GRanges} containing forward and
-reverse reads. The \code{GRanges} should contain at least one read.}
+reverse reads.}
 
 \item{seqName}{a \code{character} string containing the label of the
 chromosome, present in the \code{GRanges} object, that will be used. The
@@ -52,8 +52,8 @@ data(reads_demo_02)
 ## Nucleosome positioning, running both merge and split functions
 result <- rjmcmc(forwardandReverseReads = reads_demo_02,
             seqName = "chr_SYNTHETIC", nbrIterations = 1000,
-         lambda = 2, kMax = 30,
-            minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
+            lambda = 2, kMax = 30, minInterval = 146,
+            maxInterval = 490, minReads = 3, vSeed = 11)
 
 ## Before post-treatment
 result
