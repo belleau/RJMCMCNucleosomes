@@ -4,7 +4,8 @@
 \alias{validatePlotNucleosomesParameters}
 \title{Parameters validation for the \code{\link{plotNucleosomes}} function}
 \usage{
-validatePlotNucleosomesParameters(nucleosomePositions, reads, xlab, ylab, names)
+validatePlotNucleosomesParameters(nucleosomePositions, forwardandReverseReads,
+  seqName, xlab, ylab, names)
 }
 \arguments{
 \item{nucleosomePositions}{a \code{list} or a \code{vector} of
@@ -15,7 +16,13 @@ is used. In presence of more thant one predictions (as example, before and
 after post-treatment or results from different software), a \code{list} with
 one entry per prediction is used.}
 
-\item{reads}{an \code{IRanges} containing all the reads.}
+\item{forwardandReverseReads}{a \code{GRanges} containing forward and
+reverse reads. The \code{GRanges} should contain at least one read.}
+
+\item{seqName}{a \code{character} string containing the label of the
+chromosome, present in the \code{GRanges} object, that will be used. The
+\code{NULL} value is accepted when only one seqname is
+present in the \code{GRanges}; the only seqname present will be used.}
 
 \item{xlab}{a \code{character} string containing the label of the x-axis.}
 
@@ -36,25 +43,26 @@ Validation of all parameters needed by the public
 }
 \examples{
 
-## Create a IRanges object with 2 reads
-reads <- IRanges(start=c(950, 969), end=c(1020, 1022))
+## Load GRanges dataset
+data(reads_demo_01)
 
 ## Create a vector containing nucleosome positions
 nucleosomes <- c(1001)
 
 ## The function returns 0 when all parameters are valid
 RJMCMCNucleosomes:::validatePlotNucleosomesParameters(nucleosomePositions =
-nucleosomes, reads = reads, xlab = "position", ylab = "coverage",
-names = c("test"))
+nucleosomes, forwardandReverseReads = reads_demo_01,
+seqName = "chr_SYNTHETIC",  xlab = "position",
+ylab = "coverage", names = c("test"))
 
 ## The function raises an error when at least one paramater is not valid
 #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#nucleosomePositions = c("hi"), reads = reads, xlab = "position",
-#ylab = "coverage", names = c("test"))}
+#nucleosomePositions = c("hi"), forwardandReverseReads = reads,
+#xlab = "position", ylab = "coverage", names = c("test"))}
 
 #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#nucleosomePositions = nucleosomes, reads = reads, xlab = "position",
-#ylab = "coverage", names = c("test_one", "test_false"))}
+#nucleosomePositions = nucleosomes, forwardandReverseReads = reads,
+#xlab = "position", ylab = "coverage", names = c("test_one", "test_false"))}
 
 }
 \author{
