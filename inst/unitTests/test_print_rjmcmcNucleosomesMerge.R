@@ -21,16 +21,16 @@ if(FALSE) {
 ## print.rjmcmcNucleosomesMerge() function
 ###########################################################
 
-test.print_rjmcmcNucleosomesMerge_test_returned_value <- function() {
-
-    directoryWithRDSFiles <- system.file("extdata", package = "RJMCMCNucleosomes")
-
-    resultInit <- mergeAllRDSFilesFromDirectory(directoryWithRDSFiles)
-
-    result <- print(resultInit)
-
-    message <- paste0(" test.print_rjmcmcNucleosomesMerge_test_returned_value() ",
-                          "- print method did not returned expected value")
-
-    checkEquals(resultInit, result, msg = message)
-}
+# test.print_rjmcmcNucleosomesMerge_test_returned_value <- function() {
+#
+#     directoryWithRDSFiles <- system.file("extdata", package = "RJMCMCNucleosomes")
+#
+#     resultInit <- mergeAllRDSFilesFromDirectory(directoryWithRDSFiles)
+#
+#     result <- print(resultInit)
+#
+#     message <- paste0(" test.print_rjmcmcNucleosomesMerge_test_returned_value() ",
+#                           "- print method did not returned expected value")
+#
+#     checkEquals(resultInit, result, msg = message)
+# }

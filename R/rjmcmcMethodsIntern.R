@@ -277,7 +277,8 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     ## Create list that will contain data from all files
     result        <- list()
     result$k      <- 0
-    mu <- setNames(vector("list", length(arrayOfFiles)),  arrayOfFiles)
+    #mu <- setNames(vector("list", length(arrayOfFiles)),  arrayOfFiles)
+    mu <- GRangesList()
 
     ## Extract information from each file
     for (fileName in arrayOfFiles) {
@@ -292,9 +293,9 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     }
 
     ## Ensure that all values are ordered in ascending order of mu
-    mu <- unlist(mu, use.names=FALSE)
-    newOrder      <- order(mu)
-    result$mu     <- mu[newOrder]
+    #mu <- sort(unlist(mu, use.names=FALSE))
+    #newOrder      <- order(mu)
+    result$mu     <- sort(unlist(mu, use.names=FALSE)) #mu[newOrder]
 
     ## Assign class type to list
     class(result)<-"rjmcmcNucleosomesMerge"
@@ -778,7 +779,7 @@ validateSegmentationParameters <- function(reads, zeta = 147, delta,
 #' @keywords internal
 #'
 postMerge <- function(forwardandReverseReads,
-                        resultRJMCMC, extendingSize, chrLength, minReads = 5)
+                        resultRJMCMC, seqName = NULL, extendingSize, chrLength, minReads = 5)
 {
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
@@ -804,7 +805,7 @@ postMerge <- function(forwardandReverseReads,
         rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
 
         ## Find nucleosomes present in same regions
-        result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak),
+        result <- findConsensusPeakRegions(peaks = resultRJMCMC$mu, #c(rjmcmc_peak)
                                         chrInfo = seqinfo,
                                         extendingSize = extendingSize,
                                         expandToFitPeakRegion = FALSE,
