@@ -4,8 +4,8 @@
 \alias{plotNucleosomes}
 \title{Generate a graph of nucleosome positions with read coverage}
 \usage{
-plotNucleosomes(nucleosomePositions, reads, xlab = "position",
-  ylab = "coverage", names = NULL)
+plotNucleosomes(nucleosomePositions, reads, seqName = NULL,
+  xlab = "position", ylab = "coverage", names = NULL)
 }
 \arguments{
 \item{nucleosomePositions}{a \code{list} or a \code{vector} of
@@ -16,7 +16,14 @@ is used. In presence of more thant one predictions (as example, before and
 after post-treatment or results from different software), a \code{list} with
 one entry per prediction is used.}
 
-\item{reads}{an \code{IRanges} containing all the reads.}
+\item{reads}{a \code{GRanges} containing forward and
+reverse reads. The \code{GRanges} should contain at least one read.}
+
+\item{seqName}{a \code{character} string containing the label of the
+chromosome, present in the \code{GRanges} object, that will be used. The
+\code{NULL} value is accepted when only one seqname is
+present in the \code{GRanges}; the only seqname present will be used.
+Default: \code{NULL}.}
 
 \item{xlab}{a \code{character} string containing the label of the x-axis.}
 
@@ -46,15 +53,14 @@ using the same reads.
 data(reads_demo_01)
 
 result <- rjmcmc(forwardandReverseReads = reads_demo_01,
+            seqName = "chr_SYNTHETIC",
             nbrIterations = 4000, lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 292, minReads = 5,
             vSeed = 10213)
 
-reads <-IRanges(start = start(reads_demo_01),
-            end = end(reads_demo_01))
-
 ## Create graph using the synthetic map
-plotNucleosomes(nucleosomePositions = result$mu, reads = reads)
+plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
+            reads = reads_demo_01)
 
 }
 \author{

@@ -193,6 +193,8 @@ validateRJMCMCParameters <- function(forwardandReverseReads,
                     "name of one of the chromosomes present in the GRanges"))
     }
 
+    ## When seqName present, it needs to be the name of one of the
+    ## chromosomes present in the GRanges
     if (!is.null(seqName) && is.character(seqName) && !(seqName %in%
                             runValue(seqnames(forwardandReverseReads)))) {
         stop(paste0("seqName must be a character string corresponding to the ",
@@ -465,9 +467,10 @@ validatePrepMergeParameters <- function(forwardandReverseReads, seqName,
                     "name of one of the chromosomes present in the GRanges"))
     }
 
-    ## Validate that the seqName is present in the GRanges
+    ## When seqName present, it needs to be the name of one of the
+    ## chromosomes present in the GRanges
     if (!is.null(seqName) && is.character(seqName) && !(seqName %in%
-                            runValue(seqnames(forwardandReverseReads)))) {
+                runValue(seqnames(forwardandReverseReads)))) {
         stop(paste0("seqName must be a character string corresponding to the ",
                     "name of one of the chromosomes present in the GRanges"))
     }
@@ -508,7 +511,13 @@ validatePrepMergeParameters <- function(forwardandReverseReads, seqName,
 #' after post-treatment or results from different software), a \code{list} with
 #' one entry per prediction is used.
 #'
-#' @param reads an \code{IRanges} containing all the reads.
+#' @param reads a \code{GRanges} containing forward and
+#' reverse reads. The \code{GRanges} should contain at least one read.
+#'
+#' @param seqName a \code{character} string containing the label of the
+#' chromosome, present in the \code{GRanges} object, that will be used. The
+#' \code{NULL} value is accepted when only one seqname is
+#' present in the \code{GRanges}; the only seqname present will be used.
 #'
 #' @param xlab a \code{character} string containing the label of the x-axis.
 #'
@@ -524,31 +533,31 @@ validatePrepMergeParameters <- function(forwardandReverseReads, seqName,
 #'
 #' @examples
 #'
-#' ## Create a IRanges object with 2 reads
-#' reads <- IRanges(start=c(950, 969), end=c(1020, 1022))
+#' ## Load GRanges dataset
+#' data(reads_demo_01)
 #'
 #' ## Create a vector containing nucleosome positions
 #' nucleosomes <- c(1001)
 #'
 #' ## The function returns 0 when all parameters are valid
 #' RJMCMCNucleosomes:::validatePlotNucleosomesParameters(nucleosomePositions =
-#' nucleosomes, reads = reads, xlab = "position", ylab = "coverage",
-#' names = c("test"))
+#' nucleosomes, reads = reads_demo_01, seqName = "chr_SYNTHETIC",
+#' xlab = "position", ylab = "coverage", names = c("test"))
 #'
 #' ## The function raises an error when at least one paramater is not valid
 #' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#' #nucleosomePositions = c("hi"), reads = reads, xlab = "position",
-#' #ylab = "coverage", names = c("test"))}
+#' #nucleosomePositions = c("hi"), reads = reads,
+#' #xlab = "position", ylab = "coverage", names = c("test"))}
 #'
 #' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#' #nucleosomePositions = nucleosomes, reads = reads, xlab = "position",
-#' #ylab = "coverage", names = c("test_one", "test_false"))}
+#' #nucleosomePositions = nucleosomes, reads = reads,
+#' #xlab = "position", ylab = "coverage", names = c("test_one", "test_false"))}
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
 #'
-validatePlotNucleosomesParameters <- function(nucleosomePositions, reads,
-                                                xlab, ylab, names) {
+validatePlotNucleosomesParameters <- function(nucleosomePositions,
+                    reads, seqName, xlab, ylab, names) {
 
     ## Validate that nucleosomePositions is a vector
     if (!is.vector(nucleosomePositions)) {
@@ -561,9 +570,37 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions, reads,
         stop("nucleosomePositions can only contain numerical values")
     }
 
-    ## Validate that reads is a IRanges object
-    if (!(class(reads) == "IRanges")) {
-        stop("reads must be an object of class \'IRanges\'")
+    ## Validate that reads is a GRanges object
+    if (!(class(reads) == "GRanges")) {
+        stop("reads must be an object of class \'GRanges\'")
+    }
+
+    ## Validate that the reads is not empty
+    if (length(reads) == 0 ) {
+        stop(paste0("reads must be a non-empty GRanges"))
+    }
+
+    ## Validate that when seqName is NULL, only one seqname
+    ## must be present in GRanges
+    if (is.null(seqName) &&
+        (length(runValue(seqnames(reads))) > 1)) {
+        stop(paste0("seqName must be the name of one of the chromosomes ",
+                    "present in the GRanges when more than one chromosome is ",
+                    "present"))
+    }
+
+    ## When seqName present, it needs to be the name of one of the
+    ## chromosomes present in the GRanges
+    if (!is.null(seqName) && is.character(seqName) && !(seqName %in%
+                    runValue(seqnames(reads)))) {
+        stop(paste0("seqName must be a character string corresponding to the ",
+                    "name of one of the chromosomes present in the GRanges"))
+    }
+
+    ## Validate that when not NULL, seqName is a string
+    if (!is.null(seqName) && !is.character(seqName)) {
+        stop(paste0("seqName must be a character string corresponding to the ",
+                    "name of one of the chromosomes present in the GRanges"))
     }
 
     ## Validate that xlab is a IRanges object
