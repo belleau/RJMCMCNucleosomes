@@ -297,7 +297,7 @@ mergeRDSFiles <- function(RDSFiles) {
 #' Beware that each chromosome must be treated separatly.
 #'
 #' @param forwardandReverseReads a \code{GRanges} containing forward and
-#' reverse reads. The \code{GRanges} should contain at least one read.
+#' reverse reads.
 #'
 #' @param seqName a \code{character} string containing the label of the
 #' chromosome, present in the \code{GRanges} object, that will be used. The
@@ -333,8 +333,8 @@ mergeRDSFiles <- function(RDSFiles) {
 #' ## Nucleosome positioning, running both merge and split functions
 #' result <- rjmcmc(forwardandReverseReads = reads_demo_02,
 #'             seqName = "chr_SYNTHETIC", nbrIterations = 1000,
-#'          lambda = 2, kMax = 30,
-#'             minInterval = 146, maxInterval = 490, minReads = 3, vSeed = 11)
+#'             lambda = 2, kMax = 30, minInterval = 146,
+#'             maxInterval = 490, minReads = 3, vSeed = 11)
 #'
 #' ## Before post-treatment
 #' result
@@ -385,7 +385,14 @@ postTreatment <- function(forwardandReverseReads, seqName = NULL,
 #' after post-treatment or results from different software), a \code{list} with
 #' one entry per prediction is used.
 #'
-#' @param reads an \code{IRanges} containing all the reads.
+#' @param reads a \code{GRanges} containing forward and
+#' reverse reads. The \code{GRanges} should contain at least one read.
+#'
+#' @param seqName a \code{character} string containing the label of the
+#' chromosome, present in the \code{GRanges} object, that will be used. The
+#' \code{NULL} value is accepted when only one seqname is
+#' present in the \code{GRanges}; the only seqname present will be used.
+#' Default: \code{NULL}.
 #'
 #' @param xlab a \code{character} string containing the label of the x-axis.
 #'
@@ -405,15 +412,14 @@ postTreatment <- function(forwardandReverseReads, seqName = NULL,
 #' data(reads_demo_01)
 #'
 #' result <- rjmcmc(forwardandReverseReads = reads_demo_01,
+#'             seqName = "chr_SYNTHETIC",
 #'             nbrIterations = 4000, lambda = 2, kMax = 30,
 #'             minInterval = 146, maxInterval = 292, minReads = 5,
 #'             vSeed = 10213)
 #'
-#' reads <-IRanges(start = start(reads_demo_01),
-#'             end = end(reads_demo_01))
-#'
 #' ## Create graph using the synthetic map
-#' plotNucleosomes(nucleosomePositions = result$mu, reads = reads)
+#' plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
+#'             reads = reads_demo_01)
 #'
 #' @author Astrid Deschenes
 #' @importFrom IRanges coverage
@@ -421,11 +427,19 @@ postTreatment <- function(forwardandReverseReads, seqName = NULL,
 #' @importFrom grDevices rainbow
 #' @importFrom BiocGenerics start end
 #' @export
-plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
+plotNucleosomes <- function(nucleosomePositions, reads,
+                                seqName = NULL, xlab = "position",
                                 ylab = "coverage", names=NULL) {
 
-    validatePlotNucleosomesParameters(nucleosomePositions, reads, xlab,
-                                        ylab, names)
+    validatePlotNucleosomesParameters(nucleosomePositions,
+                        reads, seqName, xlab, ylab, names)
+
+    ## Only keep reads associated to the specified chromosome
+    if (!is.null(seqName)) {
+        reads <- reads[seqnames(reads) == seqName]
+    } else {
+        seqName <- as.character(seqnames(reads))[1]
+    }
 
     ## Set variables differently if vector or list
     if (!is.atomic(nucleosomePositions)) {
@@ -448,14 +462,16 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
 
     posNames <- c(extraNames, "Coverage")
 
+    coverageSeqName <- coverage(reads)[[seqName]]
+
     ## Set Y axis maximum range
-    y_max <- max(coverage(reads), na.rm = TRUE) + 10
+    y_max <- max(coverageSeqName, na.rm = TRUE) + 10
 
     ## Step in between each result, when more than one result
     step = ceiling(y_max / 80)
 
     ## Always set Y axis minimum to zero
-    y_min <- -1 - (step*nbrItems)
+    y_min <- -1 - (step * nbrItems)
 
     ## Set X axis minimum ans maximum
     x_min <- min(c(unlist(nucleosomePositions), start(reads), end(reads)))
@@ -464,9 +480,9 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
     x_max <- ceiling(x_max)
 
     # Plot coverage
-    coverage <- c(0, as.integer(coverage(reads)), 0)
+    coverage <- c(0, as.integer(coverageSeqName), 0)
     position <- c(0, 1:(length(coverage) - 1))
-    plot(coverage(reads), type = "l", col = "gray",
+    plot(coverageSeqName, type = "l", col = "gray",
             ylim = c(y_min, y_max), xlim = c(x_min, x_max), xlab = xlab,
             ylab = ylab)
     polygon(c(x_min, position, 0), c(0, coverage, 0), col="gray",
@@ -526,12 +542,14 @@ plotNucleosomes <- function(nucleosomePositions, reads, xlab = "position",
 #' segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 1000)
 #'
 #' @author Pascal Belleau, Astrid Deschenes
+#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom IRanges splitAsList
 #' @export
 segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
 
     validateSegmentationParameters(dataIP, zeta, delta, maxLength)
 
-    # Set min and max position
+    # Set min and max positions
     posMin <- min(start(dataIP))
     posMax <- max(end(dataIP))
 

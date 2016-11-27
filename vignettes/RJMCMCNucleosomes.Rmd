@@ -73,12 +73,12 @@ library(RJMCMCNucleosomes)
 
 A typical **RJMCMCNucleosomes** analysis consists of the following steps:
 
-1. Segment the genome into candidate regions that have sufficient aligned
-reads. The region cannot be larger than one chromosome.
+1. Segment the analysed region into candidate regions that have sufficient 
+aligned reads. The initial region cannot be wider than one chromosome.
 2. Estimate nucleosome positions for each region.
-3. Regroup all regions together. The final region cannot be larger than
+3. Regroup all regions together. The final region cannot be wider than
 one chromosome.
-4. Post-process predictions of the regrouped region to correct certain 
+4. Post-process predictions of the regrouped region to revise certain 
 predictions.
 
 
@@ -127,11 +127,11 @@ plot(sample)
 It is suggested, in order to accelerate the learning process, to split the 
 analyzed region into segments to accelerate the analysis. Moreover, 
 it is mandatory to analyse each chromosome separately since the 
-\code{rjmcmc} function can only analyze one chromosome at the time.
+`rjmcmc` function can only analyze one chromosome at the time.
 
-Region segmentation can be done using the \code{segmentation} function. Beware
-that larger is the size of a segment (parameter \code{maxLength}), the higher 
-the number of iterations need to be to reach convergence during nucleosome 
+Region segmentation can be done using the `segmentation` function. Beware
+that larger is the size of a segment (parameter `maxLength`), the higher 
+the number of iterations needs to be to reach convergence during nucleosome 
 predictions step.
 
 ```{r segment01, warning=FALSE, collapse=TRUE, message=FALSE} 
@@ -155,7 +155,7 @@ length(sampleSegmented)
 
 ## Run RJMCMCNucleosomes for nucleosome predictions
 
-The \code{rjmcmc} function must be run on each candidate region. As an 
+The `rjmcmc` function must be run on each candidate region. As an 
 example, the first candidate region is processed using a very low number 
 of iterations. On real data, the number of iterations should be higher 
 (easily 1000000 iterations).
@@ -188,8 +188,9 @@ to merge is passed to it
 
 Beware that segment from different chromosomes should not be merged together.
 
-The segments of the sample created sooner have all been processed (using 
-500000 iterations) and saved in RDS files. Those will now be merged together.
+The segments of the sample, which has been created sooner, have all been 
+processed (using 500000 iterations) and saved in RDS files. Those will 
+now be merged together.
 
 ```{r regroup01, warning=FALSE, collapse=TRUE, message=FALSE}
 ## The directory containing the results of all segments
@@ -214,11 +215,11 @@ nucleosomes.
 A function, that merges closely positioned nucleosomes, has been implemented 
 to rectify the over splitting and provide more conservative results.
 
-The \code{postTreatment} function must be run on the entire analyzed region to
+The `postTreatment` function must be run on the entire analyzed region to
 be efficient. __It should not be run on segmented results__. The function 
 needs the positions of the reads used for the RJMCMC analysis.
 
-The value of \code{extendingSize} should be kept low (bellow 20). A larger 
+The value of `extendingSize` should be kept low (below 20). A larger 
 value could cause the possible merge of true nucleosomes. 
 
 ```{r postProcess01, collapse=TRUE, message=FALSE}
@@ -239,7 +240,7 @@ value could cause the possible merge of true nucleosomes.
 # length(resultsPostTreatment)
 ```
 
-The \code{postTreatment} function can significantly reduces the number of 
+The `postTreatment` function can significantly reduce the number of 
 nucleosomes by merging closely positioned nucleosomes.
 
 
@@ -248,16 +249,16 @@ nucleosomes by merging closely positioned nucleosomes.
 Visualisation of the predicted nucleosomes, with its associated read coverage, 
 is available in the **RJMCMCNucleosomes** package.
 
-The \code{plotNucleosomes} function needs the nucleosome positions as well as 
-the reads, in a \code{IRanges} format, to create a graph. When reads are used 
+The `plotNucleosomes` function needs the nucleosome positions and the reads, 
+in an `GRanges` format, to create a graph. When reads are used 
 to predict more than one set of nucleosome positions (as examples, before and
 after post-treatment or results from different software), the predictions can
-be merged in a \code{list} so that all predictions can be plotted 
+be merged in a `list` so that all predictions can be plotted 
 simultaneously.
 
 ```{r visualisation, collapse=TRUE, message=FALSE, fig.height=6.5, fig.width=8}
-## Extract reads to create an IRange
-# reads <-IRanges(start = sample$dataIP$start, end=sample$dataIP$end)
+## Extract reads to create a GRanges
+reads <-GRanges(sample$dataIP)
 
 ## Merge predictions from before post-treatment and after post-treatment in 
 ## a list so that both results will be shown in graph
@@ -271,9 +272,48 @@ simultaneously.
 ## 1. nucleosomes from the sample
 ## 2. nucleosomes detected by rjmcmc() function
 ## 3. nucleosomes obtained after post-treament 
-#plotNucleosomes(resultsBeforeAndAfter, reads, 
-#                    names=c("Sample", "RJMCMC", "After Post-Treatment"))
+plotNucleosomes(nucleosomePositions = resultsBeforeAndAfter, reads = reads, 
+                    names=c("Sample", "RJMCMC", "After Post-Treatment"))
 ```
+
+# RJMCMCNucleosomes analysis of one chromosome in one step
+
+The `rjmcmcCHR` can analyse an entire chromosome by automatically 
+split the reads into segments, run `rjmcmc` on each segment, merge and
+post-process the results. The intermediary steps are conserved in a 
+directory set by the `dirOut` parameter.
+
+On real chromosome data, the `rjmcmcCHR` can take some time to execute. We
+strongly suggest running it on a multi-core computer and to use a maximum
+of cores available by setting the `nbCores` parameter. 
+
+```{r rjmcmcCHR, collapse=TRUE, message=FALSE, eval=FALSE}
+## Load synthetic dataset of reads
+data(syntheticNucleosomeReads)
+
+## Number of reads in the dataset
+nrow(syntheticNucleosomeReads$dataIP)
+
+## Use the dataset to create a GRanges object
+sampleGRanges <- GRanges(syntheticNucleosomeReads$dataIP)
+
+## All reads are related to one chromosome called "chr_SYNTHETIC"
+seqnames(sampleGRanges)
+
+## Run RJMCMC on all reads
+result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges, 
+                seqName = "chr_SYNTHETIC", dirOut = "testRJMCMCCHR",
+                zeta = 147, delta=50, maxLength=1200,
+                nbrIterations = 500, lambda = 3, kMax = 30,
+                minInterval = 146, maxInterval = 292, minReads = 5,
+                vSeed = 10113, nbCores = 2, saveAsRDS = FALSE, 
+                saveSEG = FALSE)
+
+result
+```
+When the `saveSEG` parameter is set to `TRUE`, the segments created
+during the segmentation step are saved in RDS files. To save the results for
+each segment, the `saveRDS` parameter has to be set to `TRUE`.
 
 
 # Session info
