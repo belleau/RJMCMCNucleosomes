@@ -816,8 +816,8 @@ postMerge <- function(forwardandReverseReads,
         #                seqinfo = seqinfo)
         rjmcmc_peak <- resultRJMCMC$mu
         nbPeaks <- length(rjmcmc_peak)
-        #names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
-        #rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
+        names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
+        rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
 
         ## Find nucleosomes present in same regions
         result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak),
