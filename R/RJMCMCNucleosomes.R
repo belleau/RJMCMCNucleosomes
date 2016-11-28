@@ -74,8 +74,7 @@ NULL
 #' data(reads_demo_01)
 #'
 #' ## Nucleosome positioning
-#' rjmcmc(forwardandReverseReads = reads_demo_01,
-#'             nbrIterations = 100, lambda = 3, kMax = 30,
+#' rjmcmc(reads = reads_demo_01, nbrIterations = 100, lambda = 3, kMax = 30,
 #'             minInterval = 146, maxInterval = 292, minReads = 5)
 #'
 NULL
@@ -125,8 +124,7 @@ NULL
 #' ## Nucleosome positioning
 #' ## Since there is only one chromosome present in reads_demo_02, the name
 #' ## of the chromosome does not need to be specified
-#' rjmcmc(forwardandReverseReads = reads_demo_02,
-#'             nbrIterations = 150, lambda = 3, kMax = 30,
+#' rjmcmc(reads = reads_demo_02, nbrIterations = 150, lambda = 3, kMax = 30,
 #'             minInterval = 144, maxInterval = 290, minReads = 6)
 #'
 NULL
@@ -200,12 +198,13 @@ NULL
 #' ## Results before post-treatment
 #' RJMCMC_result$mu
 #'
+#' ## TODO
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
-#'     extendingSize = 60, chrLength = 100000, resultRJMCMC = RJMCMC_result)
+#' ##postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
+#' ##    extendingSize = 60, chrLength = 100000, resultRJMCMC = RJMCMC_result)
 #'
 #' ## Results after post-treatment
-#' postResult
+#' ##postResult
 #'
 NULL
 

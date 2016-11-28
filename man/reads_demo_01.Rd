@@ -21,8 +21,7 @@ used to test the \code{rjmcmc} function.
 data(reads_demo_01)
 
 ## Nucleosome positioning
-rjmcmc(forwardandReverseReads = reads_demo_01,
-            nbrIterations = 100, lambda = 3, kMax = 30,
+rjmcmc(reads = reads_demo_01, nbrIterations = 100, lambda = 3, kMax = 30,
             minInterval = 146, maxInterval = 292, minReads = 5)
 
 }

@@ -18,7 +18,7 @@ if(FALSE) {
 
 
 file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                pattern = "newSeg_2.rds",
+                pattern = "RJMCMC_seg_02.RDS",
                 full.names = TRUE)
 
 data_002 <- readRDS(file_002)
@@ -234,7 +234,7 @@ test.validateRJMCMCParameters_nbrIterations_NA <- function() {
                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                         c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = NULL,
+        reads = reads, seqName = NULL,
         nbrIterations = NA,
         kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -254,7 +254,7 @@ test.validateRJMCMCParameters_nbrIterations_zero <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = NULL,
+        reads = reads, seqName = NULL,
         nbrIterations = 0,
         kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -274,7 +274,7 @@ test.validateRJMCMCParameters_nbrIterations_negative <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = -1,
         kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -294,7 +294,7 @@ test.validateRJMCMCParameters_kMax_NA <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = NA, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -314,7 +314,7 @@ test.validateRJMCMCParameters_kMax_zero <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters (
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 0, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -334,7 +334,7 @@ test.validateRJMCMCParameters_kMax_negative <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters (
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = -1, lambda = 1, minReads = 5, minInterval = 146,
         maxInterval = 292,
@@ -354,7 +354,7 @@ test.validateRJMCMCParameters_minReads_NA <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = NULL,
+        reads = reads, seqName = NULL,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = NA, minInterval = 146,
         maxInterval = 292,
@@ -374,7 +374,7 @@ test.validateRJMCMCParameters_minReads_zero <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 0, minInterval = 146,
         maxInterval = 292,
@@ -394,7 +394,7 @@ test.validateRJMCMCParameters_minReads_negative <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 3, lambda = 1, minReads = -1, minInterval = 146,
         maxInterval = 292,
@@ -414,7 +414,7 @@ test.validateRJMCMCParameters_lambda_NA <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = NA, minReads = 2, minInterval = 146,
         maxInterval = 292,
@@ -434,7 +434,7 @@ test.validateRJMCMCParameters_lambda_zero <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = NULL,
+        reads = reads, seqName = NULL,
         nbrIterations = 2,
         kMax = 10, lambda = 0, minReads = 3, minInterval = 146,
         maxInterval = 292,
@@ -454,7 +454,7 @@ test.validateRJMCMCParameters_lambda_negative <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = -1, minReads = 1, minInterval = 146,
         maxInterval = 292,
@@ -466,32 +466,31 @@ test.validateRJMCMCParameters_lambda_negative <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when forwardandReverseReads is NA
-test.validateRJMCMCParameters_forwardandReverseReads_NA <- function() {
+## Test the result when reads is NA
+test.validateRJMCMCParameters_reads_NA <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = NA,
-        nbrIterations = 2,
+        reads = NA, nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
         adaptIterationsToReads = FALSE), error=conditionMessage)
-    exp <- paste0("forwardandReverseReads must be a GRanges")
-    message <- paste0(" test.validateRJMCMCParameters_forwardandReverseReads_NA() ",
-                      "- NA value for forwardandReverseReads did not ",
+    exp <- paste0("reads must be a GRanges")
+    message <- paste0(" test.validateRJMCMCParameters_reads_NA() ",
+                      "- NA value for reads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when forwardandReverseReads is empty
-test.validateRJMCMCParameters_forwardandReverseReads_empty <- function() {
+## Test the result when reads is empty
+test.validateRJMCMCParameters_reads_empty <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = GRanges(), seqName = NULL,
+        reads = GRanges(), seqName = NULL,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292, vSeed = -1,
         adaptIterationsToReads = FALSE), error=conditionMessage)
     exp <- 0
-    message <- paste0(" test.validateRJMCMCParameters_forwardandReverseReads_empty() ",
-                        "- Empty GRanges for forwardandReverseReads did not ",
+    message <- paste0(" test.validateRJMCMCParameters_reads_empty() ",
+                        "- Empty GRanges for reads did not ",
                         "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -504,8 +503,7 @@ test.validateRJMCMCParameters_seqName_NULL_GRanges_complex <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = NULL,
-        nbrIterations = 2,
+        reads = reads, seqName = NULL, nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292, vSeed = -1,
         adaptIterationsToReads = FALSE), error=conditionMessage)
@@ -525,7 +523,7 @@ test.validateRJMCMCParameters_seqName_not_string <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = 333,
+        reads = reads, seqName = 333,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292, vSeed = -1,
@@ -546,7 +544,7 @@ test.validateRJMCMCParameters_seqName_not_in_GRanges <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr3",
+        reads = reads, seqName = "chr3",
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292, vSeed = -1,
@@ -568,7 +566,7 @@ test.validateRJMCMCParameters_adaptIterationsToReads_string <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
@@ -588,7 +586,7 @@ test.validateRJMCMCParameters_adaptIterationsToReads_number <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = NULL,
+        reads = reads, seqName = NULL,
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
@@ -608,7 +606,7 @@ test.validateRJMCMCParameters_vSeed_number <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,
@@ -628,7 +626,7 @@ test.validateRJMCMCParameters_all_valid <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- RJMCMCNucleosomes:::validateRJMCMCParameters(
-        forwardandReverseReads = reads, seqName = "chr1",
+        reads = reads, seqName = "chr1",
         nbrIterations = 2,
         kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
         maxInterval = 292,

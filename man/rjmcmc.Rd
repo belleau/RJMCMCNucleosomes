@@ -4,13 +4,14 @@
 \alias{rjmcmc}
 \title{Nucleosome positioning mapping on a segment}
 \usage{
-rjmcmc(forwardandReverseReads, seqName = NULL, nbrIterations, kMax,
-  lambda = 3, minInterval, maxInterval, minReads = 5,
-  adaptIterationsToReads = TRUE, vSeed = -1, saveAsRDS = FALSE)
+rjmcmc(reads, seqName = NULL, nbrIterations, kMax, lambda = 3, minInterval,
+  maxInterval, minReads = 5, adaptIterationsToReads = TRUE, vSeed = -1,
+  saveAsRDS = FALSE)
 }
 \arguments{
-\item{forwardandReverseReads}{a \code{GRanges} containing forward and
-reverse reads.}
+\item{reads}{a \code{GRanges} containing forward and
+reverse reads. Beware that the start position of
+a reverse read is always higher that the end positition.}
 
 \item{seqName}{a \code{character} string containing the label of the
 chromosome, present in the \code{GRanges} object, that will be used. The
@@ -59,9 +60,10 @@ a \code{list} of \code{class} "rjmcmcNucleosomes" containing:
 \item \code{call} the matched call.
 \item \code{k} a \code{integer}, the final estimation of the number
 of nucleosomes. \code{0} when no nucleosome is detected.
-\item \code{mu} a \code{vector} of \code{numeric} of length
-\code{k}, the positions of the nucleosomes. \code{NA} when no nucleosome is
-detected.
+\item \code{mu} a \code{GRanges} containing the positions of the
+nucleosomes and '*' as strand. The \code{seqnames} of the \code{GRanges}
+correspond to the \code{seqName} input value. \code{NA} when no nucleosome
+is detected.
 \item \code{k_max} a \code{integer}, the maximum number of nucleosomes
 obtained during the iteration process. \code{NA} when no nucleosome is
 detected.
@@ -80,8 +82,7 @@ on segments that are smaller sections of the chromosome.
 data(reads_demo_01)
 
 ## Nucleosome positioning, running both merge and split functions
-result <- rjmcmc(forwardandReverseReads = reads_demo_01,
-            seqName = "chr_SYNTHETIC",
+result <- rjmcmc(reads = reads_demo_01, seqName = "chr_SYNTHETIC",
             nbrIterations = 1000, lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 292, minReads = 5,
             vSeed = 10113, saveAsRDS = FALSE)

@@ -24,10 +24,11 @@ Validation of all parameters needed by the public
 
 ## Loading a file
 file_test <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-pattern = "newSeg_2.rds", full.names = TRUE)
+pattern = "RJMCMC_seg_02.RDS", full.names = TRUE)
 
+## TODO
 ## Testing using a real file
-RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
+##RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
 
 }
 \author{

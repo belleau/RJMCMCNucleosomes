@@ -108,7 +108,7 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #' @description Validation of all parameters needed by the public
 #' \code{\link{rjmcmc}} function.
 #'
-#' @param forwardandReverseReads a \code{GRanges} containing all forward
+#' @param reads a \code{GRanges} containing all forward
 #' and reverse reads.The start positions of both reads are going to be used
 #' for the analysis. Beware that the start position of
 #' a reverse read is always higher that the end positition.
@@ -158,32 +158,32 @@ rjmcmcNucleo <- function(startPosForwardReads,
 #'     strand = Rle(strand(c("-", "+", "-", "+", "-")), c(1, 2, 2, 3, 2)))
 #'
 #' ## The function returns 0 when all paramaters are valid
-#' RJMCMCNucleosomes:::validateRJMCMCParameters(forwardandReverseReads = reads,
+#' RJMCMCNucleosomes:::validateRJMCMCParameters(reads = reads,
 #' seqName = "chr1", nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1,
 #' minInterval = 100, maxInterval = 200, adaptIterationsToReads = TRUE,
 #' vSeed = 100)
 #'
 #' ## The function raises an error when at least one paramater is not valid
 #' \dontrun{RJMCMCNucleosomes:::validateRJMCMCParameters(
-#' forwardandReverseReads = NA, seqName = "chr1",
+#' reads = NA, seqName = "chr1",
 #' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
 #' maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 #'
 #' @author Astrid Deschenes
 #' @importFrom S4Vectors isSingleInteger isSingleNumber runValue
 #' @keywords internal
-validateRJMCMCParameters <- function(forwardandReverseReads,
-                                        seqName, nbrIterations, kMax, lambda,
+validateRJMCMCParameters <- function(reads,seqName, nbrIterations,
+                                        kMax, lambda,
                                         minInterval, maxInterval, minReads,
                                         adaptIterationsToReads, vSeed) {
 
-    ## Validate that the forwardandReverseReads is a GRanges
-    if (!(class(forwardandReverseReads) == "GRanges" )) {
-        stop(paste0("forwardandReverseReads must be a GRanges"))
+    ## Validate that the reads is a GRanges
+    if (!(class(reads) == "GRanges" )) {
+        stop(paste0("reads must be a GRanges"))
     }
 
     if (is.null(seqName) &&
-        (length(runValue(seqnames(forwardandReverseReads))) > 1)) {
+        (length(runValue(seqnames(reads))) > 1)) {
         stop(paste0("seqName must be the name of one of the chromosomes ",
                 "present in the GRanges"))
     }
@@ -196,7 +196,7 @@ validateRJMCMCParameters <- function(forwardandReverseReads,
     ## When seqName present, it needs to be the name of one of the
     ## chromosomes present in the GRanges
     if (!is.null(seqName) && is.character(seqName) && !(seqName %in%
-                            runValue(seqnames(forwardandReverseReads)))) {
+                            runValue(seqnames(reads)))) {
         stop(paste0("seqName must be a character string corresponding to the ",
                     "name of one of the chromosomes present in the GRanges"))
     }
@@ -257,18 +257,20 @@ validateRJMCMCParameters <- function(forwardandReverseReads,
 #' ## Loading two files containing nucleosomes informations for two sections of
 #' ## the same chromosome
 #' file_1 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#'                 pattern = "newSeg_1.rds",
+#'                 pattern = "RJMCMC_seg_01.RDS",
 #'                 full.names = TRUE)
 #'
 #' file_2 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#'                 pattern = "newSeg_2.rds",
+#'                 pattern = "RJMCMC_seg_02.RDS",
 #'                 full.names = TRUE)
 #'
+#' ## TODO
 #' ## Merging nucleosomes informations from the two files
-#' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
+#' ##result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
 #'
 #' @importFrom methods is
 #' @importFrom stats setNames
+#' @importFrom GenomicRanges GRangesList
 #' @author Pascal Belleau, Astrid Deschenes
 #' @keywords internal
 #'
@@ -277,7 +279,6 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     ## Create list that will contain data from all files
     result        <- list()
     result$k      <- 0
-    #mu <- setNames(vector("list", length(arrayOfFiles)),  arrayOfFiles)
     mu <- GRangesList()
 
     ## Extract information from each file
@@ -295,8 +296,6 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     }
 
     ## Ensure that all values are ordered in ascending order of mu
-    #mu <- sort(unlist(mu, use.names=FALSE))
-    #newOrder      <- order(mu)
     result$mu     <- sort(unlist(mu, use.names=FALSE)) #mu[newOrder]
 
     ## Assign class type to list
@@ -323,10 +322,11 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #'
 #' ## Loading a file
 #' file_test <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#' pattern = "newSeg_2.rds", full.names = TRUE)
+#' pattern = "RJMCMC_seg_02.RDS", full.names = TRUE)
 #'
+#' ## TODO
 #' ## Testing using a real file
-#' RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
+#' ##RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
@@ -424,13 +424,14 @@ validateDirectoryParameters <- function(directory) {
 #'
 #' ## Load dataset containing nucleosome information
 #' file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#' pattern = "newSeg_2.rds", full.names = TRUE)
+#' pattern = "RJMCMC_seg_02.RDS", full.names = TRUE)
 #' nucleosome_info <- readRDS(file_002)
 #'
+#' ## TODO
 #' ## The function returns 0 when all parameters are valid
-#' RJMCMCNucleosomes:::validatePrepMergeParameters(forwardandReverseReads =
-#' reads_demo_01, seqName = "chr_SYNTHETIC",
-#' resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
+#' ##RJMCMCNucleosomes:::validatePrepMergeParameters(forwardandReverseReads =
+#' ##reads_demo_01, seqName = "chr_SYNTHETIC",
+#' ##resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 #'
 #' ## The function raises an error when at least one paramater is not valid
 #' \dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(
@@ -763,19 +764,20 @@ validateSegmentationParameters <- function(reads, zeta = 147, delta,
 #' ## Results before post-treatment
 #' RJMCMC_result$mu
 #'
+#' ## TODO
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads =
-#' reads_demo_02,
-#' resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
+#' ##postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads =
+#' ##reads_demo_02,
+#' ##resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 #'
 #' ## Results after post-treatment
-#' postResult
+#' ##postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom consensusSeekeR findConsensusPeakRegions
 #' @importFrom GenomicRanges GRanges findOverlaps
 #' @importFrom IRanges IRanges
-#' @importFrom GenomeInfoDb Seqinfo seqinfo seqnames
+#' @importFrom GenomeInfoDb Seqinfo seqinfo seqnames genome
 #' @importFrom S4Vectors queryHits subjectHits
 #' @importFrom BiocGenerics sapply
 #' @keywords internal
@@ -980,9 +982,8 @@ runCHR <- function(p, seg, niter, kmax, lambda,
     if (!file.exists(nameDone) ) {
         nameRDS  <- paste0(dirResults,"/rjmcmc_seg_", p, ".rds")
         print(paste0("Doing: ", nameRDS))
-        listeSeg <- rjmcmc(forwardandReverseReads  = seg[[p]],
-                            nbrIterations = niter, kMax = kmax,
-                            lambda=lambda, minInterval = ecartmin,
+        listeSeg <- rjmcmc(reads = seg[[p]], nbrIterations = niter,
+                            kMax = kmax, lambda=lambda, minInterval = ecartmin,
                             maxInterval = ecartmax, minReads = minReads,
                             vSeed = vSeed, saveAsRDS = saveAsRDS,
                             adaptIterationsToReads = adaptNbrIterations)
