@@ -195,7 +195,7 @@ test.rjmcmc_good_result_with_GRanges_with_multiple_names  <- function() {
     checkTrue(class(obs$mu) == "GRanges", msg = message)
     checkEqualsNumeric(start(obs$mu), exp.mu, msg = message)
     checkEqualsNumeric(end(obs$mu), exp.mu, msg = message)
-    checkEqualsNumeric(strand(obs$mu), exp.strand, msg = message)
+    checkEqualsNumeric(as.vector(strand(obs$mu)), exp.strand, msg = message)
     checkEqualsNumeric(seqnames(obs$mu), exp.seqnames, msg = message)
 }
 
@@ -394,36 +394,42 @@ test.segmentation_good_02  <- function() {
 ## rjmcmcCHR() function
 ###########################################################
 
-# test.rjmcmcCHR_good_01 <- function() {
-#
-#         temp_dir <- "test_rjmcmcCHR_good_01"
-#         tryCatch({
-#
-#             reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
-#             obs <- rjmcmcCHR(forwardandReverseReads = reads,
-#                         zeta = 147, delta = 50, maxLength = 1200,
-#                         dirOut = temp_dir,
-#                         nbrIterations = 1000, lambda = 3, kMax = 30,
-#                         minInterval = 146, maxInterval = 292, minReads = 5,
-#                         vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)
-#             message <- paste0(" test.rjmcmcCHR_good_01() ",
-#                         "- rjmcmcCHR() did not generated expected result.")
-#             exp.k <- 2
-#             exp.kPost <- 1
-#             exp.mu <- c(1081.739501947609369, 1193.472696571378037)
-#             exp.muPost <- c(1187.924603174603135)
-#             checkTrue(is.list(obs), ms = message)
-#             checkEquals(obs$k, exp.k, ms = message)
-#             checkEquals(obs$kPost, exp.kPost, ms = message)
-#             checkEquals(obs$mu, exp.mu, ms = message)
-#         }, finally = {
-#             if (dir.exists(temp_dir)) {
-#                 unlink(temp_dir, recursive = TRUE, force = FALSE)
-#             }
-#         }
-#     )
-#     ## Double check
-#     if (dir.exists(temp_dir)) {
-#         unlink(temp_dir, recursive = TRUE, force = FALSE)
-#     }
-# }
+test.rjmcmcCHR_good_01 <- function() {
+
+        temp_dir <- "test_rjmcmcCHR_good_01"
+        tryCatch({
+            reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
+            obs <- rjmcmcCHR(reads = reads, seqName = NULL,
+                        zeta = 147, delta = 50, maxLength = 1200,
+                        dirOut = temp_dir,
+                        nbrIterations = 1000, lambda = 3, kMax = 30,
+                        minInterval = 146, maxInterval = 292, minReads = 5,
+                        vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)
+            message <- paste0(" test.rjmcmcCHR_good_01() ",
+                        "- rjmcmcCHR() did not generated expected result.")
+            exp.k <- 2
+            exp.kPost <- 1
+            exp.mu <- c(1082, 1193)
+            exp.muStrand <- c('*', '*')
+            exp.muPost <- c(1188)
+            exp.muPostStrand <- c('*')
+            checkTrue(is.list(obs), ms = message)
+            checkEquals(obs$k, exp.k, ms = message)
+            checkEquals(obs$kPost, exp.kPost, ms = message)
+            checkEquals(start(obs$mu), exp.mu, ms = message)
+            checkEquals(end(obs$mu), exp.mu, ms = message)
+            checkEquals(as.vector(strand(obs$mu)), exp.muStrand, ms = message)
+            checkEquals(start(obs$muPost), exp.muPost, ms = message)
+            checkEquals(end(obs$muPost), exp.muPost, ms = message)
+            checkEquals(as.vector(strand(obs$muPost)), exp.muPostStrand, ms = message)
+        }, finally = {
+            if (dir.exists(temp_dir)) {
+                unlink(temp_dir, recursive = TRUE, force = FALSE)
+            }
+        }
+    )
+    ## Double check
+    if (dir.exists(temp_dir)) {
+        unlink(temp_dir, recursive = TRUE, force = FALSE)
+    }
+}
