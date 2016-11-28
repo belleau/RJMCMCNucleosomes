@@ -26,19 +26,20 @@ object of \code{class} "rjmcmcNucleosomesMerge".
 }
 \examples{
 
+## TODO
 ## Use RDS files present in the RJMCMC package
-RDSFiles <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-full.names = TRUE, pattern = "*rds")
+##RDSFiles <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+##full.names = TRUE, pattern = "*rds")
 
 ## Merge nucleosomes info from RDS files present in directory
-result <- mergeRDSFiles(RDSFiles)
+##result <- mergeRDSFiles(RDSFiles)
 
 ## Print the number and the position of the nucleosomes
-result$k
-result$mu
+##result$k
+##result$mu
 
 ## Class of the output object
-class(result)
+##class(result)
 
 
 }

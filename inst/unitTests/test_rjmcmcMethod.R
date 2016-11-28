@@ -47,99 +47,127 @@ test.rjmcmc_one_read_forward_and_one_read_reverse <- function() {
                             ranges = IRanges(101:102, end = 111:112,
                                         names = head(letters, 2)),
                             strand = Rle(strand(c("-", "+")), c(1, 1)))
-    obs <- rjmcmc(forwardandReverseReads = reads,
-                    nbrIterations = 210, lambda = 3, kMax = 30,
+    obs <- rjmcmc(reads = reads, nbrIterations = 210, lambda = 3, kMax = 30,
                     minInterval = 100, maxInterval = 200, minReads = 10,
                     vSeed = 2211)
 
     exp.k           <- 1
     exp.k_max       <- 1
-    exp.mu          <- c(102.161660224199295)
+    exp.mu          <- c(102)
+    exp.strand      <- c('*')
+    exp.seqnames    <- c("chr1")
 
     message     <- paste0(" test.rjmcmc_one_read_forward_and_one_read_reverse() ",
                             "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
     checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
-    checkEqualsNumeric(start(obs$mu), round(exp.mu), msg = message)
+    checkTrue(class(obs$mu) == "GRanges", msg = message)
+    checkEqualsNumeric(start(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(end(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(strand(obs$mu), exp.strand, msg = message)
+    checkEqualsNumeric(seqnames(obs$mu), exp.seqnames, msg = message)
 }
 
 
 test.rjmcmc_good_result_01 <- function() {
 
-    obs <- rjmcmc(forwardandReverseReads = reads_demo_01,
+    obs <- rjmcmc(reads = reads_demo_01,
                         nbrIterations = 100, lambda = 2, kMax = 30,
                         minInterval = 146, maxInterval = 292, minReads = 5,
                         vSeed = 1001)
 
     exp.k           <- 2
     exp.k_max       <- 2
-    exp.mu          <- c(10079.596676761868366, 10145.584928975207731)
+    exp.mu          <- as.integer(c(10080, 10146))
+    exp.strand      <- c('*', '*')
+    exp.seqnames    <- rep("chr_SYNTHETIC", 2)
 
     message     <- paste0(" rjmcmc_good_result_01() ",
                         "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
     checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
-    checkEqualsNumeric(start(obs$mu), round(exp.mu), msg = message)
+    checkTrue(class(obs$mu) == "GRanges", msg = message)
+    checkEqualsNumeric(start(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(end(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(strand(obs$mu), exp.strand, msg = message)
+    checkEqualsNumeric(seqnames(obs$mu), exp.seqnames, msg = message)
 }
 
 test.rjmcmc_good_result_02 <- function() {
 
-    obs <- rjmcmc(forwardandReverseReads  = reads_demo_01,
+    obs <- rjmcmc(reads  = reads_demo_01,
                     nbrIterations = 200, lambda = 3, kMax = 30,
                     minInterval = 146, maxInterval = 292, minReads = 5,
                     vSeed = 201)
 
     exp.k           <- 1
     exp.k_max       <- 3
-    exp.mu          <- c(10055.606842049734041)
+    exp.mu          <- c(10056)
+    exp.strand      <- c('*')
+    exp.seqnames    <- c("chr_SYNTHETIC")
 
     message     <- paste0(" rjmcmc_good_result_02() ",
                         "- RJMCMC did not generated expected values")
 
-
     checkEqualsNumeric(obs$k, exp.k, msg = message)
     checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
-    checkEqualsNumeric(start(obs$mu), round(exp.mu), msg = message)
+    checkTrue(class(obs$mu) == "GRanges", msg = message)
+    checkEqualsNumeric(start(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(end(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(strand(obs$mu), exp.strand, msg = message)
+    checkEqualsNumeric(seqnames(obs$mu), exp.seqnames, msg = message)
 }
 
 test.rjmcmc_good_result_03 <- function() {
 
-    obs <- rjmcmc(forwardandReverseReads = reads_demo_01,
+    obs <- rjmcmc(reads = reads_demo_01,
                   nbrIterations = 110, lambda = 3, kMax = 30,
                   minInterval = 100, maxInterval = 200, minReads = 335,
                   vSeed = 2011)
 
     exp.k           <- 2
     exp.k_max       <- 4
-    exp.mu          <- c(10057.818967865589002, 10453.014142343075946)
+    exp.mu          <- c(10058, 10453)
+    exp.strand      <- c('*', '*')
+    exp.seqnames    <- rep("chr_SYNTHETIC", 2)
 
     message     <- paste0(" rjmcmc_good_result_03() ",
                            "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
     checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
-    checkEqualsNumeric(start(obs$mu), round(exp.mu), msg = message)
+    checkTrue(class(obs$mu) == "GRanges", msg = message)
+    checkEqualsNumeric(start(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(end(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(strand(obs$mu), exp.strand, msg = message)
+    checkEqualsNumeric(seqnames(obs$mu), exp.seqnames, msg = message)
 }
 
 test.rjmcmc_good_result_04 <- function() {
 
-    obs <- rjmcmc(forwardandReverseReads = reads_demo_01,
+    obs <- rjmcmc(reads = reads_demo_01,
                   nbrIterations = 210, lambda = 3, kMax = 30,
                   minInterval = 100, maxInterval = 200, minReads = 10,
                   vSeed = 2211)
 
     exp.k           <- 1
     exp.k_max       <- 2
-    exp.mu          <- c(10077.161153993813059)
+    exp.mu          <- c(10077)
+    exp.strand      <- c('*')
+    exp.seqnames    <- c("chr_SYNTHETIC")
 
     message     <- paste0(" test.rjmcmc_good_result_04() ",
                           "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
     checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
-    checkEqualsNumeric(start(obs$mu), round(exp.mu), msg = message)
+    checkTrue(class(obs$mu) == "GRanges", msg = message)
+    checkEqualsNumeric(start(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(end(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(strand(obs$mu), exp.strand, msg = message)
+    checkEqualsNumeric(seqnames(obs$mu), exp.seqnames, msg = message)
 }
 
 test.rjmcmc_good_result_with_GRanges_with_multiple_names  <- function() {
@@ -148,21 +176,27 @@ test.rjmcmc_good_result_with_GRanges_with_multiple_names  <- function() {
                      ranges = IRanges(start=c(11:15, 1106:1110), end = c(21:25, 1116:1120),
                                       names = head(letters, 10)),
                      strand = Rle(strand(c("-", "+", "-", "+", "-")), c(2, 2, 2, 2, 2)))
-    obs <- rjmcmc(forwardandReverseReads = reads, seqName = "chr2",
+    obs <- rjmcmc(reads = reads, seqName = "chr2",
                   nbrIterations = 210, lambda = 3, kMax = 30,
                   minInterval = 100, maxInterval = 200, minReads = 10,
                   vSeed = 2211)
 
     exp.k           <- 1
     exp.k_max       <- 1
-    exp.mu          <- c(1107.233509212732315)
+    exp.mu          <- c(1107)
+    exp.strand      <- c('*')
+    exp.seqnames    <- c("chr2")
 
     message     <- paste0(" test.rjmcmc_good_result_with_GRanges_with_multiple_names() ",
                           "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
     checkEqualsNumeric(obs$k_max, exp.k_max, msg = message)
-    checkEqualsNumeric(start(obs$mu), round(exp.mu), msg = message)
+    checkTrue(class(obs$mu) == "GRanges", msg = message)
+    checkEqualsNumeric(start(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(end(obs$mu), exp.mu, msg = message)
+    checkEqualsNumeric(strand(obs$mu), exp.strand, msg = message)
+    checkEqualsNumeric(seqnames(obs$mu), exp.seqnames, msg = message)
 }
 
 

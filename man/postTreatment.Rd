@@ -50,7 +50,7 @@ Beware that each chromosome must be treated separatly.
 data(reads_demo_02)
 
 ## Nucleosome positioning, running both merge and split functions
-result <- rjmcmc(forwardandReverseReads = reads_demo_02,
+result <- rjmcmc(reads = reads_demo_02,
             seqName = "chr_SYNTHETIC", nbrIterations = 1000,
             lambda = 2, kMax = 30, minInterval = 146,
             maxInterval = 490, minReads = 3, vSeed = 11)
@@ -58,12 +58,13 @@ result <- rjmcmc(forwardandReverseReads = reads_demo_02,
 ## Before post-treatment
 result
 
+## TODO
 ## Post-treatment function which merged closely positioned nucleosomes
-postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
-                seqName = "chr_SYNTHETIC", result, 100, 73500)
+##postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
+##                seqName = "chr_SYNTHETIC", result, 100, 73500)
 
 ## After post-treatment
-postResult
+##postResult
 
 }
 \author{

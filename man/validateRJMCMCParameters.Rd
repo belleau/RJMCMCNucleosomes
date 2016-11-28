@@ -5,11 +5,11 @@
 \title{Parameters validation for the \code{\link{rjmcmc}}
 function}
 \usage{
-validateRJMCMCParameters(forwardandReverseReads, seqName, nbrIterations, kMax,
-  lambda, minInterval, maxInterval, minReads, adaptIterationsToReads, vSeed)
+validateRJMCMCParameters(reads, seqName, nbrIterations, kMax, lambda,
+  minInterval, maxInterval, minReads, adaptIterationsToReads, vSeed)
 }
 \arguments{
-\item{forwardandReverseReads}{a \code{GRanges} containing all forward
+\item{reads}{a \code{GRanges} containing all forward
 and reverse reads.The start positions of both reads are going to be used
 for the analysis. Beware that the start position of
 a reverse read is always higher that the end positition.}
@@ -64,14 +64,14 @@ reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
     strand = Rle(strand(c("-", "+", "-", "+", "-")), c(1, 2, 2, 3, 2)))
 
 ## The function returns 0 when all paramaters are valid
-RJMCMCNucleosomes:::validateRJMCMCParameters(forwardandReverseReads = reads,
+RJMCMCNucleosomes:::validateRJMCMCParameters(reads = reads,
 seqName = "chr1", nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1,
 minInterval = 100, maxInterval = 200, adaptIterationsToReads = TRUE,
 vSeed = 100)
 
 ## The function raises an error when at least one paramater is not valid
 \dontrun{RJMCMCNucleosomes:::validateRJMCMCParameters(
-forwardandReverseReads = NA, seqName = "chr1",
+reads = NA, seqName = "chr1",
 nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
 maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 

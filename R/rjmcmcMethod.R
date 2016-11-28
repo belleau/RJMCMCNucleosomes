@@ -6,8 +6,9 @@
 #' chromosome must be treated separatly. This function is optimized to run
 #' on segments that are smaller sections of the chromosome.
 #'
-#' @param forwardandReverseReads a \code{GRanges} containing forward and
-#' reverse reads.
+#' @param reads a \code{GRanges} containing forward and
+#' reverse reads. Beware that the start position of
+#' a reverse read is always higher that the end positition.
 #'
 #' @param seqName a \code{character} string containing the label of the
 #' chromosome, present in the \code{GRanges} object, that will be used. The
@@ -55,9 +56,10 @@
 #' \item \code{call} the matched call.
 #' \item \code{k} a \code{integer}, the final estimation of the number
 #' of nucleosomes. \code{0} when no nucleosome is detected.
-#' \item \code{mu} a \code{vector} of \code{numeric} of length
-#' \code{k}, the positions of the nucleosomes. \code{NA} when no nucleosome is
-#' detected.
+#' \item \code{mu} a \code{GRanges} containing the positions of the
+#' nucleosomes and '*' as strand. The \code{seqnames} of the \code{GRanges}
+#' correspond to the \code{seqName} input value. \code{NA} when no nucleosome
+#' is detected.
 #' \item \code{k_max} a \code{integer}, the maximum number of nucleosomes
 #' obtained during the iteration process. \code{NA} when no nucleosome is
 #' detected.
@@ -69,8 +71,7 @@
 #' data(reads_demo_01)
 #'
 #' ## Nucleosome positioning, running both merge and split functions
-#' result <- rjmcmc(forwardandReverseReads = reads_demo_01,
-#'             seqName = "chr_SYNTHETIC",
+#' result <- rjmcmc(reads = reads_demo_01, seqName = "chr_SYNTHETIC",
 #'             nbrIterations = 1000, lambda = 2, kMax = 30,
 #'             minInterval = 146, maxInterval = 292, minReads = 5,
 #'             vSeed = 10113, saveAsRDS = FALSE)
@@ -88,7 +89,7 @@
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @importFrom stats aggregate
 #' @export
-rjmcmc <- function(forwardandReverseReads, seqName = NULL,
+rjmcmc <- function(reads, seqName = NULL,
                     nbrIterations, kMax, lambda = 3,
                     minInterval, maxInterval, minReads = 5,
                     adaptIterationsToReads = TRUE, vSeed = -1,
@@ -98,7 +99,7 @@ rjmcmc <- function(forwardandReverseReads, seqName = NULL,
     cl <- match.call()
 
     # Parameters validation
-    validateRJMCMCParameters(forwardandReverseReads = forwardandReverseReads,
+    validateRJMCMCParameters(reads = reads,
                             seqName = seqName,
                             nbrIterations = nbrIterations,
                             kMax = kMax,
@@ -111,21 +112,18 @@ rjmcmc <- function(forwardandReverseReads, seqName = NULL,
 
     resultRJMCMC <- NULL
 
-    if (length(forwardandReverseReads) > 0) {
+    if (length(reads) > 0) {
 
         ## Only keep reads associated to the specified chromosome
         if (!is.null(seqName)) {
-            forwardandReverseReads <- forwardandReverseReads[
-                            seqnames(forwardandReverseReads) == seqName]
+            reads <- reads[seqnames(reads) == seqName]
         }
 
-        if (length(forwardandReverseReads) > 0) {
+        if (length(reads) > 0) {
 
-            startPosForwardReads <- start(forwardandReverseReads[
-                                        strand(forwardandReverseReads) == "+"])
+            startPosForwardReads <- start(reads[strand(reads) == "+"])
 
-            startPosReverseReads <- end(forwardandReverseReads[
-                            strand(forwardandReverseReads) == "-"])
+            startPosReverseReads <- end(reads[strand(reads) == "-"])
 
             # Find nucleosome positions
             if(length(startPosForwardReads) > 0 &
@@ -154,20 +152,21 @@ rjmcmc <- function(forwardandReverseReads, seqName = NULL,
         mu = NA
         k_max = NA
     } else {
-        ## Set values when no nucleosome can be found
         # Find k value with the maximum of iterations
         iterPerK <- data.frame(k = resultRJMCMC$k, it = resultRJMCMC$it)
         sumIterPerK <- aggregate(it ~ k, data = iterPerK, sum)
         maxRow <- which.max( sumIterPerK[,"it"])
         k <- sumIterPerK$k[maxRow]
+
         # Find mu values associated to the k value
         if(is.null(seqName)){
-            seqName <- seqnames(forwardandReverseReads)[1]
+            seqName <- seqnames(reads)[1]
         }
-        mu <- GRanges(seqnames=rep(seqName,k),
-                    ranges=IRanges(start=round(resultRJMCMC$muHat[k,][1:k]),
+        # Set mu as a GRanges
+        mu <- GRanges(seqnames = rep(seqName, k),
+                      ranges = IRanges(start=round(resultRJMCMC$muHat[k,][1:k]),
                                     end=round(resultRJMCMC$muHat[k,][1:k])),
-                    strand=rep('+',k))
+                      strand = rep('*',k))
         # Get the k_max value
         k_max <- resultRJMCMC$k_max
     }
@@ -261,19 +260,20 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #'
 #' @examples
 #'
+#' ## TODO
 #' ## Use RDS files present in the RJMCMC package
-#' RDSFiles <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#' full.names = TRUE, pattern = "*rds")
+#' ##RDSFiles <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+#' ##full.names = TRUE, pattern = "*rds")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
-#' result <- mergeRDSFiles(RDSFiles)
+#' ##result <- mergeRDSFiles(RDSFiles)
 #'
 #' ## Print the number and the position of the nucleosomes
-#' result$k
-#' result$mu
+#' ##result$k
+#' ##result$mu
 #'
 #' ## Class of the output object
-#' class(result)
+#' ##class(result)
 #'
 #'
 #' @author Pascal Belleau, Astrid Deschenes
@@ -330,7 +330,7 @@ mergeRDSFiles <- function(RDSFiles) {
 #' data(reads_demo_02)
 #'
 #' ## Nucleosome positioning, running both merge and split functions
-#' result <- rjmcmc(forwardandReverseReads = reads_demo_02,
+#' result <- rjmcmc(reads = reads_demo_02,
 #'             seqName = "chr_SYNTHETIC", nbrIterations = 1000,
 #'             lambda = 2, kMax = 30, minInterval = 146,
 #'             maxInterval = 490, minReads = 3, vSeed = 11)
@@ -338,12 +338,13 @@ mergeRDSFiles <- function(RDSFiles) {
 #' ## Before post-treatment
 #' result
 #'
+#' ## TODO
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
-#'                 seqName = "chr_SYNTHETIC", result, 100, 73500)
+#' ##postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
+#' ##                seqName = "chr_SYNTHETIC", result, 100, 73500)
 #'
 #' ## After post-treatment
-#' postResult
+#' ##postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
@@ -410,15 +411,16 @@ postTreatment <- function(forwardandReverseReads, seqName = NULL,
 #'
 #' data(reads_demo_01)
 #'
-#' result <- rjmcmc(forwardandReverseReads = reads_demo_01,
+#' result <- rjmcmc(reads = reads_demo_01,
 #'             seqName = "chr_SYNTHETIC",
 #'             nbrIterations = 4000, lambda = 2, kMax = 30,
 #'             minInterval = 146, maxInterval = 292, minReads = 5,
 #'             vSeed = 10213)
 #'
+#' ## TODO
 #' ## Create graph using the synthetic map
-#' plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
-#'             reads = reads_demo_01)
+#' ##plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
+#' ##            reads = reads_demo_01)
 #'
 #' @author Astrid Deschenes
 #' @importFrom IRanges coverage
