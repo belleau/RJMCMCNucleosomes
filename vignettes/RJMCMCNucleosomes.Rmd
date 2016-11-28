@@ -196,13 +196,13 @@ now be merged together.
 ## TODO
 ## The directory containing the results of all segments
 ## On RDS file has been created for each segment
-#directory <- system.file("extdata", "demo_vignette", 
-#                            package = "RJMCMCNucleosomes")
+directory <- system.file("extdata", "demo_vignette", 
+                            package = "RJMCMCNucleosomes")
 
 ## Merging predicted nucleosomes from all segments
-#resultsAllMerged <- mergeAllRDSFilesFromDirectory(directory)
+resultsAllMerged <- mergeAllRDSFilesFromDirectory(directory)
 
-#resultsAllMerged
+resultsAllMerged
 ```
 
 
@@ -226,20 +226,20 @@ value could cause the possible merge of true nucleosomes.
 ```{r postProcess01, collapse=TRUE, message=FALSE}
 ## TODO
 ## Split reads from the initial sample data into forward and reverse subsets
-#reads <- GRanges(sample$dataIP)
+reads <- GRanges(sample$dataIP)
 
 ## Number of nucleosomes before the post-treatment
-#resultsAllMerged$k
+resultsAllMerged$k
 
 ## Use the post-treatment function
-# resultsPostTreatment <- postTreatment(forwardandReverseReads = reads,
-#                             resultRJMCMC = resultsAllMerged,
-#                             extendingSize = 15,
-#                             chrLength = max(start(reads), end(reads)) + 1000)
-# 
+resultsPostTreatment <- postTreatment(reads = reads,
+                            resultRJMCMC = resultsAllMerged,
+                            extendingSize = 15,
+                            chrLength = max(start(reads), end(reads)) + 1000)
+ 
 
 ## Number of nucleosomes after the post-treatment
-# length(resultsPostTreatment)
+length(resultsPostTreatment)
 ```
 
 The `postTreatment` function can significantly reduce the number of 
@@ -264,10 +264,10 @@ reads <-GRanges(sample$dataIP)
 
 ## Merge predictions from before post-treatment and after post-treatment in 
 ## a list so that both results will be shown in graph
-#resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos, 
-#                                             sample$fuz$nucleopos),
-#                                BeforePostTreatment = resultsAllMerged$mu,    
-#                                AfterPostTreatment = resultsPostTreatment)
+resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos,
+                                            sample$fuz$nucleopos),
+                               BeforePostTreatment = resultsAllMerged$mu,
+                               AfterPostTreatment = resultsPostTreatment)
 
 ## Create graph using nucleosome positions and reads
 ## The plot will shows : 
@@ -303,7 +303,7 @@ sampleGRanges <- GRanges(syntheticNucleosomeReads$dataIP)
 seqnames(sampleGRanges)
 
 ## Run RJMCMC on all reads
-result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges, 
+result <- rjmcmcCHR(reads = sampleGRanges, 
                 seqName = "chr_SYNTHETIC", dirOut = "testRJMCMCCHR",
                 zeta = 147, delta=50, maxLength=1200,
                 nbrIterations = 500, lambda = 3, kMax = 30,
