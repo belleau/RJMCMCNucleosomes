@@ -286,9 +286,11 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
         ## Only use data from rjmcmcNucleosomes or rjmcmcNucleosomesMerge class
         if ((is(data, "rjmcmcNucleosomesMerge") ||
                         is(data, "rjmcmcNucleosomes")) &
-                        length(data$mu[is.na(data$mu)]) == 0 ) {
+                        class(data$mu) == "GRanges") {
             result$k      <- result$k + data$k
-            mu[[fileName]] <- data$mu
+            if(class(data$mu)=="GRanges"){
+                mu[[fileName]] <- data$mu
+            }
         }
     }
 
@@ -641,7 +643,7 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions,
 #' @description Validation of all parameters needed by the public
 #' \code{\link{segmentation}} function.
 #'
-#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#' @param reads a \code{GRanges}, the reads that need to be segmented.
 #'
 #' @param zeta a positive \code{integer} or \code{numeric}, the length
 #' of the nucleosomes. Default: 147.
@@ -668,26 +670,26 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions,
 #' strand = syntheticNucleosomeReads$dataIP$strand)
 #'
 #' ## The function returns 0 when all parameters are valid
-#' RJMCMCNucleosomes:::validateSegmentationParameters(dataIP = sampleGRanges,
+#' RJMCMCNucleosomes:::validateSegmentationParameters(reads = sampleGRanges,
 #' zeta = 147, delta = 30, maxLength = 12000)
 #'
 #' ## The function raises an error when at least one paramater is not valid
 #' #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
-#' #dataIP = c(100), zeta = 147, delta = 30, maxLength = 12000)}
+#' #reads = c(100), zeta = 147, delta = 30, maxLength = 12000)}
 #'
 #' #\dontrun{RJMCMCNucleosomes:::validateSegmentationParameters(
-#' #dataIP = sampleGRanges, zeta = "hi", delta = 30, maxLength = 12000)}
+#' #reads = sampleGRanges, zeta = "hi", delta = 30, maxLength = 12000)}
 #'
 #' @author Astrid Deschenes, Pascal Belleau
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 #'
-validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
+validateSegmentationParameters <- function(reads, zeta = 147, delta,
                                             maxLength) {
     # Validate that dataIP is a GRanges
-    if(!is(dataIP,"GRanges"))
+    if(!is(reads,"GRanges"))
     {
-        stop("dataIP must be \'GRanges\' object.")
+        stop("reads must be \'GRanges\' object.")
     }
 
     ## Validate the zeta parameter
@@ -779,8 +781,17 @@ validateSegmentationParameters <- function(dataIP, zeta = 147, delta,
 #' @keywords internal
 #'
 postMerge <- function(forwardandReverseReads,
-                        resultRJMCMC, seqName = NULL, extendingSize, chrLength, minReads = 5)
+                        resultRJMCMC, extendingSize, chrLength, minReads = 5, seqName = NULL)
 {
+    ## Only keep reads associated to the specified chromosome
+
+    if (!is.null(seqName)) {
+        forwardandReverseReads <- forwardandReverseReads[
+            seqnames(forwardandReverseReads) == seqName]
+    }else{
+        seqName=as.character(unique(seqnames(forwardandReverseReads)))
+    }
+    genomeCur <- as.character(genome(forwardandReverseReads)[which(names(genome(forwardandReverseReads))== seqName)])
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
     segReads$yF <- start(forwardandReverseReads[strand(forwardandReverseReads)
@@ -789,23 +800,25 @@ postMerge <- function(forwardandReverseReads,
                                                 == "-" ])
 
     ## Prepare Seqinfo object using chromosome length
-    seqinfo <- Seqinfo(c("chrI"), c(chrLength), FALSE, "mock1")
+    seqinfo <- Seqinfo(c(seqName), c(chrLength), FALSE, genomeCur)
 
     finalResult <- NULL
 
     ## Prepare a GRanges using nucleosome positions
     ## Only apply merge when at least one nucleosome is present
-    if (!is.null(resultRJMCMC$mu) && !is.na(resultRJMCMC$mu)) {
+    if (!is.null(resultRJMCMC$mu) && class(resultRJMCMC$mu)=="GRanges"
+        && length(resultRJMCMC$mu)>0) {
         nbMu <- length(resultRJMCMC$mu)
-        rjmcmc_peak <- GRanges(seqnames = rep('chrI', nbMu),
-                        IRanges(resultRJMCMC$mu, resultRJMCMC$mu),
-                        seqinfo = seqinfo)
+        #rjmcmc_peak <- GRanges(seqnames = rep('chrI', nbMu),
+        #                IRanges(resultRJMCMC$mu, resultRJMCMC$mu),
+        #                seqinfo = seqinfo)
+        rjmcmc_peak <- resultRJMCMC$mu
         nbPeaks <- length(rjmcmc_peak)
-        names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
-        rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
+        #names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
+        #rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
 
         ## Find nucleosomes present in same regions
-        result <- findConsensusPeakRegions(peaks = resultRJMCMC$mu, #c(rjmcmc_peak)
+        result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak),
                                         chrInfo = seqinfo,
                                         extendingSize = extendingSize,
                                         expandToFitPeakRegion = FALSE,
@@ -827,9 +840,9 @@ postMerge <- function(forwardandReverseReads,
             current <- subjectHits(overlapsPeak)[allOverlap == x]
             if(length(current) > 1) {
                 ## When more than one nucleosome present, use mean position
-                valCentral <- mean(resultRJMCMC$mu[current])
-                a <- min(resultRJMCMC$mu[current]) # - (74 + extendingSize)
-                b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
+                valCentral <- mean(start(resultRJMCMC$mu)[current])
+                a <- min(start(resultRJMCMC$mu)[current]) # - (74 + extendingSize)
+                b <- max(start(resultRJMCMC$mu)[current]) # + (74 - extendingSize)
                 ## A miminum number of reads is needed closed to the position
                 if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
                                   segReads$yF <= (b - minLimit)]) >= minReads &
@@ -849,12 +862,21 @@ postMerge <- function(forwardandReverseReads,
                 }
             } else {
                 ## Return the current mu
-                return(resultRJMCMC$mu[current])
+                return(start(resultRJMCMC$mu)[current])
             }
-        })
+        }) # end sapply
 
         if (!all(is.na(result))) {
-            finalResult <- as.numeric(result[!is.na(result)])
+            finalResult <- GRanges(seqnames = rep(seqName,
+                                                 length(
+                                                     as.numeric(
+                                                         result[!is.na(result)]
+                                                         ))),
+                                  ranges=IRanges(
+                                      start=round(as.numeric(result[!is.na(result)])),
+                                      end=round(as.numeric(result[!is.na(result)]))),
+                                  strand=rep("*", length(
+                                      as.numeric(result[!is.na(result)]))))
         }
     }
 

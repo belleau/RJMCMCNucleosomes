@@ -164,11 +164,10 @@ rjmcmc <- function(forwardandReverseReads, seqName = NULL,
         if(is.null(seqName)){
             seqName <- seqnames(forwardandReverseReads)[1]
         }
-
         mu <- GRanges(seqnames=rep(seqName,k),
-                      ranges=IRanges(start=round(resultRJMCMC$muHat[k,][1:k]),
-                                     end=round(resultRJMCMC$muHat[k,][1:k])),
-                      strand=rep('+',k))
+                    ranges=IRanges(start=round(resultRJMCMC$muHat[k,][1:k]),
+                                    end=round(resultRJMCMC$muHat[k,][1:k])),
+                    strand=rep('+',k))
         # Get the k_max value
         k_max <- resultRJMCMC$k_max
     }
@@ -513,7 +512,7 @@ plotNucleosomes <- function(nucleosomePositions, reads,
 #' a chromosome) in a \code{list} of smaller \code{GRanges} sot that the
 #' \code{rjmcmc} function can be run on each segments.
 #'
-#' @param dataIP a \code{GRanges}, the reads that need to be segmented.
+#' @param reads a \code{GRanges}, the reads that need to be segmented.
 #'
 #' @param zeta a positive \code{integer} or \code{numeric}, the length
 #' of the nucleosomes. Default: 147.
@@ -539,24 +538,25 @@ plotNucleosomes <- function(nucleosomePositions, reads,
 #'     strand = syntheticNucleosomeReads$dataIP$strand)
 #'
 #' # Segmentation of the reads
-#' segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 1000)
+#' segmentation(reads = sampleGRanges, zeta = 147, delta = 50,
+#' maxLength = 1000)
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom GenomeInfoDb seqlevels
 #' @importFrom IRanges splitAsList
 #' @export
-segmentation <- function(dataIP, zeta = 147, delta, maxLength) {
+segmentation <- function(reads, zeta = 147, delta, maxLength) {
 
-    validateSegmentationParameters(dataIP, zeta, delta, maxLength)
+    validateSegmentationParameters(reads, zeta, delta, maxLength)
 
     # Set min and max positions
-    posMin <- min(start(dataIP))
-    posMax <- max(end(dataIP))
+    posMin <- min(start(reads))
+    posMax <- max(end(reads))
 
     starts = seq(posMin, posMax, by = (maxLength - (zeta + delta)))
-    subject = GRanges(seqlevels(dataIP), IRanges(starts, width=maxLength))
-    hits = findOverlaps(dataIP, subject)
-    splitAsList(dataIP[queryHits(hits)], subjectHits(hits))
+    subject = GRanges(seqlevels(reads), IRanges(starts, width=maxLength))
+    hits = findOverlaps(reads, subject)
+    splitAsList(reads[queryHits(hits)], subjectHits(hits))
 }
 
 #' @title Nucleosome positioning mapping on a large segment, up to a chromosome
