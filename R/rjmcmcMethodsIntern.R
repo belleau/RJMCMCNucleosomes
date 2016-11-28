@@ -333,7 +333,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 validateRDSFilesParameters <- function(RDSFiles) {
 
     ## Validate the RDSFiles parameters
-    if (is.null(RDSFiles) || is.na(RDSFiles)) {
+    if (!is.character(RDSFiles) || (length(RDSFiles) == 0)) {
         stop("RDSFiles must be a list of valid RDS files")
     }
 

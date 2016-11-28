@@ -407,6 +407,9 @@ test.rjmcmcCHR_good_01 <- function() {
         temp_dir <- "test_rjmcmcCHR_good_01"
         tryCatch({
             reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
+            seqlevels(reads)<- c(seqlevels(reads), "chr2")
+            Rle(values = c("chr1", "chr2"), lengths = c(250, 250))
+
             obs <- rjmcmcCHR(reads = reads,
                         zeta = 147, delta = 50, maxLength = 1200,
                         dirOut = temp_dir,
@@ -439,6 +442,52 @@ test.rjmcmcCHR_good_01 <- function() {
                 unlink(temp_dir, recursive = TRUE, force = FALSE)
             }
         }
+    )
+    ## Double check
+    if (dir.exists(temp_dir)) {
+        unlink(temp_dir, recursive = TRUE, force = FALSE)
+    }
+}
+
+test.rjmcmcCHR_good_02 <- function() {
+
+    temp_dir <- "test_rjmcmcCHR_good_02"
+    tryCatch({
+        reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
+        seqlevels(reads)<- c(seqlevels(reads), "chr2")
+        seqnames(reads)[400:500]<-Rle(values = "chr2", lengths = c(101))
+        obs <- rjmcmcCHR(reads = reads, seqName = "chr_SYNTHETIC",
+                         zeta = 147, delta = 50, maxLength = 1200,
+                         dirOut = temp_dir,
+                         nbrIterations = 1000, lambda = 3, kMax = 30,
+                         minInterval = 146, maxInterval = 292, minReads = 5,
+                         vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)
+        message <- paste0(" test.rjmcmcCHR_good_02() ",
+                          "- rjmcmcCHR() did not generated expected result.")
+        exp.k <- 2
+        exp.kPost <- 2
+        exp.mu <- c(1075, 1250)
+        exp.muPost <- c(1075, 1250)
+        exp.muStrand <- c('*', '*')
+        exp.muPost <- c(1075, 1250)
+        exp.muPostStrand <- c('*', '*')
+
+        checkTrue(is.list(obs), ms = message)
+        checkEquals(obs$k, exp.k, ms = message)
+        checkEquals(obs$kPost, exp.kPost, ms = message)
+        checkEquals(start(obs$mu), exp.mu, ms = message)
+        checkEquals(start(obs$muPost), exp.muPost, ms = message)
+        checkEquals(end(obs$mu), exp.mu, ms = message)
+        checkEquals(as.vector(strand(obs$mu)), exp.muStrand, ms = message)
+        checkEquals(start(obs$muPost), exp.muPost, ms = message)
+        checkEquals(end(obs$muPost), exp.muPost, ms = message)
+        checkEquals(as.vector(strand(obs$muPost)), exp.muPostStrand, ms = message)
+
+    }, finally = {
+        if (dir.exists(temp_dir)) {
+            unlink(temp_dir, recursive = TRUE, force = FALSE)
+        }
+    }
     )
     ## Double check
     if (dir.exists(temp_dir)) {
