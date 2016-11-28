@@ -335,6 +335,30 @@ test.postTreatment_good_01 <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
+
+test.postTreatment_good_02 <- function() {
+
+    reads <- reads_demo_02
+    seqlevels(reads)<- c(seqlevels(reads), "chr2")
+    seqnames(reads)[301:450]<-Rle(values = "chr2", lengths = c(150))
+
+    obs <- postTreatment(reads = reads, seqName = "chr_SYNTHETIC",
+                         resultRJMCMC = RJMCMC_result,
+                         extendingSize = 20,
+                         chrLength = 80000)
+
+    listMu <- c(10072, 10241, 10574, 10744)
+
+    exp <- GRanges(seqnames = rep("chr_SYNTHETIC",length(listMu)),
+                   ranges=IRanges(start=listMu,end=listMu),
+                   strand=rep("*", length(listMu)))
+
+    message <- paste0(" test.postTreatment_good_02() ",
+                      "- posTreatment() did not generated expected result.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
 ###########################################################
 ## segmentation() function
 ###########################################################
@@ -407,8 +431,6 @@ test.rjmcmcCHR_good_01 <- function() {
         temp_dir <- "test_rjmcmcCHR_good_01"
         tryCatch({
             reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
-            seqlevels(reads)<- c(seqlevels(reads), "chr2")
-            Rle(values = c("chr1", "chr2"), lengths = c(250, 250))
 
             obs <- rjmcmcCHR(reads = reads,
                         zeta = 147, delta = 50, maxLength = 1200,
