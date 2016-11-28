@@ -202,8 +202,8 @@ rjmcmc <- function(reads, seqName = NULL,
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
 #' \itemize{
 #'     \item k a \code{integer}, the number of nucleosomes.
-#'     \item mu a \code{vector} of \code{numeric} of length
-#' \code{k}, the positions of the nucleosomes.
+#'     \item \code{mu} a \code{GRanges} containing the positions of the
+#' nucleosomes.
 #' }
 #'
 #' @examples
