@@ -295,8 +295,9 @@ mergeRDSFiles <- function(RDSFiles) {
 #' to rectify the over splitting and provide a more conservative approach.
 #' Beware that each chromosome must be treated separatly.
 #'
-#' @param forwardandReverseReads a \code{GRanges} containing forward and
-#' reverse reads.
+#' @param reads a \code{GRanges} containing forward and
+#' reverse reads. Beware that the start position of
+#' a reverse read is always higher that the end positition.
 #'
 #' @param seqName a \code{character} string containing the label of the
 #' chromosome, present in the \code{GRanges} object, that will be used. The
@@ -340,7 +341,7 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' ## TODO
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' ##postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
+#' ##postResult <- postTreatment(reads = reads_demo_02,
 #' ##                seqName = "chr_SYNTHETIC", result, 100, 73500)
 #'
 #' ## After post-treatment
@@ -348,22 +349,20 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
-postTreatment <- function(forwardandReverseReads, seqName = NULL,
+postTreatment <- function(reads, seqName = NULL,
                             resultRJMCMC, extendingSize = 74L, chrLength) {
 
     ## Validate parameters
-    validatePrepMergeParameters(forwardandReverseReads, seqName,
-                                        resultRJMCMC, extendingSize, chrLength)
+    validatePrepMergeParameters(reads, seqName,
+                                    resultRJMCMC, extendingSize, chrLength)
 
     ## Only keep reads associated to the specified chromosome
     if (!is.null(seqName)) {
-        forwardandReverseReads <- forwardandReverseReads[
-                    seqnames(forwardandReverseReads) == seqName]
+        reads <- reads[seqnames(reads) == seqName]
     }
 
     ## Run post merging function and return results
-    return(postMerge(forwardandReverseReads,
-                resultRJMCMC, extendingSize, chrLength))
+    return(postMerge(reads, resultRJMCMC, extendingSize, chrLength))
 }
 
 
@@ -726,10 +725,8 @@ rjmcmcCHR <- function(forwardandReverseReads, seqName = NULL, zeta = 147,
 
     results <- mergeAllRDSFilesFromDirectory(dirResults)
 
-    resultPostTreatement <- postTreatment(forwardandReverseReads =
-                                                forwardandReverseReads,
-                                seqName = seqName,
-                                results,
+    resultPostTreatement <- postTreatment(reads = forwardandReverseReads,
+                                seqName = seqName, results,
                                 chrLength=max(start(forwardandReverseReads),
                                         end(forwardandReverseReads)) + 1000)
 

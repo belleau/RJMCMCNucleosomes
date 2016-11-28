@@ -388,7 +388,7 @@ validateDirectoryParameters <- function(directory) {
 #' @description Validation of all parameters needed by the public
 #' \code{\link{postMerge}} function.
 #'
-#' @param forwardandReverseReads a \code{GRanges} containing all forward
+#' @param reads a \code{GRanges} containing all forward
 #' and reverse reads.The start positions of both reads are going to be used
 #' for the analysis. Beware that the start position of
 #' a reverse read is always higher that the end positition. The \code{GRanges}
@@ -443,24 +443,24 @@ validateDirectoryParameters <- function(directory) {
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 #'
-validatePrepMergeParameters <- function(forwardandReverseReads, seqName,
+validatePrepMergeParameters <- function(reads, seqName,
                                             resultRJMCMC, extendingSize,
                                             chrLength) {
 
-    ## Validate that the forwardandReverseReads is a GRanges
-    if (!(class(forwardandReverseReads) == "GRanges" )) {
-        stop(paste0("forwardandReverseReads must be a GRanges"))
+    ## Validate that the reads is a GRanges
+    if (!(class(reads) == "GRanges" )) {
+        stop(paste0("reads must be a GRanges"))
     }
 
-    ## Validate that the forwardandReverseReads is not empty
-    if (length(forwardandReverseReads) == 0 ) {
-        stop(paste0("forwardandReverseReads must be a non-empty GRanges"))
+    ## Validate that the reads is not empty
+    if (length(reads) == 0 ) {
+        stop(paste0("reads must be a non-empty GRanges"))
     }
 
     ## Validate that when seqName is NULL, only one seqname
     ## is present in GRanges
     if (is.null(seqName) &&
-        (length(runValue(seqnames(forwardandReverseReads))) > 1)) {
+        (length(runValue(seqnames(reads))) > 1)) {
         stop(paste0("seqName must be the name of one of the chromosomes ",
                     "present in the GRanges"))
     }
@@ -474,7 +474,7 @@ validatePrepMergeParameters <- function(forwardandReverseReads, seqName,
     ## When seqName present, it needs to be the name of one of the
     ## chromosomes present in the GRanges
     if (!is.null(seqName) && is.character(seqName) && !(seqName %in%
-                runValue(seqnames(forwardandReverseReads)))) {
+                runValue(seqnames(reads)))) {
         stop(paste0("seqName must be a character string corresponding to the ",
                     "name of one of the chromosomes present in the GRanges"))
     }

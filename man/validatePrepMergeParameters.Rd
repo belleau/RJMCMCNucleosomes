@@ -4,11 +4,11 @@
 \alias{validatePrepMergeParameters}
 \title{Parameters validation for the \code{\link{postMerge}} function}
 \usage{
-validatePrepMergeParameters(forwardandReverseReads, seqName, resultRJMCMC,
-  extendingSize, chrLength)
+validatePrepMergeParameters(reads, seqName, resultRJMCMC, extendingSize,
+  chrLength)
 }
 \arguments{
-\item{forwardandReverseReads}{a \code{GRanges} containing all forward
+\item{reads}{a \code{GRanges} containing all forward
 and reverse reads.The start positions of both reads are going to be used
 for the analysis. Beware that the start position of
 a reverse read is always higher that the end positition. The \code{GRanges}
