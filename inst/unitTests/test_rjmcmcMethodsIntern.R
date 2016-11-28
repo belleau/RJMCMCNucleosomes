@@ -981,8 +981,9 @@ test.validateSegmentationParameters_zeta_negative <- function() {
 test.validateSegmentationParameters_delta_vector <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                                              end = syntheticNucleosomeReads$dataIP$end),
+                             ranges = IRanges(
+                                start = syntheticNucleosomeReads$dataIP$start,
+                                end = syntheticNucleosomeReads$dataIP$end),
                              strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
@@ -1000,8 +1001,9 @@ test.validateSegmentationParameters_delta_vector <- function() {
 test.validateSegmentationParameters_delta_zero <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                                              end = syntheticNucleosomeReads$dataIP$end),
+                             ranges = IRanges(
+                                start = syntheticNucleosomeReads$dataIP$start,
+                                end = syntheticNucleosomeReads$dataIP$end),
                              strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
@@ -1019,8 +1021,9 @@ test.validateSegmentationParameters_delta_zero <- function() {
 test.validateSegmentationParameters_delta_negative <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                                              end = syntheticNucleosomeReads$dataIP$end),
+                             ranges = IRanges(
+                                start = syntheticNucleosomeReads$dataIP$start,
+                                end = syntheticNucleosomeReads$dataIP$end),
                              strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
@@ -1038,8 +1041,9 @@ test.validateSegmentationParameters_delta_negative <- function() {
 test.validateSegmentationParameters_maxLength_vector <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                            ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                                        end = syntheticNucleosomeReads$dataIP$end),
+                            ranges = IRanges(
+                                start = syntheticNucleosomeReads$dataIP$start,
+                                end = syntheticNucleosomeReads$dataIP$end),
                             strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
@@ -1057,8 +1061,9 @@ test.validateSegmentationParameters_maxLength_vector <- function() {
 test.validateSegmentationParameters_maxLength_zero <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                                              end = syntheticNucleosomeReads$dataIP$end),
+                             ranges = IRanges(
+                                start = syntheticNucleosomeReads$dataIP$start,
+                                end = syntheticNucleosomeReads$dataIP$end),
                              strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
@@ -1076,8 +1081,9 @@ test.validateSegmentationParameters_maxLength_zero <- function() {
 test.validateSegmentationParameters_maxLength_negative <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                                              end = syntheticNucleosomeReads$dataIP$end),
+                             ranges = IRanges(
+                                start = syntheticNucleosomeReads$dataIP$start,
+                                end = syntheticNucleosomeReads$dataIP$end),
                              strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
@@ -1095,8 +1101,9 @@ test.validateSegmentationParameters_maxLength_negative <- function() {
 test.validateSegmentationParameters_all_valid <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                             ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                                              end = syntheticNucleosomeReads$dataIP$end),
+                             ranges = IRanges(
+                                start = syntheticNucleosomeReads$dataIP$start,
+                                end = syntheticNucleosomeReads$dataIP$end),
                              strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- tryCatch(RJMCMCNucleosomes:::validateSegmentationParameters(
@@ -1116,47 +1123,52 @@ test.validateSegmentationParameters_all_valid <- function() {
 
 
 ## Test the result of postMerge() function
-# test.postMerge_good_01 <- function() {
-#
-#     obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_02,
-#                                 resultRJMCMC = RJMCMC_result,
-#                                 extendingSize = 10, chrLength = 80000)
-#     exp <- c(10076.947481311099182, 10241.462264150943156,
-#                 10676.973012005168130)
-#     message <- paste0(" test.postMerge_good_01() ",
-#                       "- postMerge() did not generated expected message.")
-#     checkEquals(obs, exp, msg = message)
-# }
+test.postMerge_good_01 <- function() {
+
+    obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_02,
+                                resultRJMCMC = RJMCMC_result,
+                                extendingSize = 10, chrLength = 80000)
+    listMu <- c(10072, 10241,
+                10574, 10665,
+                10744)
+    exp <- GRanges(seqnames = rep("chr_SYNTHETIC",length(listMu)),
+                      ranges=IRanges(start=listMu,end=listMu),
+                      strand=rep("*", length(listMu)))
+
+    message <- paste0(" test.postMerge_good_01() ",
+                      "- postMerge() did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
 
 ## Test the result of postMerge() function when mu is set to NA
-# test.postMerge_mu_NA_returned <- function() {
-#
-#     testRJMCMC <- RJMCMC_result
-#     testRJMCMC$mu <- NA
-#
-#     ## Reads are not located where the nucleosomes are
-#     obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_01,
-#                                         resultRJMCMC = testRJMCMC,
-#                                         extendingSize = 100, chrLength = 80000)
-#     exp <- NULL
-#     message <- paste0(" test.postMerge_mu_NA_returned() ",
-#                       "- postMerge() did not generated expected message.")
-#     checkEquals(obs, exp, msg = message)
-# }
+test.postMerge_mu_NA_returned <- function() {
+
+    testRJMCMC <- RJMCMC_result
+    testRJMCMC$mu <- NA
+
+    ## Reads are not located where the nucleosomes are
+    obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_01,
+                                        resultRJMCMC = testRJMCMC,
+                                        extendingSize = 100, chrLength = 80000)
+    exp <- NULL
+    message <- paste0(" test.postMerge_mu_NA_returned() ",
+                      "- postMerge() did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
 
 ## Test the result of postMerge() function when empty mu is passed
-# test.postMerge_mu_empty_returned <- function() {
-#
-#     testRJMCMC <- RJMCMC_result
-#     testRJMCMC$mu <- c()
-#
-#     ## Reads are not located where the nucleosomes are
-#     obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_01,
-#                                         resultRJMCMC = testRJMCMC,
-#                                         extendingSize = 100, chrLength = 80000)
-#     exp <- NULL
-#     message <- paste0(" test.postMerge_mu_NA_returned() ",
-#                       "- postMerge() did not generated expected message.")
-#     checkEquals(obs, exp, msg = message)
-# }
+test.postMerge_mu_empty_returned <- function() {
+
+    testRJMCMC <- RJMCMC_result
+    testRJMCMC$mu <- c()
+
+    ## Reads are not located where the nucleosomes are
+    obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_01,
+                                        resultRJMCMC = testRJMCMC,
+                                        extendingSize = 100, chrLength = 80000)
+    exp <- NULL
+    message <- paste0(" test.postMerge_mu_NA_returned() ",
+                      "- postMerge() did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
 
