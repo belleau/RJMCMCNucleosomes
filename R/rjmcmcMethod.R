@@ -161,14 +161,7 @@ rjmcmc <- function(forwardandReverseReads, seqName = NULL,
         maxRow <- which.max( sumIterPerK[,"it"])
         k <- sumIterPerK$k[maxRow]
         # Find mu values associated to the k value
-        if(is.null(seqName)){
-            seqName <- seqnames(forwardandReverseReads)[1]
-        }
-
-        mu <- GRanges(seqnames=rep(seqName,k),
-                      ranges=IRanges(start=round(resultRJMCMC$muHat[k,][1:k]),
-                                     end=round(resultRJMCMC$muHat[k,][1:k])),
-                      strand=rep('+',k))
+        mu <- resultRJMCMC$muHat[k,][1:k]
         # Get the k_max value
         k_max <- resultRJMCMC$k_max
     }
