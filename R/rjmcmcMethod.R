@@ -317,11 +317,11 @@ mergeRDSFiles <- function(RDSFiles) {
 #' be treated as an integer. Default: 74.
 #'
 #' @param chrLength a positive \code{numeric} or a positive \code{integer}
-#' indicating the lenght of the current chromosome. The length of the
+#' indicating the length of the current chromosome. The length of the
 #' chromosome is used to ensure that the consensus positions are all
 #' located inside the chromosome.
 #'
-#' @return a \code{array} of \code{numeric}, the updated values of the
+#' @return a \code{GRanges}, the updated values of the
 #' nucleosome positions. When no nucleosome is present, \code{NULL} is
 #' returned.
 #'
@@ -339,13 +339,12 @@ mergeRDSFiles <- function(RDSFiles) {
 #' ## Before post-treatment
 #' result
 #'
-#' ## TODO
-#' ## Post-treatment function which merged closely positioned nucleosomes
-#' ##postResult <- postTreatment(reads = reads_demo_02,
-#' ##                seqName = "chr_SYNTHETIC", result, 100, 73500)
+#' ##Post-treatment function which merged closely positioned nucleosomes
+#' postResult <- postTreatment(reads = reads_demo_02,
+#'                 seqName = "chr_SYNTHETIC", result, 100, 73500)
 #'
 #' ## After post-treatment
-#' ##postResult
+#' postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
