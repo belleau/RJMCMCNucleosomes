@@ -5,12 +5,13 @@
 \title{A post-treatment function to merge closely positioned nucleosomes,
 from the same chromosome, identified by the \code{\link{rjmcmc}} function.}
 \usage{
-postTreatment(forwardandReverseReads, seqName = NULL, resultRJMCMC,
-  extendingSize = 74L, chrLength)
+postTreatment(reads, seqName = NULL, resultRJMCMC, extendingSize = 74L,
+  chrLength)
 }
 \arguments{
-\item{forwardandReverseReads}{a \code{GRanges} containing forward and
-reverse reads.}
+\item{reads}{a \code{GRanges} containing forward and
+reverse reads. Beware that the start position of
+a reverse read is always higher that the end positition.}
 
 \item{seqName}{a \code{character} string containing the label of the
 chromosome, present in the \code{GRanges} object, that will be used. The
@@ -60,7 +61,7 @@ result
 
 ## TODO
 ## Post-treatment function which merged closely positioned nucleosomes
-##postResult <- postTreatment(forwardandReverseReads = reads_demo_02,
+##postResult <- postTreatment(reads = reads_demo_02,
 ##                seqName = "chr_SYNTHETIC", result, 100, 73500)
 
 ## After post-treatment
