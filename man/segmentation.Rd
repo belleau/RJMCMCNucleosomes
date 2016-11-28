@@ -5,10 +5,10 @@
 \title{Split a \code{GRanges} containing reads in a list of smaller
 segments for the \code{rjmcmc} function.}
 \usage{
-segmentation(dataIP, zeta = 147, delta, maxLength)
+segmentation(reads, zeta = 147, delta, maxLength)
 }
 \arguments{
-\item{dataIP}{a \code{GRanges}, the reads that need to be segmented.}
+\item{reads}{a \code{GRanges}, the reads that need to be segmented.}
 
 \item{zeta}{a positive \code{integer} or \code{numeric}, the length
 of the nucleosomes. Default: 147.}
@@ -40,7 +40,8 @@ sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
     strand = syntheticNucleosomeReads$dataIP$strand)
 
 # Segmentation of the reads
-segmentation(sampleGRanges, zeta = 147, delta = 50, maxLength = 1000)
+segmentation(reads = sampleGRanges, zeta = 147, delta = 50,
+maxLength = 1000)
 
 }
 \author{
