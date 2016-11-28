@@ -806,15 +806,16 @@ postMerge <- function(forwardandReverseReads,
 
     ## Prepare a GRanges using nucleosome positions
     ## Only apply merge when at least one nucleosome is present
-    if (!is.null(resultRJMCMC$mu) && class(resultRJMCMC$mu)=="GRanges") {
+    if (!is.null(resultRJMCMC$mu) && class(resultRJMCMC$mu)=="GRanges"
+        && length(resultRJMCMC$mu)>0) {
         nbMu <- length(resultRJMCMC$mu)
         #rjmcmc_peak <- GRanges(seqnames = rep('chrI', nbMu),
         #                IRanges(resultRJMCMC$mu, resultRJMCMC$mu),
         #                seqinfo = seqinfo)
         rjmcmc_peak <- resultRJMCMC$mu
         nbPeaks <- length(rjmcmc_peak)
-        names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
-        rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
+        #names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
+        #rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
 
         ## Find nucleosomes present in same regions
         result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak),
