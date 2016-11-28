@@ -25,15 +25,15 @@ data(syntheticNucleosomeReads)
 DIRECTORY <- system.file("extdata", package = "RJMCMCNucleosomes")
 
 file_001 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                        pattern = "newSeg_1.rds",
+                        pattern = "RJMCMC_seg_01.RDS",
                         full.names = TRUE)
 
 file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                        pattern = "newSeg_2.rds",
+                        pattern = "RJMCMC_seg_02.RDS",
                         full.names = TRUE)
 
 file_003 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-                        pattern = "newSeg_3.rds",
+                        pattern = "RJMCMC_seg_03.RDS",
                         full.names = TRUE)
 
 
@@ -230,29 +230,29 @@ test.mergeAllRDSFilesFromDirectory_notExisting <- function() {
     }
 }
 
-# test.mergeAllRDSFilesFromDirectory_good <- function() {
-#
-#     obs <- mergeAllRDSFilesFromDirectory(DIRECTORY)
-#     exp <- list()
-#     exp$k <- 16
-#     listMu <- c(10092.474777629515302, 10242.340786347993344,
-#                 10410.315021756090573, 10546.628207912892321,
-#                 11134.263941022001745, 11244.139414670189581,
-#                 11380.302471258171863, 11412.657313642583176,
-#                 11578.516646129490255, 11868.408425173787691,
-#                 12058.054137626086231, 12235.422415610730241,
-#                 12276.903444548192056, 12412.604063330700228,
-#                 12473.443670263422973, 12585.175197400152683)
-#     exp$mu <- GRanges(seqnames = rep("S",length(listMu)), ranges=IRanges(start=listMu,end=listMu),strand=rep("+", length(listMu)))
-#
-#     class(exp) <- "rjmcmcNucleosomesMerge"
-#
-#     message <- paste0(" test.mergeAllRDSFilesFromDirectory_good() ",
-#                       "- The mergeAllRDSFilesFromDirectory() did not generated ",
-#                       "expected output.")
-#
-#     checkEquals(obs, exp, msg = message)
-# }
+test.mergeAllRDSFilesFromDirectory_good <- function() {
+
+    obs <- mergeAllRDSFilesFromDirectory(DIRECTORY)
+    exp <- list()
+    exp$k <- 11
+    listMu <- c(10077, 10236,
+                10406, 10571,
+                10744, 10842,
+                10846, 10896,
+                10906, 11410,
+                11580)
+    exp$mu <- GRanges(seqnames = rep("chr_SYNTHETIC",length(listMu)),
+                      ranges=IRanges(start=listMu,end=listMu),
+                      strand=rep("*", length(listMu)))
+
+    class(exp) <- "rjmcmcNucleosomesMerge"
+
+    message <- paste0(" test.mergeAllRDSFilesFromDirectory_good() ",
+                      "- The mergeAllRDSFilesFromDirectory() did not generated ",
+                      "expected output.")
+
+    checkEquals(obs, exp, msg = message)
+}
 
 
 ###########################################################
@@ -283,51 +283,57 @@ test.mergeRDSFiles_notExisting <- function() {
     }
 }
 
-# test.mergeRDSFiles_good <- function() {
-#
-#     files <- c(file_001, file_002, file_003)
-#
-#     obs <- mergeRDSFiles(files)
-#     exp <- list()
-#     exp$k <- 16
-#     exp$mu <- c(10092.474777629515302, 10242.340786347993344,
-#                 10410.315021756090573, 10546.628207912892321,
-#                 11134.263941022001745, 11244.139414670189581,
-#                 11380.302471258171863, 11412.657313642583176,
-#                 11578.516646129490255, 11868.408425173787691,
-#                 12058.054137626086231, 12235.422415610730241,
-#                 12276.903444548192056, 12412.604063330700228,
-#                 12473.443670263422973, 12585.175197400152683)
-#
-#     class(exp) <- "rjmcmcNucleosomesMerge"
-#
-#     message <- paste0(" test.mergeRDSFiles_good() ",
-#                       "- The mergeRDSFiles() did not generated ",
-#                       "expected output.")
-#
-#     checkEquals(obs, exp, msg = message)
-# }
+test.mergeRDSFiles_good <- function() {
+
+    files <- c(file_001, file_002, file_003)
+
+    obs <- mergeRDSFiles(files)
+    exp <- list()
+    exp$k <- 11
+    listMu <- c(10077, 10236,
+                10406, 10571,
+                10744, 10842,
+                10846, 10896,
+                10906, 11410,
+                11580)
+    exp$mu <- GRanges(seqnames = rep("chr_SYNTHETIC",length(listMu)),
+                      ranges=IRanges(start=listMu,end=listMu),
+                      strand=rep("*", length(listMu)))
+
+    class(exp) <- "rjmcmcNucleosomesMerge"
+
+    message <- paste0(" test.mergeRDSFiles_good() ",
+                      "- The mergeRDSFiles() did not generated ",
+                      "expected output.")
+
+    checkEquals(obs, exp, msg = message)
+}
 
 
 ###########################################################
 ## postTreatment() function
 ###########################################################
 
-# test.postTreatment_good_01 <- function() {
-#
-#     obs <- postTreatment(forwardandReverseReads  = reads_demo_02,
-#                               resultRJMCMC = RJMCMC_result,
-#                               extendingSize = 20,
-#                               chrLength = 80000)
-#
-#     exp <- c(10076.947481311099182, 10241.462264150943156,
-#              10676.973012005168130)
-#
-#     message <- paste0(" test.postTreatment_good_01() ",
-#                       "- posTreatment() did not generated expected result.")
-#
-#     checkEquals(obs, exp, msg = message)
-# }
+test.postTreatment_good_01 <- function() {
+
+    obs <- postTreatment(reads = reads_demo_02,
+                              resultRJMCMC = RJMCMC_result,
+                              extendingSize = 20,
+                              chrLength = 80000)
+
+    listMu <- c(10072, 10241,
+             10574,10665,
+             10744)
+
+    exp <- GRanges(seqnames = rep("chr_SYNTHETIC",length(listMu)),
+                ranges=IRanges(start=listMu,end=listMu),
+                strand=rep("*", length(listMu)))
+
+    message <- paste0(" test.postTreatment_good_01() ",
+                      "- posTreatment() did not generated expected result.")
+
+    checkEquals(obs, exp, msg = message)
+}
 
 ###########################################################
 ## segmentation() function
@@ -336,8 +342,9 @@ test.mergeRDSFiles_notExisting <- function() {
 test.segmentation_good_01 <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                    ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                    end = syntheticNucleosomeReads$dataIP$end),
+                    ranges = IRanges(
+                                start = syntheticNucleosomeReads$dataIP$start,
+                                end = syntheticNucleosomeReads$dataIP$end),
                     strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- segmentation(sampleGRanges, zeta =  147, delta = 20, maxLength = 20000)
@@ -363,8 +370,9 @@ test.segmentation_good_01 <- function() {
 test.segmentation_good_02  <- function() {
 
     sampleGRanges <- GRanges(seqnames = syntheticNucleosomeReads$dataIP$chr,
-                    ranges = IRanges(start = syntheticNucleosomeReads$dataIP$start,
-                            end = syntheticNucleosomeReads$dataIP$end),
+                    ranges = IRanges(
+                                start = syntheticNucleosomeReads$dataIP$start,
+                                end = syntheticNucleosomeReads$dataIP$end),
                             strand = syntheticNucleosomeReads$dataIP$strand)
 
     obs <- segmentation(sampleGRanges, zeta =  142, delta = 40,
@@ -394,36 +402,37 @@ test.segmentation_good_02  <- function() {
 ## rjmcmcCHR() function
 ###########################################################
 
-# test.rjmcmcCHR_good_01 <- function() {
-#
-#         temp_dir <- "test_rjmcmcCHR_good_01"
-#         tryCatch({
-#
-#             reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
-#             obs <- rjmcmcCHR(forwardandReverseReads = reads,
-#                         zeta = 147, delta = 50, maxLength = 1200,
-#                         dirOut = temp_dir,
-#                         nbrIterations = 1000, lambda = 3, kMax = 30,
-#                         minInterval = 146, maxInterval = 292, minReads = 5,
-#                         vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)
-#             message <- paste0(" test.rjmcmcCHR_good_01() ",
-#                         "- rjmcmcCHR() did not generated expected result.")
-#             exp.k <- 2
-#             exp.kPost <- 1
-#             exp.mu <- c(1081.739501947609369, 1193.472696571378037)
-#             exp.muPost <- c(1187.924603174603135)
-#             checkTrue(is.list(obs), ms = message)
-#             checkEquals(obs$k, exp.k, ms = message)
-#             checkEquals(obs$kPost, exp.kPost, ms = message)
-#             checkEquals(obs$mu, exp.mu, ms = message)
-#         }, finally = {
-#             if (dir.exists(temp_dir)) {
-#                 unlink(temp_dir, recursive = TRUE, force = FALSE)
-#             }
-#         }
-#     )
-#     ## Double check
-#     if (dir.exists(temp_dir)) {
-#         unlink(temp_dir, recursive = TRUE, force = FALSE)
-#     }
-# }
+test.rjmcmcCHR_good_01 <- function() {
+
+        temp_dir <- "test_rjmcmcCHR_good_01"
+        tryCatch({
+
+            reads <- GRanges(syntheticNucleosomeReads$dataIP[1:500,])
+            obs <- rjmcmcCHR(forwardandReverseReads = reads,
+                        zeta = 147, delta = 50, maxLength = 1200,
+                        dirOut = temp_dir,
+                        nbrIterations = 1000, lambda = 3, kMax = 30,
+                        minInterval = 146, maxInterval = 292, minReads = 5,
+                        vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)
+            message <- paste0(" test.rjmcmcCHR_good_01() ",
+                        "- rjmcmcCHR() did not generated expected result.")
+            exp.k <- 2
+            exp.kPost <- 1
+            exp.mu <- c(1082, 1193)
+            exp.muPost <- c(1188)
+            checkTrue(is.list(obs), ms = message)
+            checkEquals(obs$k, exp.k, ms = message)
+            checkEquals(obs$kPost, exp.kPost, ms = message)
+            checkEquals(start(obs$mu), exp.mu, ms = message)
+            checkEquals(start(obs$muPost), exp.muPost, ms = message)
+        }, finally = {
+            if (dir.exists(temp_dir)) {
+                unlink(temp_dir, recursive = TRUE, force = FALSE)
+            }
+        }
+    )
+    ## Double check
+    if (dir.exists(temp_dir)) {
+        unlink(temp_dir, recursive = TRUE, force = FALSE)
+    }
+}
