@@ -162,13 +162,11 @@ rjmcmc <- function(reads, seqName = NULL,
         if(is.null(seqName)){
             seqName <- seqnames(reads)[1]
         }
-
         # Set mu as a GRanges
         mu <- GRanges(seqnames = rep(seqName, k),
                       ranges = IRanges(start=round(resultRJMCMC$muHat[k,][1:k]),
-                                     end=round(resultRJMCMC$muHat[k,][1:k])),
+                                    end=round(resultRJMCMC$muHat[k,][1:k])),
                       strand = rep('*',k))
-
         # Get the k_max value
         k_max <- resultRJMCMC$k_max
     }

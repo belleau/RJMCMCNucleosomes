@@ -287,9 +287,11 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
         ## Only use data from rjmcmcNucleosomes or rjmcmcNucleosomesMerge class
         if ((is(data, "rjmcmcNucleosomesMerge") ||
                         is(data, "rjmcmcNucleosomes")) &
-                        length(data$mu[is.na(data$mu)]) == 0 ) {
+                        class(data$mu) == "GRanges") {
             result$k      <- result$k + data$k
-            mu[[fileName]] <- data$mu
+            if(class(data$mu)=="GRanges"){
+                mu[[fileName]] <- data$mu
+            }
         }
     }
 
@@ -775,14 +777,23 @@ validateSegmentationParameters <- function(reads, zeta = 147, delta,
 #' @importFrom consensusSeekeR findConsensusPeakRegions
 #' @importFrom GenomicRanges GRanges findOverlaps
 #' @importFrom IRanges IRanges
-#' @importFrom GenomeInfoDb Seqinfo seqinfo seqnames
+#' @importFrom GenomeInfoDb Seqinfo seqinfo seqnames genome
 #' @importFrom S4Vectors queryHits subjectHits
 #' @importFrom BiocGenerics sapply
 #' @keywords internal
 #'
 postMerge <- function(forwardandReverseReads,
-                        resultRJMCMC, seqName = NULL, extendingSize, chrLength, minReads = 5)
+                        resultRJMCMC, extendingSize, chrLength, minReads = 5, seqName = NULL)
 {
+    ## Only keep reads associated to the specified chromosome
+
+    if (!is.null(seqName)) {
+        forwardandReverseReads <- forwardandReverseReads[
+            seqnames(forwardandReverseReads) == seqName]
+    }else{
+        seqName=as.character(unique(seqnames(forwardandReverseReads)))
+    }
+    genomeCur <- as.character(genome(forwardandReverseReads)[which(names(genome(forwardandReverseReads))== seqName)])
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
     segReads$yF <- start(forwardandReverseReads[strand(forwardandReverseReads)
@@ -791,23 +802,25 @@ postMerge <- function(forwardandReverseReads,
                                                 == "-" ])
 
     ## Prepare Seqinfo object using chromosome length
-    seqinfo <- Seqinfo(c("chrI"), c(chrLength), FALSE, "mock1")
+    seqinfo <- Seqinfo(c(seqName), c(chrLength), FALSE, genomeCur)
 
     finalResult <- NULL
 
     ## Prepare a GRanges using nucleosome positions
     ## Only apply merge when at least one nucleosome is present
-    if (!is.null(resultRJMCMC$mu) && !is.na(resultRJMCMC$mu)) {
+    if (!is.null(resultRJMCMC$mu) && class(resultRJMCMC$mu)=="GRanges"
+        && length(resultRJMCMC$mu)>0) {
         nbMu <- length(resultRJMCMC$mu)
-        rjmcmc_peak <- GRanges(seqnames = rep('chrI', nbMu),
-                        IRanges(resultRJMCMC$mu, resultRJMCMC$mu),
-                        seqinfo = seqinfo)
+        #rjmcmc_peak <- GRanges(seqnames = rep('chrI', nbMu),
+        #                IRanges(resultRJMCMC$mu, resultRJMCMC$mu),
+        #                seqinfo = seqinfo)
+        rjmcmc_peak <- resultRJMCMC$mu
         nbPeaks <- length(rjmcmc_peak)
-        names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
-        rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
+        #names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
+        #rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
 
         ## Find nucleosomes present in same regions
-        result <- findConsensusPeakRegions(peaks = resultRJMCMC$mu, #c(rjmcmc_peak)
+        result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak),
                                         chrInfo = seqinfo,
                                         extendingSize = extendingSize,
                                         expandToFitPeakRegion = FALSE,
@@ -829,9 +842,9 @@ postMerge <- function(forwardandReverseReads,
             current <- subjectHits(overlapsPeak)[allOverlap == x]
             if(length(current) > 1) {
                 ## When more than one nucleosome present, use mean position
-                valCentral <- mean(resultRJMCMC$mu[current])
-                a <- min(resultRJMCMC$mu[current]) # - (74 + extendingSize)
-                b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
+                valCentral <- mean(start(resultRJMCMC$mu)[current])
+                a <- min(start(resultRJMCMC$mu)[current]) # - (74 + extendingSize)
+                b <- max(start(resultRJMCMC$mu)[current]) # + (74 - extendingSize)
                 ## A miminum number of reads is needed closed to the position
                 if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
                                   segReads$yF <= (b - minLimit)]) >= minReads &
@@ -851,12 +864,21 @@ postMerge <- function(forwardandReverseReads,
                 }
             } else {
                 ## Return the current mu
-                return(resultRJMCMC$mu[current])
+                return(start(resultRJMCMC$mu)[current])
             }
-        })
+        }) # end sapply
 
         if (!all(is.na(result))) {
-            finalResult <- as.numeric(result[!is.na(result)])
+            finalResult <- GRanges(seqnames = rep(seqName,
+                                                 length(
+                                                     as.numeric(
+                                                         result[!is.na(result)]
+                                                         ))),
+                                  ranges=IRanges(
+                                      start=round(as.numeric(result[!is.na(result)])),
+                                      end=round(as.numeric(result[!is.na(result)]))),
+                                  strand=rep("*", length(
+                                      as.numeric(result[!is.na(result)]))))
         }
     }
 

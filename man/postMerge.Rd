@@ -6,8 +6,8 @@
 nucleosomes, from the same chromosome,
 identified by the \code{\link{rjmcmc}} function}
 \usage{
-postMerge(forwardandReverseReads, resultRJMCMC, seqName = NULL, extendingSize,
-  chrLength, minReads = 5)
+postMerge(forwardandReverseReads, resultRJMCMC, extendingSize, chrLength,
+  minReads = 5, seqName = NULL)
 }
 \arguments{
 \item{forwardandReverseReads}{a \code{GRanges} containing all forward
