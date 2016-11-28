@@ -4,13 +4,13 @@
 \alias{rjmcmcCHR}
 \title{Nucleosome positioning mapping on a large segment, up to a chromosome}
 \usage{
-rjmcmcCHR(forwardandReverseReads, seqName = NULL, zeta = 147, delta,
-  maxLength, nbrIterations, kMax, lambda = 3, minInterval, maxInterval,
-  minReads = 5, adaptIterationsToReads = TRUE, vSeed = -1, nbCores = 1,
+rjmcmcCHR(reads, seqName = NULL, zeta = 147, delta, maxLength,
+  nbrIterations, kMax, lambda = 3, minInterval, maxInterval, minReads = 5,
+  adaptIterationsToReads = TRUE, vSeed = -1, nbCores = 1,
   dirOut = "out", saveAsRDS = FALSE, saveSEG = TRUE)
 }
 \arguments{
-\item{forwardandReverseReads}{a \code{GRanges}, the forward and reverse
+\item{reads}{a \code{GRanges}, the forward and reverse
 reads that need to be segmented.}
 
 \item{seqName}{a \code{character} string containing the label of the
@@ -85,10 +85,15 @@ a \code{list} of class
 "rjmcmcNucleosomesBeforeAndAfterPostTreatment" containing:
 \itemize{
     \item k a \code{integer}, the number of nucleosomes.
-    \item mu a \code{vector} of \code{numeric} of length
-\code{k}, the positions of the nucleosomes.
-    \item muPost a \code{vector} of \code{numeric} of length
-\code{k}, the positions of the nucleosomes after post-treament.
+    \item mu a \code{GRanges} containing the positions of the nucleosomes.
+    \item kPost a \code{integer}, the number of nucleosomes after
+post-treatment and '*' as strand. The \code{seqnames} of the \code{GRanges}
+correspond to the \code{seqName} input value. \code{NA} when no nucleosome
+is detected.
+    \item muPost a \code{GRanges} containing the positions of the
+nucleosomes after post-treament and '*' as strand. The \code{seqnames}
+of the \code{GRanges} correspond to the \code{seqName} input value.
+\code{NA} when no nucleosome is detected.
 }
 }
 \description{
@@ -112,12 +117,11 @@ data(syntheticNucleosomeReads)
 sampleGRanges <- GRanges(syntheticNucleosomeReads$dataIP)
 
 ## Run nucleosome detection on the entire sample
-\dontrun{result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges,
+\dontrun{result <- rjmcmcCHR(reads = sampleGRanges,
              zeta = 147, delta=50, maxLength=1200,
              nbrIterations = 1000, lambda = 3, kMax = 30,
              minInterval = 146, maxInterval = 292, minReads = 5,
              vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)}
-
 
 }
 \author{
