@@ -14,8 +14,8 @@ used to merge nucleosome information.}
 a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
 \itemize{
     \item k a \code{integer}, the number of nucleosomes.
-    \item mu a \code{vector} of \code{numeric} of length
-\code{k}, the positions of the nucleosomes.
+    \item \code{mu} a \code{GRanges} containing the positions of the
+nucleosomes.
 }
 }
 \description{
@@ -33,9 +33,8 @@ file_2 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
                 pattern = "RJMCMC_seg_02.RDS",
                 full.names = TRUE)
 
-## TODO
 ## Merging nucleosomes informations from the two files
-##result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
+result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
 
 }
 \author{

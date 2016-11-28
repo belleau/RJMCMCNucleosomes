@@ -248,8 +248,8 @@ validateRJMCMCParameters <- function(reads,seqName, nbrIterations,
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
 #' \itemize{
 #'     \item k a \code{integer}, the number of nucleosomes.
-#'     \item mu a \code{vector} of \code{numeric} of length
-#' \code{k}, the positions of the nucleosomes.
+#'     \item \code{mu} a \code{GRanges} containing the positions of the
+#' nucleosomes.
 #' }
 #'
 #' @examples
@@ -264,9 +264,8 @@ validateRJMCMCParameters <- function(reads,seqName, nbrIterations,
 #'                 pattern = "RJMCMC_seg_02.RDS",
 #'                 full.names = TRUE)
 #'
-#' ## TODO
 #' ## Merging nucleosomes informations from the two files
-#' ##result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
+#' result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
 #'
 #' @importFrom methods is
 #' @importFrom stats setNames
@@ -296,7 +295,7 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     }
 
     ## Ensure that all values are ordered in ascending order of mu
-    result$mu     <- sort(unlist(mu, use.names=FALSE)) #mu[newOrder]
+    result$mu     <- sort(unlist(mu, use.names=FALSE))
 
     ## Assign class type to list
     class(result)<-"rjmcmcNucleosomesMerge"
