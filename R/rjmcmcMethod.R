@@ -254,26 +254,25 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
 #' \itemize{
 #'     \item k a \code{integer}, the number of nucleosomes.
-#'     \item mu a \code{vector} of \code{numeric} of length
-#' \code{k}, the positions of the nucleosomes.
+#'     \item \code{mu} a \code{GRanges} containing the positions of the
+#' nucleosomes.
 #' }
 #'
 #' @examples
 #'
-#' ## TODO
 #' ## Use RDS files present in the RJMCMC package
-#' ##RDSFiles <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-#' ##full.names = TRUE, pattern = "*rds")
+#' RDSFiles <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
+#' full.names = TRUE, pattern = "*RDS")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
-#' ##result <- mergeRDSFiles(RDSFiles)
+#' result <- mergeRDSFiles(RDSFiles)
 #'
 #' ## Print the number and the position of the nucleosomes
-#' ##result$k
-#' ##result$mu
+#' result$k
+#' result$mu
 #'
 #' ## Class of the output object
-#' ##class(result)
+#' class(result)
 #'
 #'
 #' @author Pascal Belleau, Astrid Deschenes
@@ -321,9 +320,8 @@ mergeRDSFiles <- function(RDSFiles) {
 #' chromosome is used to ensure that the consensus positions are all
 #' located inside the chromosome.
 #'
-#' @return a \code{GRanges}, the updated values of the
-#' nucleosome positions. When no nucleosome is present, \code{NULL} is
-#' returned.
+#' @return a \code{GRanges}, the updated nucleosome positions.
+#' When no nucleosome is present, \code{NULL} is returned.
 #'
 #' @examples
 #'
