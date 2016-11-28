@@ -145,7 +145,7 @@ sampleGRanges <- GRanges(seqnames = sample$dataIP$chr,
                           strand = sample$dataIP$strand)
 
 ## Segment sample into candidate regions
-sampleSegmented <- segmentation(dataIP = sampleGRanges, zeta = 147, 
+sampleSegmented <- segmentation(reads = sampleGRanges, zeta = 147, 
                                 delta = 40, maxLength = 1000)
 
 ## Number of segments created
