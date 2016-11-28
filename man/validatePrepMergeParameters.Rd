@@ -49,13 +49,14 @@ data(reads_demo_01)
 
 ## Load dataset containing nucleosome information
 file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
-pattern = "newSeg_2.rds", full.names = TRUE)
+pattern = "RJMCMC_seg_02.RDS", full.names = TRUE)
 nucleosome_info <- readRDS(file_002)
 
+## TODO
 ## The function returns 0 when all parameters are valid
-RJMCMCNucleosomes:::validatePrepMergeParameters(forwardandReverseReads =
-reads_demo_01, seqName = "chr_SYNTHETIC",
-resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
+##RJMCMCNucleosomes:::validatePrepMergeParameters(forwardandReverseReads =
+##reads_demo_01, seqName = "chr_SYNTHETIC",
+##resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 
 ## The function raises an error when at least one paramater is not valid
 \dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(

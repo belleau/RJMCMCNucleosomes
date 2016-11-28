@@ -24,8 +24,7 @@ data(reads_demo_02)
 ## Nucleosome positioning
 ## Since there is only one chromosome present in reads_demo_02, the name
 ## of the chromosome does not need to be specified
-rjmcmc(forwardandReverseReads = reads_demo_02,
-            nbrIterations = 150, lambda = 3, kMax = 30,
+rjmcmc(reads = reads_demo_02, nbrIterations = 150, lambda = 3, kMax = 30,
             minInterval = 144, maxInterval = 290, minReads = 6)
 
 }
