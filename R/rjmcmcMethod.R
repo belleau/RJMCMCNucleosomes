@@ -317,11 +317,11 @@ mergeRDSFiles <- function(RDSFiles) {
 #' be treated as an integer. Default: 74.
 #'
 #' @param chrLength a positive \code{numeric} or a positive \code{integer}
-#' indicating the lenght of the current chromosome. The length of the
+#' indicating the length of the current chromosome. The length of the
 #' chromosome is used to ensure that the consensus positions are all
 #' located inside the chromosome.
 #'
-#' @return a \code{array} of \code{numeric}, the updated values of the
+#' @return a \code{GRanges}, the updated values of the
 #' nucleosome positions. When no nucleosome is present, \code{NULL} is
 #' returned.
 #'
@@ -339,13 +339,12 @@ mergeRDSFiles <- function(RDSFiles) {
 #' ## Before post-treatment
 #' result
 #'
-#' ## TODO
-#' ## Post-treatment function which merged closely positioned nucleosomes
-#' ##postResult <- postTreatment(reads = reads_demo_02,
-#' ##                seqName = "chr_SYNTHETIC", result, 100, 73500)
+#' ##Post-treatment function which merged closely positioned nucleosomes
+#' postResult <- postTreatment(reads = reads_demo_02,
+#'                 seqName = "chr_SYNTHETIC", result, 100, 73500)
 #'
 #' ## After post-treatment
-#' ##postResult
+#' postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
@@ -525,7 +524,7 @@ plotNucleosomes <- function(nucleosomePositions, reads,
 #' @param maxLength a positive \code{integer} or \code{numeric}, the
 #' length of each segment.
 #'
-#' @return a \code{list} of \code{GRanges}, the list of segments.
+#' @return a \code{GRangesList} containing all the segments.
 #'
 #' @examples
 #'
@@ -554,6 +553,7 @@ segmentation <- function(reads, zeta = 147, delta, maxLength) {
     posMin <- min(start(reads))
     posMax <- max(end(reads))
 
+    # Create segments
     starts = seq(posMin, posMax, by = (maxLength - (zeta + delta)))
     subject = GRanges(seqlevels(reads), IRanges(starts, width=maxLength))
     hits = findOverlaps(reads, subject)
@@ -573,7 +573,7 @@ segmentation <- function(reads, zeta = 147, delta, maxLength) {
 #' \code{GRanges} segments that can be run by the
 #' \code{rjmcmc} function. All those steps are done automatically.
 #'
-#' @param forwardandReverseReads a \code{GRanges}, the forward and reverse
+#' @param reads a \code{GRanges}, the forward and reverse
 #' reads that need to be segmented.
 #'
 #' @param seqName a \code{character} string containing the label of the
@@ -647,10 +647,15 @@ segmentation <- function(reads, zeta = 147, delta, maxLength) {
 #' "rjmcmcNucleosomesBeforeAndAfterPostTreatment" containing:
 #' \itemize{
 #'     \item k a \code{integer}, the number of nucleosomes.
-#'     \item mu a \code{vector} of \code{numeric} of length
-#' \code{k}, the positions of the nucleosomes.
-#'     \item muPost a \code{vector} of \code{numeric} of length
-#' \code{k}, the positions of the nucleosomes after post-treament.
+#'     \item mu a \code{GRanges} containing the positions of the nucleosomes.
+#'     \item kPost a \code{integer}, the number of nucleosomes after
+#' post-treatment and '*' as strand. The \code{seqnames} of the \code{GRanges}
+#' correspond to the \code{seqName} input value. \code{NA} when no nucleosome
+#' is detected.
+#'     \item muPost a \code{GRanges} containing the positions of the
+#' nucleosomes after post-treament and '*' as strand. The \code{seqnames}
+#' of the \code{GRanges} correspond to the \code{seqName} input value.
+#' \code{NA} when no nucleosome is detected.
 #' }
 #'
 #' @examples
@@ -662,18 +667,17 @@ segmentation <- function(reads, zeta = 147, delta, maxLength) {
 #' sampleGRanges <- GRanges(syntheticNucleosomeReads$dataIP)
 #'
 #' ## Run nucleosome detection on the entire sample
-#' \dontrun{result <- rjmcmcCHR(forwardandReverseReads=sampleGRanges,
+#' \dontrun{result <- rjmcmcCHR(reads = sampleGRanges,
 #'              zeta = 147, delta=50, maxLength=1200,
 #'              nbrIterations = 1000, lambda = 3, kMax = 30,
 #'              minInterval = 146, maxInterval = 292, minReads = 5,
 #'              vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)}
 #'
-#'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom BiocParallel bplapply SnowParam
 #' @importFrom GenomicRanges strand
 #' @export
-rjmcmcCHR <- function(forwardandReverseReads, seqName = NULL, zeta = 147,
+rjmcmcCHR <- function(reads, seqName = NULL, zeta = 147,
                         delta, maxLength,
                         nbrIterations, kMax, lambda = 3,
                         minInterval, maxInterval, minReads = 5,
@@ -698,11 +702,11 @@ rjmcmcCHR <- function(forwardandReverseReads, seqName = NULL, zeta = 147,
 
     ## Only keep reads associated to the specified chromosome
     if (!is.null(seqName)) {
-        forwardandReverseReads <- forwardandReverseReads[
-            seqnames(forwardandReverseReads) == seqName]
+        reads <- reads[seqnames(reads) == seqName]
     }
 
-    seg <- segmentation(forwardandReverseReads, zeta, delta, maxLength)
+    ## Split reads into segments
+    seg <- segmentation(reads, zeta, delta, maxLength)
 
     if(saveSEG){
         options(digits.secs = 2)
@@ -716,6 +720,7 @@ rjmcmcCHR <- function(forwardandReverseReads, seqName = NULL, zeta = 147,
 
     param <- SnowParam(workers = nbCores, stop.on.error = TRUE)
 
+    ## Run RJMCMC on each segment
     a <- bplapply(1:nbSeg, FUN = runCHR, seg, niter = nbrIterations,
                     kmax = kMax, lambda = lambda, ecartmin = minInterval,
                     ecartmax = maxInterval, minReads = minReads,
@@ -723,12 +728,13 @@ rjmcmcCHR <- function(forwardandReverseReads, seqName = NULL, zeta = 147,
                     dirOut = dirOut,
                     vSeed = vSeed, saveAsRDS = saveAsRDS, BPPARAM = param)
 
+    ## Merge results from all segments
     results <- mergeAllRDSFilesFromDirectory(dirResults)
 
-    resultPostTreatement <- postTreatment(reads = forwardandReverseReads,
+    ## Post-treatment of the nucleosomes
+    resultPostTreatement <- postTreatment(reads = reads,
                                 seqName = seqName, results,
-                                chrLength=max(start(forwardandReverseReads),
-                                        end(forwardandReverseReads)) + 1000)
+                                chrLength=max(start(reads), end(reads)) + 1000)
 
     results$muPost <- resultPostTreatement
 

@@ -21,7 +21,7 @@ being \code{zeta} + \code{delta}.}
 length of each segment.}
 }
 \value{
-a \code{list} of \code{GRanges}, the list of segments.
+a \code{GRangesList} containing all the segments.
 }
 \description{
 Split a \code{GRanges} of reads (as example, the reads from
