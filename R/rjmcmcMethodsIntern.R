@@ -323,9 +323,8 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #' file_test <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 #' pattern = "RJMCMC_seg_02.RDS", full.names = TRUE)
 #'
-#' ## TODO
 #' ## Testing using a real file
-#' ##RJMCMCNucleosomes:::validateRDSFilesParameters(c(file_test))
+#' RJMCMCNucleosomes:::validateRDSFilesParameters(file_test)
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
