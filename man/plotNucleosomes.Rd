@@ -8,13 +8,13 @@ plotNucleosomes(nucleosomePositions, reads, seqName = NULL,
   xlab = "position", ylab = "coverage", names = NULL)
 }
 \arguments{
-\item{nucleosomePositions}{a \code{list} or a \code{vector} of
-\code{numeric}, the nucleosome positions for one or
-multiples predictions are obtained using the same reads. In presence of
-only one prediction (with multiples nucleosome positions), a \code{vector}
+\item{nucleosomePositions}{a \code{GRanges} or a \code{GRangesList}
+containing the nucleosome positions for one or
+multiples predictions obtained using the same reads. In presence of
+only one prediction (with multiples nucleosome positions), a \code{GRanges}
 is used. In presence of more thant one predictions (as example, before and
-after post-treatment or results from different software), a \code{list} with
-one entry per prediction is used.}
+after post-treatment or results from different software), a
+\code{GRangesList} with one entry per prediction is used.}
 
 \item{reads}{a \code{GRanges} containing forward and
 reverse reads. The \code{GRanges} should contain at least one read.}
@@ -41,10 +41,11 @@ a graph containing the nucleosome positions and the read coverage
 }
 \description{
 Generate a graph for
-a \code{list} or a \code{vector} of nucleosome positions. In presence of
-only one prediction (with multiples nucleosome positions), a \code{vector}
-is used. In presence of more thant one predictions (as example, before and
-after post-treatment or results from different software), a \code{list} with
+a \code{GRanges} or a \code{GRangesList} of nucleosome positions. In
+presence of only one prediction (with multiples nucleosome positions), a
+\code{GRanges} is used. In presence of more thant one predictions (as
+example, before and after post-treatment or results from
+different software), a \code{GRangesList} with
 one entry per prediction is used. All predictions must have been obtained
 using the same reads.
 }
