@@ -665,11 +665,10 @@ segmentation <- function(reads, zeta = 147, delta, maxLength) {
 #' sampleGRanges <- GRanges(syntheticNucleosomeReads$dataIP)
 #'
 #' ## Run nucleosome detection on the entire sample
-#' \dontrun{result <- rjmcmcCHR(reads = sampleGRanges,
-#'              zeta = 147, delta=50, maxLength=1200,
-#'              nbrIterations = 1000, lambda = 3, kMax = 30,
-#'              minInterval = 146, maxInterval = 292, minReads = 5,
-#'              vSeed = 10113, nbCores = 2, saveAsRDS = FALSE)}
+#' \dontrun{result <- rjmcmcCHR(reads = sampleGRanges, zeta = 147, delta=50,
+#' maxLength=1200, nbrIterations = 1000, lambda = 3, kMax = 30,
+#' minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 10113,
+#' nbCores = 2, saveAsRDS = FALSE)}
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom BiocParallel bplapply SnowParam
