@@ -52,15 +52,14 @@ file_002 <- dir(system.file("extdata", package = "RJMCMCNucleosomes"),
 pattern = "RJMCMC_seg_02.RDS", full.names = TRUE)
 nucleosome_info <- readRDS(file_002)
 
-## TODO
 ## The function returns 0 when all parameters are valid
-##RJMCMCNucleosomes:::validatePrepMergeParameters(forwardandReverseReads =
-##reads_demo_01, seqName = "chr_SYNTHETIC",
-##resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
+RJMCMCNucleosomes:::validatePrepMergeParameters(reads = reads_demo_01,
+seqName = "chr_SYNTHETIC", resultRJMCMC = nucleosome_info,
+extendingSize = 74, chrLength = 10000000)
 
 ## The function raises an error when at least one paramater is not valid
 \dontrun{RJMCMCNucleosomes:::validatePrepMergeParameters(
-forwardandReverseReads = c(72400, 72431, 72428, 72429, 72426),
+reads = c(72400, 72431, 72428, 72429, 72426),
 resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 
 }
