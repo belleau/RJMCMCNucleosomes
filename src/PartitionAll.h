@@ -211,13 +211,11 @@ private:
 
                 }while(!(flag) && cpt == 1000);
                 if(!(flag)){
-                    std::cerr << "Problem with the number of reads to initialise mu\n";
-                    //exit(1);
+                    Rcpp::stop("Problem with the number of reads to initialise mu\n");
                 }
             }
             else{
-                std::cerr << "No reads \n";
-                //exit(1);
+                Rcpp::stop("No reads\n");
             }
         }
 
@@ -251,9 +249,7 @@ private:
 
             }
             else{
-                std::cerr << "No reads \n";
-                //exit(1);
-                flag = false;
+                Rcpp::stop("No reads\n");
             }
         }
 
@@ -497,9 +493,7 @@ private:
             }
         }
         catch(std::bad_alloc&) {
-            std::cout << "Memory problem\n";
-            std::cerr << "Memory problem\n";
-            flag = true;
+            Rcpp::stop("Memory problem\n");
         }
         return(!(flag));
     }
@@ -638,9 +632,7 @@ private:
             }
         }
         catch(std::bad_alloc&) {
-            std::cout << "Memory problem\n";
-            std::cerr << "Memory problem\n";
-            flag = true;
+            Rcpp::stop("Memory problem\n");
         }
         return(!(flag));
     }
@@ -754,9 +746,7 @@ private:
                 }
             }
             catch(std::bad_alloc&) {
-                std::cout << "Memory problem\n";
-                std::cerr << "Memory problem\n";
-                flag = true;
+                Rcpp::stop("Memory problem\n");
             }
         }
         else{
@@ -866,9 +856,7 @@ private:
                 }
             }
             catch(std::bad_alloc&) {
-                std::cout << "Memory problem\n";
-                std::cerr << "Memory problem\n";
-                flag = true;
+                Rcpp::stop("Memory problem\n");
             }
         }
         else{
@@ -982,9 +970,7 @@ private:
             }
         }
         catch(std::bad_alloc&) {
-            std::cout << "Memory problem\n";
-            std::cerr << "Memory problem\n";
-            flag = true;
+            Rcpp::stop("Memory problem\n");
         }
         return(!(flag));
     }
@@ -1108,9 +1094,7 @@ private:
             }
         }
         catch(std::bad_alloc&) {
-            std::cout << "Memory problem\n";
-            std::cerr << "Memory problem\n";
-            flag = true;
+            Rcpp::stop("Memory problem\n");
         }
         return(!(flag));
     }
