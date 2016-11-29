@@ -761,14 +761,12 @@ validateSegmentationParameters <- function(reads, zeta = 147, delta,
 #' ## Results before post-treatment
 #' RJMCMC_result$mu
 #'
-#' ## TODO
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' ##postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads =
-#' ##reads_demo_02,
-#' ##resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
+#' postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_02,
+#' resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 #'
 #' ## Results after post-treatment
-#' ##postResult
+#' postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom consensusSeekeR findConsensusPeakRegions
@@ -779,8 +777,8 @@ validateSegmentationParameters <- function(reads, zeta = 147, delta,
 #' @importFrom BiocGenerics sapply
 #' @keywords internal
 #'
-postMerge <- function(forwardandReverseReads,
-                        resultRJMCMC, extendingSize, chrLength, minReads = 5, seqName = NULL)
+postMerge <- function(forwardandReverseReads, resultRJMCMC, extendingSize,
+                        chrLength, minReads = 5, seqName = NULL)
 {
     ## Only keep reads associated to the specified chromosome
 

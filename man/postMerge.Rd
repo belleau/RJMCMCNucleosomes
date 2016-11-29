@@ -57,14 +57,12 @@ data(reads_demo_02)
 ## Results before post-treatment
 RJMCMC_result$mu
 
-## TODO
 ## Post-treatment function which merged closely positioned nucleosomes
-##postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads =
-##reads_demo_02,
-##resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
+postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_02,
+resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 
 ## Results after post-treatment
-##postResult
+postResult
 
 }
 \author{
