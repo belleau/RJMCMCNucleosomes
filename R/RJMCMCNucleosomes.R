@@ -44,7 +44,8 @@
 #' @keywords package
 NULL
 
-#' A \code{GRanges} containing forward and reverse reads (for demo purpose).
+#' Forward reads and reverse reads in \code{GRanges} format
+#' (for demo purpose).
 #'
 #' A group of forward and reverse reads, in a \code{GRanges}, that can be
 #' used to test the \code{rjmcmc} function.
@@ -79,7 +80,7 @@ NULL
 #'
 NULL
 
-#' Forward reads and reverse reads in \code{integer} format
+#' Forward reads and reverse reads in \code{GRanges} format
 #' (for demo purpose).
 #'
 #' A group of forward and reverse reads that can be used to test the

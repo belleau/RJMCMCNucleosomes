@@ -781,7 +781,8 @@ postMerge <- function(reads, resultRJMCMC, extendingSize,
     }else{
         seqName=as.character(unique(seqnames(reads)))
     }
-    genomeCur <- as.character(genome(reads)[which(names(genome(reads))== seqName)])
+    genomeCur <- as.character(genome(reads)[which(names(genome(reads))
+                                                    == seqName)])
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
     segReads$yF <- start(reads[strand(reads) == "+" ])
@@ -794,12 +795,9 @@ postMerge <- function(reads, resultRJMCMC, extendingSize,
 
     ## Prepare a GRanges using nucleosome positions
     ## Only apply merge when at least one nucleosome is present
-    if (!is.null(resultRJMCMC$mu) && class(resultRJMCMC$mu)=="GRanges"
-        && length(resultRJMCMC$mu)>0) {
+    if (!is.null(resultRJMCMC$mu) && class(resultRJMCMC$mu) == "GRanges"
+        && length(resultRJMCMC$mu) > 0) {
         nbMu <- length(resultRJMCMC$mu)
-        #rjmcmc_peak <- GRanges(seqnames = rep('chrI', nbMu),
-        #                IRanges(resultRJMCMC$mu, resultRJMCMC$mu),
-        #                seqinfo = seqinfo)
         rjmcmc_peak <- resultRJMCMC$mu
         nbPeaks <- length(rjmcmc_peak)
         names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
