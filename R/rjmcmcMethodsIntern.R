@@ -504,13 +504,13 @@ validatePrepMergeParameters <- function(reads, seqName,
 #' @description Validation of all parameters needed by the public
 #' \code{\link{plotNucleosomes}} function.
 #'
-#' @param nucleosomePositions a \code{list} or a \code{vector} of
-#' \code{numeric}, the nucleosome positions for one or
-#' multiples predictions are obtained using the same reads. In presence of
-#' only one prediction (with multiples nucleosome positions), a \code{vector}
+#' @param nucleosomePositions a \code{GRanges} or a \code{GRangesList}
+#' containing the nucleosome positions for one or
+#' multiples predictions obtained using the same reads. In presence of
+#' only one prediction (with multiples nucleosome positions), a \code{GRanges}
 #' is used. In presence of more thant one predictions (as example, before and
-#' after post-treatment or results from different software), a \code{list} with
-#' one entry per prediction is used.
+#' after post-treatment or results from different software), a
+#' \code{GRangesList} with one entry per prediction is used.
 #'
 #' @param reads a \code{GRanges} containing forward and
 #' reverse reads. The \code{GRanges} should contain at least one read.
@@ -537,7 +537,7 @@ validatePrepMergeParameters <- function(reads, seqName,
 #' ## Load GRanges dataset
 #' data(reads_demo_01)
 #'
-#' ## Create a vector containing nucleosome positions
+#' ## Load RJMCMC result
 #' data(RJMCMC_result)
 #'
 #' ## The function returns 0 when all parameters are valid
@@ -551,28 +551,21 @@ validatePrepMergeParameters <- function(reads, seqName,
 #' #xlab = "position", ylab = "coverage", names = c("test"))}
 #'
 #' #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#' #nucleosomePositions = nucleosomes, reads = reads,
-#' #xlab = "position", ylab = "coverage", names = c("test_one", "test_false"))}
+#' #nucleosomePositions = RJMCMC_result$mu, reads = reads_demo_01,
+#' #seqName = "chr_SYNTHETIC", xlab = "position", ylab = "coverage",
+#' #names = c("test_one", "test_false"))}
 #'
-#' @author Astrid Deschenes
+#' @author Astrid Deschenes, Pascal Belleau
 #' @keywords internal
 #'
 validatePlotNucleosomesParameters <- function(nucleosomePositions,
                     reads, seqName, xlab, ylab, names) {
 
     ## Validate that nucleosomePositions is a vector
-    if(!(class(nucleosomePositions) == "GRanges" || class(nucleosomePositions) == "GRangesList")){
+    if(!(class(nucleosomePositions) == "GRanges" ||
+            class(nucleosomePositions) == "GRangesList")){
         stop("nucleosomePositions must be a \'GRanges\' or a \'GRangesList\'")
     }
-    # if (!is.vector(nucleosomePositions)) {
-    #     stop(paste0("nucleosomePositions must be a \'list\' or a \'vector\' ",
-    #                 "of numeric values"))
-    # }
-    #
-    # ## Validate that nucleosomePositions contains numeric values
-    # if (!is.numeric(unlist(nucleosomePositions))) {
-    #     stop("nucleosomePositions can only contain numerical values")
-    # }
 
     ## Validate that reads is a GRanges object
     if (!(class(reads) == "GRanges")) {
