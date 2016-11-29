@@ -8,13 +8,13 @@ validatePlotNucleosomesParameters(nucleosomePositions, reads, seqName, xlab,
   ylab, names)
 }
 \arguments{
-\item{nucleosomePositions}{a \code{list} or a \code{vector} of
-\code{numeric}, the nucleosome positions for one or
-multiples predictions are obtained using the same reads. In presence of
-only one prediction (with multiples nucleosome positions), a \code{vector}
+\item{nucleosomePositions}{a \code{GRanges} or a \code{GRangesList}
+containing the nucleosome positions for one or
+multiples predictions obtained using the same reads. In presence of
+only one prediction (with multiples nucleosome positions), a \code{GRanges}
 is used. In presence of more thant one predictions (as example, before and
-after post-treatment or results from different software), a \code{list} with
-one entry per prediction is used.}
+after post-treatment or results from different software), a
+\code{GRangesList} with one entry per prediction is used.}
 
 \item{reads}{a \code{GRanges} containing forward and
 reverse reads. The \code{GRanges} should contain at least one read.}
@@ -46,7 +46,7 @@ Validation of all parameters needed by the public
 ## Load GRanges dataset
 data(reads_demo_01)
 
-## Create a vector containing nucleosome positions
+## Load RJMCMC result
 data(RJMCMC_result)
 
 ## The function returns 0 when all parameters are valid
@@ -60,12 +60,13 @@ xlab = "position", ylab = "coverage", names = c("test"))
 #xlab = "position", ylab = "coverage", names = c("test"))}
 
 #\dontrun{RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-#nucleosomePositions = nucleosomes, reads = reads,
-#xlab = "position", ylab = "coverage", names = c("test_one", "test_false"))}
+#nucleosomePositions = RJMCMC_result$mu, reads = reads_demo_01,
+#seqName = "chr_SYNTHETIC", xlab = "position", ylab = "coverage",
+#names = c("test_one", "test_false"))}
 
 }
 \author{
-Astrid Deschenes
+Astrid Deschenes, Pascal Belleau
 }
 \keyword{internal}
 
