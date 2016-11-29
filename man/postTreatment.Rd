@@ -36,9 +36,8 @@ chromosome is used to ensure that the consensus positions are all
 located inside the chromosome.}
 }
 \value{
-a \code{GRanges}, the updated values of the
-nucleosome positions. When no nucleosome is present, \code{NULL} is
-returned.
+a \code{GRanges}, the updated nucleosome positions.
+When no nucleosome is present, \code{NULL} is returned.
 }
 \description{
 A helper function which merges closely positioned nucleosomes
