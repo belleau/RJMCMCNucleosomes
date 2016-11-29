@@ -366,20 +366,21 @@ postTreatment <- function(reads, seqName = NULL,
 #' @title Generate a graph of nucleosome positions with read coverage
 #'
 #' @description Generate a graph for
-#' a \code{list} or a \code{vector} of nucleosome positions. In presence of
-#' only one prediction (with multiples nucleosome positions), a \code{vector}
-#' is used. In presence of more thant one predictions (as example, before and
-#' after post-treatment or results from different software), a \code{list} with
+#' a \code{GRanges} or a \code{GRangesList} of nucleosome positions. In
+#' presence of only one prediction (with multiples nucleosome positions), a
+#' \code{GRanges} is used. In presence of more thant one predictions (as
+#' example, before and after post-treatment or results from
+#' different software), a \code{GRangesList} with
 #' one entry per prediction is used. All predictions must have been obtained
 #' using the same reads.
 #'
-#' @param nucleosomePositions a \code{list} or a \code{vector} of
-#' \code{numeric}, the nucleosome positions for one or
-#' multiples predictions are obtained using the same reads. In presence of
-#' only one prediction (with multiples nucleosome positions), a \code{vector}
+#' @param nucleosomePositions a \code{GRanges} or a \code{GRangesList}
+#' containing the nucleosome positions for one or
+#' multiples predictions obtained using the same reads. In presence of
+#' only one prediction (with multiples nucleosome positions), a \code{GRanges}
 #' is used. In presence of more thant one predictions (as example, before and
-#' after post-treatment or results from different software), a \code{list} with
-#' one entry per prediction is used.
+#' after post-treatment or results from different software), a
+#' \code{GRangesList} with one entry per prediction is used.
 #'
 #' @param reads a \code{GRanges} containing forward and
 #' reverse reads. The \code{GRanges} should contain at least one read.
@@ -405,18 +406,19 @@ postTreatment <- function(reads, seqName = NULL,
 #'
 #' @examples
 #'
+#' ## Load reads dataset
 #' data(reads_demo_01)
 #'
+#' ## Run RJMCMC method
 #' result <- rjmcmc(reads = reads_demo_01,
 #'             seqName = "chr_SYNTHETIC",
 #'             nbrIterations = 4000, lambda = 2, kMax = 30,
 #'             minInterval = 146, maxInterval = 292, minReads = 5,
 #'             vSeed = 10213)
 #'
-#' ## TODO
 #' ## Create graph using the synthetic map
-#' ##plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
-#' ##            reads = reads_demo_01)
+#' plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
+#'             reads = reads_demo_01)
 #'
 #' @author Astrid Deschenes
 #' @importFrom IRanges coverage
@@ -475,9 +477,11 @@ plotNucleosomes <- function(nucleosomePositions, reads,
     y_min <- -1 - (step * nbrItems)
 
     ## Set X axis minimum ans maximum
-    x_min <- min(c(unlist(start(nucleosomePositions)), start(reads), end(reads)))
+    x_min <- min(c(unlist(start(nucleosomePositions)),
+                            start(reads), end(reads)))
     x_min <- floor(x_min)
-    x_max <- max(c(unlist(start(nucleosomePositions)), start(reads), end(reads)))
+    x_max <- max(c(unlist(start(nucleosomePositions)),
+                            start(reads), end(reads)))
     x_max <- ceiling(x_max)
 
     # Plot coverage
@@ -498,7 +502,8 @@ plotNucleosomes <- function(nucleosomePositions, reads,
                     xlim = c(x_min, x_max), col = posColors[i], pch = 19)
         }
     } else {
-        points(start(nucleosomePositions), rep(-(step), length(nucleosomePositions)),
+        points(start(nucleosomePositions), rep(-(step),
+                length(nucleosomePositions)),
                 ylim = c(y_min, y_max), xlim = c(x_min, x_max),
                 col = posColors[1], pch = 19)
     }
