@@ -436,18 +436,22 @@ plotNucleosomes <- function(nucleosomePositions, reads,
     ## Only keep reads associated to the specified chromosome
     if (!is.null(seqName)) {
         reads <- reads[seqnames(reads) == seqName]
+        nucleosomePositions <- nucleosomePositions[
+                    seqnames(nucleosomePositions) == seqName]
     } else {
         seqName <- as.character(seqnames(reads))[1]
     }
 
     ## Set variables differently if vector or list
-    if (!is.atomic(nucleosomePositions)) {
+    if (class(nucleosomePositions)=="GRangesList") {
         nbrItems <-length(nucleosomePositions)
         posColors <- c(rainbow(nbrItems), "gray")
-        if (is.null(names)) {
+        if (is.null(names) && !is.null(names(nucleosomePositions))) {
             extraNames <- names(nucleosomePositions)
-        } else {
+        } else if(!is.null(names)){
             extraNames <- names
+        } else {
+            extraNames <- 1:nbrItems
         }
     } else {
         nbrItems <-1
@@ -473,9 +477,9 @@ plotNucleosomes <- function(nucleosomePositions, reads,
     y_min <- -1 - (step * nbrItems)
 
     ## Set X axis minimum ans maximum
-    x_min <- min(c(unlist(nucleosomePositions), start(reads), end(reads)))
+    x_min <- min(c(unlist(start(nucleosomePositions)), start(reads), end(reads)))
     x_min <- floor(x_min)
-    x_max <- max(c(unlist(nucleosomePositions), start(reads), end(reads)))
+    x_max <- max(c(unlist(start(nucleosomePositions)), start(reads), end(reads)))
     x_max <- ceiling(x_max)
 
     # Plot coverage
@@ -491,12 +495,12 @@ plotNucleosomes <- function(nucleosomePositions, reads,
     if (nbrItems > 1) {
         for (i in 1:nbrItems) {
             y_pos = (-(step)) * i
-            nucl <- nucleosomePositions[[i]]
+            nucl <- start(nucleosomePositions[[i]])
             points(nucl, rep(y_pos, length(nucl)), ylim = c(y_min, y_max),
                     xlim = c(x_min, x_max), col = posColors[i], pch = 19)
         }
     } else {
-        points(nucleosomePositions, rep(-(step), length(nucleosomePositions)),
+        points(start(nucleosomePositions), rep(-(step), length(nucleosomePositions)),
                 ylim = c(y_min, y_max), xlim = c(x_min, x_max),
                 col = posColors[1], pch = 19)
     }

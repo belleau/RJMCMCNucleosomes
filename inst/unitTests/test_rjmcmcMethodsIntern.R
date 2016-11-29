@@ -681,7 +681,7 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_NA <- function() {
         seqName = "chr1",
         xlab = "x", ylab = "y", names=c("test")),
         error=conditionMessage)
-    exp <- "nucleosomePositions can only contain numerical values"
+    exp <- "nucleosomePositions must be a \'GRanges\' or a \'GRangesList\'"
     message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_NA() ",
                       "- NA for nucleosomePositions did not ",
                       "generated expected message.")
@@ -700,7 +700,7 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_empty_vector <- funct
         seqName = "chr1",
         xlab = "x", ylab = "y", names=c("test")),
         error=conditionMessage)
-    exp <- "nucleosomePositions must be a \'list\' or a \'vector\' of numeric values"
+    exp <- "nucleosomePositions must be a \'GRanges\' or a \'GRangesList\'"
     message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_empty_vector() ",
                       "- Empty vector for nucleosomePositions did not ",
                       "generated expected message.")
@@ -718,7 +718,7 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_not_numerical <- func
         nucleosomePositions = c("hi", "test"), reads = reads,
         seqName = "chr1", xlab = "x", ylab = "y", names=c("test")),
         error=conditionMessage)
-    exp <- "nucleosomePositions can only contain numerical values"
+    exp <- "nucleosomePositions must be a \'GRanges\' or a \'GRangesList\'"
     message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_not_numerical() ",
                       "- Not numeric for nucleosomePositions did not ",
                       "generated expected message.")
@@ -736,7 +736,7 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical <-
         nucleosomePositions = c(a=c(1, 3), b=c("hi", "test")),
         reads = reads, seqName = "chr1", xlab = "x", ylab = "y",
         names=c("test")), error=conditionMessage)
-    exp <- "nucleosomePositions can only contain numerical values"
+    exp <- "nucleosomePositions must be a \'GRanges\' or a \'GRangesList\'"
     message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical() ",
                       "- Not list of numeric for nucleosomePositions did not ",
                       "generated expected message.")
@@ -746,7 +746,7 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical <-
 ## Test the result when reads is null
 test.validatePlotNucleosomesParameters_reads_null <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions = c(1001, 1003), reads = NULL,
+        nucleosomePositions = data_002$mu, reads = NULL,
         seqName = NULL, xlab = "x",
         ylab = "y", names=c("test")),
         error=conditionMessage)
@@ -760,7 +760,7 @@ test.validatePlotNucleosomesParameters_reads_null <- function() {
 ## Test the result when reads is not GRanges
 test.validatePlotNucleosomesParameters_reads_not_GRanges <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions = c(1001, 1003), reads = c(1,2),
+        nucleosomePositions = data_002$mu, reads = c(1,2),
         seqName = NULL, xlab = "x",
         ylab = "y", names=c("test")), error=conditionMessage)
     exp <- "reads must be an object of class \'GRanges\'"
@@ -778,7 +778,7 @@ test.validatePlotNucleosomesParameters_seqName_not_string <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions =  c(1001, 1003),
+        nucleosomePositions =  data_002$mu,
         reads = reads, seqName = 44, xlab = "x", ylab = "y", names=c("test")),
         error=conditionMessage)
     exp <- paste0("seqName must be a character string corresponding to the ",
@@ -797,7 +797,7 @@ test.validatePlotNucleosomesParameters_seqName_not_in_GRanges <- function() {
                      strand = Rle(strand(c("-", "+", "-", "+", "-")),
                                   c(1, 2, 2, 3, 2)))
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions =  c(1001, 1003),
+        nucleosomePositions =  data_002$mu,
         reads = reads, seqName = "chr1_test", xlab = "x", ylab = "y",
         names=c("test")), error=conditionMessage)
     exp <- paste0("seqName must be a character string corresponding to the ",
@@ -811,7 +811,7 @@ test.validatePlotNucleosomesParameters_seqName_not_in_GRanges <- function() {
 ## Test the result when xlab is not a character string
 test.validatePlotNucleosomesParameters_xlab_not_string <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions = c(1001, 1003), reads = reads_demo_01,
+        nucleosomePositions = data_002$mu, reads = reads_demo_01,
         seqName = "chr_SYNTHETIC", xlab = 33,
         ylab = "y", names=c("test")),
         error=conditionMessage)
@@ -825,7 +825,7 @@ test.validatePlotNucleosomesParameters_xlab_not_string <- function() {
 ## Test the result when ylab is not a character string
 test.validatePlotNucleosomesParameters_ylab_not_string <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions = c(1001, 1003),
+        nucleosomePositions = data_002$mu,
         reads = reads_demo_01, seqName = "chr_SYNTHETIC", xlab = "x",
         ylab = c(44,33), names=c("test")),
         error=conditionMessage)
@@ -839,7 +839,7 @@ test.validatePlotNucleosomesParameters_ylab_not_string <- function() {
 ## Test the result when names is not a character string
 test.validatePlotNucleosomesParameters_names_not_string <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions = c(1001, 1003),
+        nucleosomePositions = data_002$mu,
         reads = reads_demo_01, seqName = "chr_SYNTHETIC", xlab = "x",
         ylab = "y", names=c(33)),
         error=conditionMessage)
@@ -853,7 +853,7 @@ test.validatePlotNucleosomesParameters_names_not_string <- function() {
 ## Test the result when names length does not fit nucleosomePositions entries
 test.validatePlotNucleosomesParameters_names_not_good_length_01 <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions = list(a=c(1001), b=c(1003)),
+        nucleosomePositions = GRangesList(a=data_002$mu, b=data_002$mu),
         reads = reads_demo_01, seqName = NULL, xlab = "x",
         ylab = "y", names=c("test")),
         error=conditionMessage)
@@ -868,7 +868,7 @@ test.validatePlotNucleosomesParameters_names_not_good_length_01 <- function() {
 ## Test the result when names length does not fit nucleosomePositions entries
 test.validatePlotNucleosomesParameters_names_not_good_length_02 <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions = list(a=c(1001)),
+        nucleosomePositions = GRangesList(a=data_002$mu),
         reads = reads_demo_01, seqName = NULL, xlab = "x",
         ylab = "y", names=c("test", "test02")), error=conditionMessage)
     exp <- "names must be a vector containing the same number of character string as the number of entries in nucleosomesPositions list"
@@ -881,7 +881,7 @@ test.validatePlotNucleosomesParameters_names_not_good_length_02 <- function() {
 ## Test tha all valid parameters return zero
 test.validatePlotNucleosomesParameters_all_good  <- function() {
     obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
-        nucleosomePositions = list(a=c(1001)), seqName = "chr_SYNTHETIC",
+        nucleosomePositions = GRangesList(a=data_002$mu), seqName = "chr_SYNTHETIC",
         reads = reads_demo_01, xlab = "x",
         ylab = "y", names=c("test")), error=conditionMessage)
     exp <- 0

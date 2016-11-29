@@ -264,18 +264,28 @@ reads <-GRanges(sample$dataIP)
 
 ## Merge predictions from before post-treatment and after post-treatment in 
 ## a list so that both results will be shown in graph
-resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos,
-                                            sample$fuz$nucleopos),
+# resultsBeforeAndAfter <- list(Sample = c(sample$wp$nucleopos,
+#                                             sample$fuz$nucleopos),
+#                                BeforePostTreatment = resultsAllMerged$mu,
+#                                AfterPostTreatment = resultsPostTreatment)
+resultsBeforeAndAfter <- GRangesList(Sample = GRanges(
+        rep("chr_SYNTHETIC", 
+            length(c(sample$wp$nucleopos,sample$fuz$nucleopos))), 
+        ranges = IRanges(start=c(sample$wp$nucleopos,sample$fuz$nucleopos),
+                         end=c(sample$wp$nucleopos,sample$fuz$nucleopos)), 
+        strand=rep("*",
+                              length(
+                                  c(sample$wp$nucleopos,
+                                    sample$fuz$nucleopos)))),
                                BeforePostTreatment = resultsAllMerged$mu,
                                AfterPostTreatment = resultsPostTreatment)
-
 ## Create graph using nucleosome positions and reads
 ## The plot will shows : 
 ## 1. nucleosomes from the sample
 ## 2. nucleosomes detected by rjmcmc() function
 ## 3. nucleosomes obtained after post-treament 
-#plotNucleosomes(nucleosomePositions = resultsBeforeAndAfter, reads = reads, 
-#                    names=c("Sample", "RJMCMC", "After Post-Treatment"))
+plotNucleosomes(nucleosomePositions = resultsBeforeAndAfter, reads = reads, 
+                    names=c("Sample", "RJMCMC", "After Post-Treatment"))
 ```
 
 # RJMCMCNucleosomes analysis of one chromosome in one step

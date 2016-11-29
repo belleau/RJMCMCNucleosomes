@@ -540,11 +540,11 @@ validatePrepMergeParameters <- function(reads, seqName,
 #' data(reads_demo_01)
 #'
 #' ## Create a vector containing nucleosome positions
-#' nucleosomes <- c(1001)
+#' data(RJMCMC_result)
 #'
 #' ## The function returns 0 when all parameters are valid
 #' RJMCMCNucleosomes:::validatePlotNucleosomesParameters(nucleosomePositions =
-#' nucleosomes, reads = reads_demo_01, seqName = "chr_SYNTHETIC",
+#' RJMCMC_result$mu, reads = reads_demo_01, seqName = "chr_SYNTHETIC",
 #' xlab = "position", ylab = "coverage", names = c("test"))
 #'
 #' ## The function raises an error when at least one paramater is not valid
@@ -563,15 +563,18 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions,
                     reads, seqName, xlab, ylab, names) {
 
     ## Validate that nucleosomePositions is a vector
-    if (!is.vector(nucleosomePositions)) {
-        stop(paste0("nucleosomePositions must be a \'list\' or a \'vector\' ",
-                    "of numeric values"))
+    if(!(class(nucleosomePositions) == "GRanges" || class(nucleosomePositions) == "GRangesList")){
+        stop("nucleosomePositions must be a \'GRanges\' or a \'GRangesList\'")
     }
-
-    ## Validate that nucleosomePositions contains numeric values
-    if (!is.numeric(unlist(nucleosomePositions))) {
-        stop("nucleosomePositions can only contain numerical values")
-    }
+    # if (!is.vector(nucleosomePositions)) {
+    #     stop(paste0("nucleosomePositions must be a \'list\' or a \'vector\' ",
+    #                 "of numeric values"))
+    # }
+    #
+    # ## Validate that nucleosomePositions contains numeric values
+    # if (!is.numeric(unlist(nucleosomePositions))) {
+    #     stop("nucleosomePositions can only contain numerical values")
+    # }
 
     ## Validate that reads is a GRanges object
     if (!(class(reads) == "GRanges")) {
@@ -622,7 +625,7 @@ validatePlotNucleosomesParameters <- function(nucleosomePositions,
         if (!is.vector(names)) {
             stop("names must be a vector or a list of character strings")
         }
-        if (!is.list(nucleosomePositions)) {
+        if (!class(nucleosomePositions) == "GRangesList") {
             if(!(length(names) == 1) || !is.character(names)) {
                 stop("names must be a vector of one character string")
             }
