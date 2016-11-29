@@ -13,7 +13,7 @@ namespace space_process {
 SegmentSeq::SegmentSeq(std::vector<double> const &fReads,
             std::vector<double> const &rReads, int zeta)
     :d_sizeFReads(fReads.size()), d_sizeRReads(rReads.size()),
-     d_zeta(zeta), d_startFReads(fReads), d_startRReads(rReads)
+        d_zeta(zeta), d_startFReads(fReads), d_startRReads(rReads)
      {
 
     setDefault();
@@ -22,9 +22,8 @@ SegmentSeq::SegmentSeq(std::vector<double> const &fReads,
 SegmentSeq::SegmentSeq(std::vector<double> const &fReads,
             std::vector<double> const &rReads, int zeta,
             long sizeFReads, long sizeRReads)
-    :d_sizeFReads(sizeFReads), d_sizeRReads(sizeRReads),
-     d_zeta(zeta), d_startFReads(fReads), d_startRReads(rReads)
-      {
+   :d_sizeFReads(sizeFReads), d_sizeRReads(sizeRReads),
+        d_zeta(zeta), d_startFReads(fReads), d_startRReads(rReads){
 
     setDefault();
 }

@@ -123,28 +123,28 @@ namespace space_process{
     template <typename NucleoD>
     SpaceNucleosomeD<NucleoD>::SpaceNucleosomeD(SegmentSeq const &segSeq)
         :SpaceNucleosome<NucleoD>(segSeq), d_w(NULL), d_dim(NULL),
-         d_dfMax(30){
+            d_dfMax(30){
         setDefault();
     }
 
     template <typename NucleoD>
     SpaceNucleosomeD<NucleoD>::SpaceNucleosomeD(SegmentSeq const &segSeq, int seed)
         :SpaceNucleosome<NucleoD>(segSeq, seed), d_w(NULL),
-         d_dim(NULL), d_dfMax(30){
+            d_dim(NULL), d_dfMax(30){
         setDefault();
     }
 
     template <typename NucleoD>
     SpaceNucleosomeD<NucleoD>::SpaceNucleosomeD(SegmentSeq const &segSeq, gsl_rng * rng)
         :SpaceNucleosome<NucleoD>(segSeq, rng), d_w(NULL), d_dim(NULL),
-         d_dfMax(30){
+            d_dfMax(30){
         setDefault();
     }
 
     template <typename NucleoD>
     SpaceNucleosomeD<NucleoD>::SpaceNucleosomeD(SegmentSeq const &segSeq, gsl_rng * rng, int dfMax)
         :SpaceNucleosome<NucleoD>(segSeq, rng), d_w(NULL), d_dim(NULL),
-         d_dfMax(dfMax){
+            d_dfMax(dfMax){
         setDefault();
     }
 
@@ -238,18 +238,7 @@ namespace space_process{
 
     template <typename NucleoD>
     void SpaceNucleosomeD<NucleoD>::evalPriorMuDensity(){
-        /* Matrix  omega
-         * R <- max(readPositions) - min(readPositions)
-         * tau <- 1/R^2
-         * E <- (max(readPositions) + min(readPositions))/2
-         * M <- rep(E, k)
-         * const <- (pi/(2*tau))^{-k/2}
-         *
-         * equation 11
-         * const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M)))
-         *
-         * */
-        //std::cout.precision(17);
+
         double m = meanRead(); /* Mean of the read*/
         double result = 0;
 

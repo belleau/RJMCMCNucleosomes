@@ -86,7 +86,6 @@ namespace space_process {
 
     template< typename NucleoSpace>
     bool SimulationNucleoD<NucleoSpace>::sampler(){
-
         bool flag = false;
         double u = gsl_ran_flat (this->rng(), 0, 1);
         double rhoP1 = 1.0;
@@ -229,23 +228,23 @@ namespace space_process {
             std::vector<double> tmp = (*it)->mu();
 
             for(int j = 0; j < this->kMaxS(); j++){
-               if(j < listK[i]){
-                   mu[i  + j * this->sizeState()] = tmp[j];
-                   muHat[((*it)->valK()-1) + j * this->kMaxS()] += (*it)->iteration() * tmp[j];
-               }
-               else{
-                   mu[i + j * this->sizeState()] = 0;
-               }
-           }
+                if(j < listK[i]){
+                    mu[i  + j * this->sizeState()] = tmp[j];
+                    muHat[((*it)->valK()-1) + j * this->kMaxS()] += (*it)->iteration() * tmp[j];
+                }
+                else{
+                    mu[i + j * this->sizeState()] = 0;
+                }
+            }
             i++;
         }
 
         for(int j = 0; j < this->kMaxS(); j++){
-           for(int l = 0; l < this->kMaxS(); l++){
-               if(nbK[j] > 0)
-                   muHat[j + l * this->kMaxS()] /= nbK[j];
-           }
-       }
+            for(int l = 0; l < this->kMaxS(); l++){
+                if(nbK[j] > 0)
+                muHat[j + l * this->kMaxS()] /= nbK[j];
+            }
+        }
 
         d_resStat = Rcpp::List::create( Rcpp::Named("k") = listK
                 , Rcpp::Named("k_max") = this->kMaxS(), Rcpp::Named("it") = listIt
