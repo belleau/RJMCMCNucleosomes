@@ -339,7 +339,7 @@ mergeRDSFiles <- function(RDSFiles) {
 #'
 #' ##Post-treatment function which merged closely positioned nucleosomes
 #' postResult <- postTreatment(reads = reads_demo_02,
-#'                 seqName = "chr_SYNTHETIC", result, 100, 73500)
+#'                     seqName = "chr_SYNTHETIC", result, 100, 73500)
 #'
 #' ## After post-treatment
 #' postResult
