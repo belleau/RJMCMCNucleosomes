@@ -47,11 +47,11 @@ Validation of all parameters needed by the public
 data(reads_demo_01)
 
 ## Create a vector containing nucleosome positions
-nucleosomes <- c(1001)
+data(RJMCMC_result)
 
 ## The function returns 0 when all parameters are valid
 RJMCMCNucleosomes:::validatePlotNucleosomesParameters(nucleosomePositions =
-nucleosomes, reads = reads_demo_01, seqName = "chr_SYNTHETIC",
+RJMCMC_result$mu, reads = reads_demo_01, seqName = "chr_SYNTHETIC",
 xlab = "position", ylab = "coverage", names = c("test"))
 
 ## The function raises an error when at least one paramater is not valid
