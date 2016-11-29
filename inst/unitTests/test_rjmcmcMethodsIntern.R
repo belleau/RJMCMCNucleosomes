@@ -1125,7 +1125,7 @@ test.validateSegmentationParameters_all_valid <- function() {
 ## Test the result of postMerge() function
 test.postMerge_good_01 <- function() {
 
-    obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_02,
+    obs <- RJMCMCNucleosomes:::postMerge(reads = reads_demo_02,
                                 resultRJMCMC = RJMCMC_result,
                                 extendingSize = 10, chrLength = 80000)
     listMu <- c(10072, 10241,
@@ -1147,7 +1147,7 @@ test.postMerge_mu_NA_returned <- function() {
     testRJMCMC$mu <- NA
 
     ## Reads are not located where the nucleosomes are
-    obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_01,
+    obs <- RJMCMCNucleosomes:::postMerge(reads = reads_demo_01,
                                         resultRJMCMC = testRJMCMC,
                                         extendingSize = 100, chrLength = 80000)
     exp <- NULL
@@ -1163,7 +1163,7 @@ test.postMerge_mu_empty_returned <- function() {
     testRJMCMC$mu <- c()
 
     ## Reads are not located where the nucleosomes are
-    obs <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads = reads_demo_01,
+    obs <- RJMCMCNucleosomes:::postMerge(reads = reads_demo_01,
                                         resultRJMCMC = testRJMCMC,
                                         extendingSize = 100, chrLength = 80000)
     exp <- NULL

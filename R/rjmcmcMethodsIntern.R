@@ -725,11 +725,10 @@ validateSegmentationParameters <- function(reads, zeta = 147, delta,
 #' The function uses the Bioconductor \code{package} \code{consensusSeeker} to
 #' group closely positioned nucleosomes.
 #'
-#' @param forwardandReverseReads a \code{GRanges} containing all forward
+#' @param reads a \code{GRanges} containing all forward
 #' and reverse reads.The start positions of both reads are going to be used
 #' for the analysis. Beware that the start position of
-#' a reverse read is always higher that the end positition. The \code{GRanges}
-#' should at least contain one read.
+#' a reverse read is always higher that the end positition.
 #'
 #' @param resultRJMCMC an object of class 'rjmcmcNucleosomes' or
 #' 'rjmcmcNucleosomesMerge' containing informations about nucleosomes.
@@ -750,7 +749,6 @@ validateSegmentationParameters <- function(reads, zeta = 147, delta,
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero. Default: 5.
 #'
-#'
 #' @return a \code{array} of \code{numeric}, the updated values of the
 #' nucleosome positions. When no nucleosome is present, \code{NULL} is
 #' returned.
@@ -764,14 +762,12 @@ validateSegmentationParameters <- function(reads, zeta = 147, delta,
 #' ## Results before post-treatment
 #' RJMCMC_result$mu
 #'
-#' ## TODO
 #' ## Post-treatment function which merged closely positioned nucleosomes
-#' ##postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads =
-#' ##reads_demo_02,
-#' ##resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
+#' postResult <- RJMCMCNucleosomes:::postMerge(reads = reads_demo_02,
+#' resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 #'
 #' ## Results after post-treatment
-#' ##postResult
+#' postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom consensusSeekeR findConsensusPeakRegions
@@ -782,24 +778,21 @@ validateSegmentationParameters <- function(reads, zeta = 147, delta,
 #' @importFrom BiocGenerics sapply
 #' @keywords internal
 #'
-postMerge <- function(forwardandReverseReads,
-                        resultRJMCMC, extendingSize, chrLength, minReads = 5, seqName = NULL)
+postMerge <- function(reads, resultRJMCMC, extendingSize,
+                        chrLength, minReads = 5, seqName = NULL)
 {
     ## Only keep reads associated to the specified chromosome
 
     if (!is.null(seqName)) {
-        forwardandReverseReads <- forwardandReverseReads[
-            seqnames(forwardandReverseReads) == seqName]
+        reads <- reads[seqnames(reads) == seqName]
     }else{
-        seqName=as.character(unique(seqnames(forwardandReverseReads)))
+        seqName=as.character(unique(seqnames(reads)))
     }
-    genomeCur <- as.character(genome(forwardandReverseReads)[which(names(genome(forwardandReverseReads))== seqName)])
+    genomeCur <- as.character(genome(reads)[which(names(genome(reads))== seqName)])
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
-    segReads$yF <- start(forwardandReverseReads[strand(forwardandReverseReads)
-                                        == "+" ])
-    segReads$yR <- end(forwardandReverseReads[strand(forwardandReverseReads)
-                                                == "-" ])
+    segReads$yF <- start(reads[strand(reads) == "+" ])
+    segReads$yR <- end(reads[strand(reads)  == "-" ])
 
     ## Prepare Seqinfo object using chromosome length
     seqinfo <- Seqinfo(c(seqName), c(chrLength), FALSE, genomeCur)
@@ -962,7 +955,7 @@ postMerge <- function(forwardandReverseReads,
 #' dir.create("out/results")
 #'
 #' runCHR(p=1, seg=seg, niter=1000, kmax=330,lambda=3,
-#'          ecartmin=147, ecartmax=297, minReads=5)}
+#'             ecartmin=147, ecartmax=297, minReads=5)}
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom GenomicRanges strand
