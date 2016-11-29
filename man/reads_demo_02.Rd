@@ -3,7 +3,7 @@
 \docType{data}
 \name{reads_demo_02}
 \alias{reads_demo_02}
-\title{Forward reads and reverse reads in \code{integer} format
+\title{Forward reads and reverse reads in \code{GRanges} format
 (for demo purpose).}
 \format{A \code{GRanges} containing forward and reverse reads.}
 \usage{
