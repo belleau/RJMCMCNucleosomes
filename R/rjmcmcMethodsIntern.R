@@ -781,7 +781,8 @@ postMerge <- function(reads, resultRJMCMC, extendingSize,
     }else{
         seqName=as.character(unique(seqnames(reads)))
     }
-    genomeCur <- as.character(genome(reads)[which(names(genome(reads))== seqName)])
+    genomeCur <- as.character(genome(reads)[which(names(genome(reads))
+                                                    == seqName)])
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
     segReads$yF <- start(reads[strand(reads) == "+" ])
