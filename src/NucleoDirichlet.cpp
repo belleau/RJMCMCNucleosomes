@@ -70,8 +70,8 @@ void NucleoDirichlet::evalDelta(){
         setDelta(tmpDelta);
     }
     else{
-        cerr << "sigmaF or sigmaR not bigger than 0\n";
-        //exit(1);
+        Rcpp::Rcout << "sigmaF or sigmaR not bigger than 0\n";
+
     }
 
 }
@@ -94,8 +94,8 @@ void NucleoDirichlet::evalBF(){
 
     }
     else{
-        cerr << "sigmaF or sigmaR not bigger than 0\n";
-        //exit(1);
+        Rcpp::Rcout << "sigmaF or sigmaR not bigger than 0\n";
+
     }
 }
 
@@ -148,8 +148,7 @@ void NucleoDirichlet::evalBR(){
         }
     }
     else{
-        cerr << "sigmaF or sigmaR not bigger than 0\n";
-        //exit(1);
+        Rcpp::Rcout << "sigmaF or sigmaR not bigger than 0\n";
     }
 }
 
