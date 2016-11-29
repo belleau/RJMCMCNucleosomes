@@ -11,6 +11,7 @@
 
 #include "Nucleosome.h"
 #include <iostream>
+#include <Rcpp.h>
 #include <gsl/gsl_randist.h>
 
 namespace space_process {

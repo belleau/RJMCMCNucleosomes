@@ -61,15 +61,20 @@ namespace space_process {
     template< typename NucleoSpace>
     bool SimulationNucleoD<NucleoSpace>::initMu(int lambda, int df){
         bool flag= true;
-        NucleoSpace *tmp = new NucleoSpace(this->segSeq(), this->rng(), kMax());
-        (*tmp).setLambda(lambda);
-        flag = (*tmp).initMu1(df);
-        if(flag){
-            (*tmp).prepSpace();
-            (*tmp).addIteration();
-            this->setCurrentState(tmp);
-            this->pushState();
-            this->setKMaxS(1);
+        try{
+            NucleoSpace *tmp = new NucleoSpace(this->segSeq(), this->rng(), kMax());
+            (*tmp).setLambda(lambda);
+            flag = (*tmp).initMu1(df);
+            if(flag){
+                (*tmp).prepSpace();
+                (*tmp).addIteration();
+                this->setCurrentState(tmp);
+                this->pushState();
+                this->setKMaxS(1);
+            }
+        }
+        catch(std::bad_alloc&) {
+            Rcpp::stop("Memory problem\n");
         }
         return(flag);
     }

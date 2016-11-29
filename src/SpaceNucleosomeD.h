@@ -204,8 +204,7 @@ namespace space_process{
             delete[] alpha;
         }
         catch(std::bad_alloc&) {
-            std::cout << "Memory problem\n";
-            std::cerr << "Memory problem\n";
+            Rcpp::stop("Memory problem\n");
         }
 
     }
@@ -227,8 +226,14 @@ namespace space_process{
 
     template <typename NucleoD>
     void SpaceNucleosomeD<NucleoD>::insertD(double mu, int df){
-        NucleoD *u = new NucleoD(mu, df, this->segSeq(), this->rng());
-        this->insert(u);
+        try{
+            NucleoD *u = new NucleoD(mu, df, this->segSeq(), this->rng());
+            this->insert(u);
+        }
+        catch(std::bad_alloc&) {
+            Rcpp::stop("Memory problem\n");
+        }
+
     };
 
     template <typename NucleoD>
@@ -301,8 +306,7 @@ namespace space_process{
             }
         }
         catch(std::bad_alloc&) {
-            std::cout << "Memory problem\n";
-            std::cerr << "Memory problem\n";
+            Rcpp::stop("Memory problem\n");
         }
     }
 
@@ -344,8 +348,7 @@ namespace space_process{
             delete[] yRead;
         }
         catch(std::bad_alloc&) {
-            std::cout << "Memory problem\n";
-            std::cerr << "Memory problem\n";
+            Rcpp::stop("Memory problem\n");
         }
     }
 
