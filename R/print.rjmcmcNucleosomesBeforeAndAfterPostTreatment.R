@@ -35,7 +35,7 @@
 print.rjmcmcNucleosomesBeforeAndAfterPostTreatment <- function(x, ...) {
     # Print title before printing the content
     cat(paste0("\nRJMCMCNucleosomes - Predicted nucleosomes Before and ",
-               "After Post-Treatment\n"))
+                "After Post-Treatment\n"))
     cat("BEFORE POST-TREATMENT\n")
     cat("Number of nucleosomes:\n")
     print(x$k, ...)

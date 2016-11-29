@@ -140,9 +140,9 @@ library(GenomicRanges)
 
 ## Transform sample dataset into GRanges object
 sampleGRanges <- GRanges(seqnames = sample$dataIP$chr, 
-                          ranges = IRanges(start = sample$dataIP$start, 
-                                           end = sample$dataIP$end), 
-                          strand = sample$dataIP$strand)
+                        ranges = IRanges(start = sample$dataIP$start, 
+                                        end = sample$dataIP$end), 
+                        strand = sample$dataIP$strand)
 
 ## Segment sample into candidate regions
 sampleSegmented <- segmentation(reads = sampleGRanges, zeta = 147, 
@@ -234,7 +234,7 @@ resultsPostTreatment <- postTreatment(reads = reads,
                             resultRJMCMC = resultsAllMerged,
                             extendingSize = 15,
                             chrLength = max(start(reads), end(reads)) + 1000)
- 
+
 
 ## Number of nucleosomes after the post-treatment
 length(resultsPostTreatment)
@@ -270,13 +270,11 @@ resultsBeforeAndAfter <- GRangesList(Sample = GRanges(
         rep("chr_SYNTHETIC", 
             length(c(sample$wp$nucleopos,sample$fuz$nucleopos))), 
         ranges = IRanges(start=c(sample$wp$nucleopos,sample$fuz$nucleopos),
-                         end=c(sample$wp$nucleopos,sample$fuz$nucleopos)), 
-        strand=rep("*",
-                              length(
-                                  c(sample$wp$nucleopos,
-                                    sample$fuz$nucleopos)))),
-                               BeforePostTreatment = resultsAllMerged$mu,
-                               AfterPostTreatment = resultsPostTreatment)
+                        end=c(sample$wp$nucleopos,sample$fuz$nucleopos)), 
+        strand=rep("*", length(c(sample$wp$nucleopos,
+                                sample$fuz$nucleopos)))),
+                        BeforePostTreatment = resultsAllMerged$mu,
+                        AfterPostTreatment = resultsPostTreatment)
 ## Create graph using nucleosome positions and reads
 ## The plot will shows : 
 ## 1. nucleosomes from the sample
