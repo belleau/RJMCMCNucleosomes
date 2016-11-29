@@ -193,7 +193,6 @@ processed (using 500000 iterations) and saved in RDS files. Those will
 now be merged together.
 
 ```{r regroup01, warning=FALSE, collapse=TRUE, message=FALSE}
-## TODO
 ## The directory containing the results of all segments
 ## On RDS file has been created for each segment
 directory <- system.file("extdata", "demo_vignette", 
@@ -224,7 +223,6 @@ The value of `extendingSize` should be kept low (below 20). A larger
 value could cause the possible merge of true nucleosomes. 
 
 ```{r postProcess01, collapse=TRUE, message=FALSE}
-## TODO
 ## Split reads from the initial sample data into forward and reverse subsets
 reads <- GRanges(sample$dataIP)
 
