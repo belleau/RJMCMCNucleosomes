@@ -50,18 +50,19 @@ using the same reads.
 }
 \examples{
 
+## Load reads dataset
 data(reads_demo_01)
 
+## Run RJMCMC method
 result <- rjmcmc(reads = reads_demo_01,
             seqName = "chr_SYNTHETIC",
             nbrIterations = 4000, lambda = 2, kMax = 30,
             minInterval = 146, maxInterval = 292, minReads = 5,
             vSeed = 10213)
 
-## TODO
 ## Create graph using the synthetic map
-##plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
-##            reads = reads_demo_01)
+plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
+            reads = reads_demo_01)
 
 }
 \author{
