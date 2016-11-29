@@ -6,15 +6,14 @@
 nucleosomes, from the same chromosome,
 identified by the \code{\link{rjmcmc}} function}
 \usage{
-postMerge(forwardandReverseReads, resultRJMCMC, extendingSize, chrLength,
-  minReads = 5, seqName = NULL)
+postMerge(reads, resultRJMCMC, extendingSize, chrLength, minReads = 5,
+  seqName = NULL)
 }
 \arguments{
-\item{forwardandReverseReads}{a \code{GRanges} containing all forward
+\item{reads}{a \code{GRanges} containing all forward
 and reverse reads.The start positions of both reads are going to be used
 for the analysis. Beware that the start position of
-a reverse read is always higher that the end positition. The \code{GRanges}
-should at least contain one read.}
+a reverse read is always higher that the end positition.}
 
 \item{resultRJMCMC}{an object of class 'rjmcmcNucleosomes' or
 'rjmcmcNucleosomesMerge' containing informations about nucleosomes.}
@@ -57,14 +56,12 @@ data(reads_demo_02)
 ## Results before post-treatment
 RJMCMC_result$mu
 
-## TODO
 ## Post-treatment function which merged closely positioned nucleosomes
-##postResult <- RJMCMCNucleosomes:::postMerge(forwardandReverseReads =
-##reads_demo_02,
-##resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
+postResult <- RJMCMCNucleosomes:::postMerge(reads = reads_demo_02,
+resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
 
 ## Results after post-treatment
-##postResult
+postResult
 
 }
 \author{

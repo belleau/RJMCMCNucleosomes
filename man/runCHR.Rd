@@ -83,7 +83,7 @@ dir.create("out/done")
 dir.create("out/results")
 
 runCHR(p=1, seg=seg, niter=1000, kmax=330,lambda=3,
-         ecartmin=147, ecartmax=297, minReads=5)}
+            ecartmin=147, ecartmax=297, minReads=5)}
 
 }
 \author{
