@@ -42,9 +42,9 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
     const gsl_rng_type * T;
     gsl_rng *rng;
 
-    gsl_set_error_handler_off();
-    T = gsl_rng_default;
 
+    T = gsl_rng_default;
+    gsl_set_error_handler_off();
     rng = gsl_rng_alloc (T);     // pick random number generator
 
     if(vSeed <= 0){
