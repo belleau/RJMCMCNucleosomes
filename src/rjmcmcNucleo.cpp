@@ -44,11 +44,13 @@ List rjmcmcNucleo(SEXP startPosForwardReads, SEXP startPosReverseReads,
 
 
     T = gsl_rng_default;
-
+    gsl_set_error_handler_off();
     rng = gsl_rng_alloc (T);     // pick random number generator
+
     if(vSeed <= 0){
         vSeed = time (NULL) * getpid();
     }
+    gsl_set_error_handler_off();
     gsl_rng_set (rng, vSeed);
 
     /*********************************************************************
