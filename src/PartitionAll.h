@@ -211,11 +211,11 @@ private:
 
                 }while(!(flag) && cpt == 1000);
                 if(!(flag)){
-                    Rcpp::stop("Problem with the number of reads to initialise mu\n");
+                    //Rcpp::stop("Problem with the number of reads to initialise mu\n");
                 }
             }
             else{
-                Rcpp::stop("No reads\n");
+                //Rcpp::stop("No reads\n");
             }
         }
 
@@ -249,7 +249,7 @@ private:
 
             }
             else{
-                Rcpp::stop("No reads\n");
+                //Rcpp::stop("No reads\n");
             }
         }
 
@@ -493,7 +493,7 @@ private:
             }
         }
         catch(std::bad_alloc&) {
-            Rcpp::stop("Memory problem\n");
+            //Rcpp::stop("Memory problem\n");
         }
         return(!(flag));
     }
@@ -632,7 +632,7 @@ private:
             }
         }
         catch(std::bad_alloc&) {
-            Rcpp::stop("Memory problem\n");
+            //Rcpp::stop("Memory problem\n");
         }
         return(!(flag));
     }
@@ -746,7 +746,7 @@ private:
                 }
             }
             catch(std::bad_alloc&) {
-                Rcpp::stop("Memory problem\n");
+                //Rcpp::stop("Memory problem\n");
             }
         }
         else{
@@ -856,7 +856,7 @@ private:
                 }
             }
             catch(std::bad_alloc&) {
-                Rcpp::stop("Memory problem\n");
+                //Rcpp::stop("Memory problem\n");
             }
         }
         else{
@@ -970,7 +970,7 @@ private:
             }
         }
         catch(std::bad_alloc&) {
-            Rcpp::stop("Memory problem\n");
+            //Rcpp::stop("Memory problem\n");
         }
         return(!(flag));
     }
@@ -1094,7 +1094,7 @@ private:
             }
         }
         catch(std::bad_alloc&) {
-            Rcpp::stop("Memory problem\n");
+            //Rcpp::stop("Memory problem\n");
         }
         return(!(flag));
     }
