@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <math.h>
 #include <time.h>
