@@ -46,5 +46,5 @@ Encoding: UTF-8
 License: Artistic-2.0
 VignetteBuilder: knitr
 biocViews: BiologicalQuestion, ChIPSeq, NucleosomePositioning,
-    Software, StatisticalMethod, Bayesian
+    Software, StatisticalMethod, Bayesian, Sequencing, Coverage
 RoxygenNote: 5.0.1
