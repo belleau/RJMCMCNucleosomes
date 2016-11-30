@@ -211,12 +211,12 @@ protected:
 
     template<typename NucleoClass>
     void SpaceNucleosome<NucleoClass>::displayMu(){
-        std::cout << "Mu";
+        //std::cout << "Mu";
         for(itNucleo it = d_nucleosomes.begin() ; it != d_nucleosomes.end(); it++){
-            std::cout << " " << (*it)->mu();
-            std::cout << " : " << (*it)->avg();
+            //std::cout << " " << (*it)->mu();
+            //std::cout << " : " << (*it)->avg();
         }
-        std::cout << "\n";
+        //std::cout << "\n";
     }
 
     template<typename NucleoClass>
