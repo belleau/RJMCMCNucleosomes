@@ -831,16 +831,16 @@ postMerge <- function(reads, resultRJMCMC, extendingSize,
                 b <- max(start(resultRJMCMC$mu)[current]) # + (74 - extendingSize)
                 ## A miminum number of reads is needed closed to the position
                 if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                  segReads$yF <= (b - minLimit)]) >= minReads &
-                   length(segReads$yR[segReads$yR >= (a + minLimit) &
-                                  segReads$yR <= (b + maxLimit)]) >= minReads) {
+                    segReads$yF <= (b - minLimit)]) >= minReads &
+                    length(segReads$yR[segReads$yR >= (a + minLimit) &
+                    segReads$yR <= (b + maxLimit)]) >= minReads) {
                     ## Calculate the new position of the nucleosome
                     newMu <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                               segReads$yF <= (b - minLimit)]) +
-                              (mean(segReads$yR[segReads$yR >= (a + minLimit) &
-                                            segReads$yR <= (b + maxLimit)]) -
-                               mean(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                            segReads$yF <= (b - minLimit) ]))/2)
+                                segReads$yF <= (b - minLimit)]) +
+                            (mean(segReads$yR[segReads$yR >= (a + minLimit) &
+                                    segReads$yR <= (b + maxLimit)]) -
+                                mean(segReads$yF[segReads$yF >= (a - maxLimit) &
+                            segReads$yF <= (b - minLimit) ]))/2)
                     return(newMu)
                 } else {
                     ## Nucleosomes that do not respect condition are flushed
@@ -854,15 +854,14 @@ postMerge <- function(reads, resultRJMCMC, extendingSize,
 
         if (!all(is.na(result))) {
             finalResult <- GRanges(seqnames = rep(seqName,
-                                                 length(
-                                                     as.numeric(
-                                                         result[!is.na(result)]
-                                                         ))),
-                                  ranges=IRanges(
-                                      start=round(as.numeric(result[!is.na(result)])),
-                                      end=round(as.numeric(result[!is.na(result)]))),
-                                  strand=rep("*", length(
-                                      as.numeric(result[!is.na(result)]))))
+                                        length(as.numeric(
+                                                result[!is.na(result)]
+                                                ))),
+                                    ranges=IRanges(
+                                start=round(as.numeric(result[!is.na(result)])),
+                                end=round(as.numeric(result[!is.na(result)]))),
+                            strand=rep("*", length(
+                                as.numeric(result[!is.na(result)]))))
         }
     }
 
