@@ -204,7 +204,7 @@ namespace space_process{
             delete[] alpha;
         }
         catch(std::bad_alloc&) {
-            //Rcpp::stop("Memory problem\n");
+            Rcpp::stop("Memory problem\n");
         }
 
     }
@@ -231,7 +231,7 @@ namespace space_process{
             this->insert(u);
         }
         catch(std::bad_alloc&) {
-            //Rcpp::stop("Memory problem\n");
+            Rcpp::stop("Memory problem\n");
         }
 
     };
@@ -295,7 +295,7 @@ namespace space_process{
             }
         }
         catch(std::bad_alloc&) {
-            //Rcpp::stop("Memory problem\n");
+            Rcpp::stop("Memory problem\n");
         }
     }
 
@@ -337,7 +337,7 @@ namespace space_process{
             delete[] yRead;
         }
         catch(std::bad_alloc&) {
-            //Rcpp::stop("Memory problem\n");
+            Rcpp::stop("Memory problem\n");
         }
     }
 

@@ -74,7 +74,7 @@ namespace space_process {
             }
         }
         catch(std::bad_alloc&) {
-            //Rcpp::stop("Memory problem\n");
+            Rcpp::stop("Memory problem\n");
         }
         return(flag);
     }
