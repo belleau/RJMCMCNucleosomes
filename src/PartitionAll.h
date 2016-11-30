@@ -262,7 +262,7 @@ private:
                         , double start, double end, NucleoD &u){
         long l = 0;
         int cpt = getLimit(start,end, fStart, fEnd, l);
-        //std::cout << "Start " << start << " End " << end << " Diff " << (end - start) <<"\n";
+
         u.setFStartPos(fStart, fEnd, cpt);
         return(l);
     }
@@ -406,8 +406,6 @@ private:
 
                 muBirth = gsl_ran_flat(this->rng(), muBef, muNext); // New mu
 
-                //std::cout << "Start " << this->minPos() << " End " << this->maxPos() << "\n";
-                //std::cout << "Bef " << muBef << " Birth " << muBirth << " Next " << muNext << "\n";
 
 
                 if(i > 0) // Modify nucleosome i-1
@@ -533,14 +531,13 @@ private:
                     it2++;   // go to i
 
                     muNext = (*it2)->mu();
-                    //this->setTB(muNext - muBef);
-                    //std::cout << "Bef " <<  muBef << " Next " << muNext << "\n";
+
                 }
                 else{
                     muBef = this->minPos();
                     it2 = this->nucleoBegin();
                     muNext = (*it2)->mu();
-                    //std::cout << "Bef " <<  muBef << " Next " << muNext << "\n";
+
                 }
 
                 muBirth = gsl_ran_flat(this->rng(), muBef, muNext); // New mu
@@ -606,7 +603,7 @@ private:
                 }
 
             }while(flag && cpt < 1000);
-            //std::cout << "Flag " << flag << " cpt " << cpt << "\n";
+
             if(!(flag))
             {
                 this->setQalloc(muNext - muBef);
