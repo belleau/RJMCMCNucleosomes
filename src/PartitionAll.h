@@ -7,7 +7,6 @@
 
 #ifndef PARTITIONALL_H_
 #define PARTITIONALL_H_
-#include <iostream>
 #include "SpaceNucleosomeD.h"
 #include "NucleoDirichletPA.h"
 
