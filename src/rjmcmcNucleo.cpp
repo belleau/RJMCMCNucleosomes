@@ -1,6 +1,6 @@
 #include <Rcpp.h>
+#include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
-#include <iostream>
 #include <math.h>
 #include <time.h>
 #include "PartitionAll.h"
