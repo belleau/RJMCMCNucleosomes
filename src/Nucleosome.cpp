@@ -153,14 +153,14 @@ double Nucleosome::varRead(std::vector<double>::const_iterator start, std::vecto
         double sq_sum = 0.0;
         //std::vector<double>::const_iterator tmp = end;
         //tmp--;
-        //std::cout << "Start " << *start << " End " << *tmp << " Diff " << *tmp - *start << "\n";
+
         for(std::vector<double>::const_iterator it = start; it != end;it++){
             sq_sum += (*it - avg) * (*it - avg);
             pv++;
         }
         var = sq_sum / (n - 1);
     }
-    //cout << " var " << var << " n " << n << " pv " << pv <<"\n";
+
     return(var);
 }
 
