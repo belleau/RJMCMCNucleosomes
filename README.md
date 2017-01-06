@@ -1,4 +1,4 @@
-RJMCMCNucleosomes: Nucleosome Positioning
+RJMCMCNucleosomes: Genome-Wide Nucleosome Positioning using High-Throughput Short-Read Data (MNase-Seq)
 ==============================================================
 
 [![Build Status](https://travis-ci.org/ArnaudDroitLab/RJMCMCNucleosomes.svg?branch=master)](https://travis-ci.org/ArnaudDroitLab/RJMCMCNucleosomes)
