@@ -9,6 +9,16 @@ reversible jump estimation of nucleosome positions for genome-wide profiling.
 
 This package is in R with an optimized section in C++.
 
+
+## Bioconductor Package ##
+
+[![Bioconductor Time](http://bioconductor.org/shields/years-in-bioc/RJMCMCNucleosomes.svg)](http://bioconductor.org/packages/RJMCMCNucleosomes "Bioconductor status")
+
+*RJMCMCNucleosomes* is now an official package of [Bioconductor](http://bioconductor.org/). 
+The current release can be directly downloaded from their website:
+[Current release](http://bioconductor.org/packages/RJMCMCNucleosomes)
+
+
 ## Citing ##
 
 If you use this package for a publication, we would ask you to cite the following:
