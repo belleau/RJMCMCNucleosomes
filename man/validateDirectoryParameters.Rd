@@ -32,4 +32,3 @@ RJMCMCNucleosomes:::validateDirectoryParameters(directory)
 Astrid Deschenes
 }
 \keyword{internal}
-

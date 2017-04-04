@@ -46,4 +46,3 @@ rjmcmc(reads = reads_demo_02, nbrIterations = 150, lambda = 3, kMax = 30,
 }
 }
 \keyword{datasets}
-

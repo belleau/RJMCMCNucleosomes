@@ -99,4 +99,3 @@ result$mu
 Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
-

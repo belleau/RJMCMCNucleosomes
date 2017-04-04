@@ -101,4 +101,3 @@ result$k_max
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschenes
 }
-

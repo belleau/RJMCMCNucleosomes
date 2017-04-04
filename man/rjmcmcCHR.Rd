@@ -126,4 +126,3 @@ nbCores = 2, saveAsRDS = FALSE)}
 \author{
 Pascal Belleau, Astrid Deschenes
 }
-

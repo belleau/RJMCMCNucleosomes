@@ -54,4 +54,3 @@ zeta = 147, delta = 30, maxLength = 12000)
 Astrid Deschenes, Pascal Belleau
 }
 \keyword{internal}
-

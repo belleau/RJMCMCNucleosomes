@@ -34,4 +34,3 @@ RJMCMCNucleosomes:::validateRDSFilesParameters(file_test)
 Astrid Deschenes
 }
 \keyword{internal}
-

@@ -40,4 +40,3 @@ result
 \author{
 Astrid Deschenes
 }
-

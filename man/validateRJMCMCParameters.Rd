@@ -80,4 +80,3 @@ maxInterval = 200, adaptIterationsToReads = TRUE, vSeed = -1)}
 Astrid Deschenes
 }
 \keyword{internal}
-
