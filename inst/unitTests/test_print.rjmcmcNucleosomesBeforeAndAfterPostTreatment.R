@@ -22,7 +22,7 @@ data("reads_demo_01")
 ## print.rjmcmcNucleosomesBeforeAndAfterPostTreatment() function
 ####################################################################
 
-test.print.rjmcmcNucleosomesBeforeAndAfterPostTreatment_returned_value <- function() {
+test.print_rjmcmcNucleosomesBeforeAndAfterPostTreatment_returned_value <- function() {
 
     ##directoryWithRDSFiles <- system.file("extdata", package = "RJMCMCNucleosomes")
 
