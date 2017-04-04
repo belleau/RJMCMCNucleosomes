@@ -41,8 +41,8 @@ To use this current _RJMCMCNucleosomes_ version, the use of the Rcpp package is 
 [Lajmi Lakhal-Chaieb](https://www.researchgate.net/profile/Lajmi_Lakhal-Chaieb "Lajmi Lakhal-Chaieb")
 and [Arnaud Droit](http://ca.linkedin.com/in/drarnaud "Arnaud Droit").
 
-See [Arnaud Droit Lab](http://bioinformatique.ulaval.ca/home/ 
-"Arnaud Droit Lab") website.
+See [AD Lab](http://compbio.ulaval.ca/ 
+"AD Lab") website.
 
 
 ## Maintainer ##
@@ -53,7 +53,7 @@ See [Arnaud Droit Lab](http://bioinformatique.ulaval.ca/home/
 
 ## License ##
 
-This package and the underlying RJMCMCNucleosomes code are distributed under the 
+This package and the underlying _RJMCMCNucleosomes_ code are distributed under the 
 Artistic license 2.0. You are free to use and redistribute this software. 
 
 For more information on Artistic 2.0 License see
