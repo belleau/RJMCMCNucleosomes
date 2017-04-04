@@ -9,11 +9,21 @@ reversible jump estimation of nucleosome positions for genome-wide profiling.
 
 This package is in R with an optimized section in C++.
 
+
 ## Citing ##
 
 If you use this package for a publication, we would ask you to cite the following:
 
 > Samb R, Khadraoui K, Belleau P, et al. (2015). "Using informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide profiling." Statistical Applications in Genetics and Molecular Biology. Volume 14, Issue 6, Pages 517-532, ISSN (Online) 1544-6115, ISSN (Print) 2194-6302, December 2015, <a href="http://dx.doi.org/10.1515/sagmb-2014-0098">doi: 10.1515/sagmb-2014-0098</a>
+
+
+## Bioconductor Package ##
+
+[![Bioconductor Time](http://bioconductor.org/shields/years-in-bioc/RJMCMCNucleosomes.svg)](http://bioconductor.org/packages/release/bioc/html/RJMCMCNucleosomes "Bioconductor status")
+
+_RJMCMCNucleosomes_ is now an official package of [Bioconductor](http://bioconductor.org/). The current release can be directly downloaded from their website:
+[Current release](http://bioconductor.org/packages/RJMCMCNucleosomes/)
+
 
 ## Notes ##
 
