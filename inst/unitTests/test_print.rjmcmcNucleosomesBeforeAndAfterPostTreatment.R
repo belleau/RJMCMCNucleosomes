@@ -16,7 +16,7 @@ if(FALSE) {
 
 ### }}}
 
-data("reads_demo_01")
+data("reads_demo_02")
 
 ####################################################################
 ## print.rjmcmcNucleosomesBeforeAndAfterPostTreatment() function
@@ -24,23 +24,20 @@ data("reads_demo_01")
 
 test.print_rjmcmcNucleosomesBeforeAndAfterPostTreatment_returned_value <- function() {
 
-    ##directoryWithRDSFiles <- system.file("extdata", package = "RJMCMCNucleosomes")
+    ## Nucleosome detection
+    result <- rjmcmc(reads = reads_demo_02,
+                    seqName = "chr_SYNTHETIC", nbrIterations = 1000,
+                    lambda = 2, kMax = 30, minInterval = 146,
+                    maxInterval = 490, minReads = 3, vSeed = 11)
 
-    ##resultInit <- mergeAllRDSFilesFromDirectory(directoryWithRDSFiles)
+    ##Post-treatment function which merged closely positioned nucleosomes
+    postResult <- postTreatment(reads = reads_demo_02,
+                            seqName = "chr_SYNTHETIC", result, 100, 73500)
 
-    ##  forward <- start(reads_demo_01[strand(reads_demo_01) == "+"])
-    ## reverse <- end(reads_demo_01[strand(reads_demo_01) == "-"])
-    ## postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-    ##                             startPosReverseReads = reads_demo$readsReverse,
-    ##                             resultInit, 74, 73500)
+    result <- print(postResult)
 
-    ##result <- print(postResult)
+    message <- paste0("test.print_rjmcmcNucleosomesBeforeAndAfterPostTreatment_returned_value() ",
+                           "- print method did not returned expected value")
 
-    ## message <- paste0(" test.print.rjmcmcNucleosomesBeforeAndAfterPostTreatment_returned_value() ",
-    ##                   "- print method did not returned expected value")
-
-    ##checkEquals(postResult, result, msg = message)
-
-    ## TODO
-    return(TRUE)
+    checkEquals(postResult, result, msg = message)
 }
