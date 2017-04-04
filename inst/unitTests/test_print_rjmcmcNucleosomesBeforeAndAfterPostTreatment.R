@@ -16,7 +16,7 @@ if(FALSE) {
 
 ### }}}
 
-data("reads_demo_02")
+data(syntheticNucleosomeReads)
 
 ####################################################################
 ## print.rjmcmcNucleosomesBeforeAndAfterPostTreatment() function
@@ -24,20 +24,17 @@ data("reads_demo_02")
 
 test.print_rjmcmcNucleosomesBeforeAndAfterPostTreatment_returned_value <- function() {
 
-    ## Nucleosome detection
-    result <- rjmcmc(reads = reads_demo_02,
-                    seqName = "chr_SYNTHETIC", nbrIterations = 1000,
-                    lambda = 2, kMax = 30, minInterval = 146,
-                    maxInterval = 490, minReads = 3, vSeed = 11)
+    sampleGRanges <- GRanges(syntheticNucleosomeReads$dataIP)
 
-    ##Post-treatment function which merged closely positioned nucleosomes
-    postResult <- postTreatment(reads = reads_demo_02,
-                            seqName = "chr_SYNTHETIC", result, 100, 73500)
+    result <- rjmcmcCHR(reads = sampleGRanges, zeta = 147, delta=50,
+                    maxLength=1200, nbrIterations = 50, lambda = 3, kMax = 30,
+                    minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 222,
+                    nbCores = 1, saveAsRDS = FALSE)
 
-    result <- print(postResult)
+    resultPrint <- print(postResult)
 
     message <- paste0("test.print_rjmcmcNucleosomesBeforeAndAfterPostTreatment_returned_value() ",
                            "- print method did not returned expected value")
 
-    checkEquals(postResult, result, msg = message)
+    checkEquals(result, resultPrint, msg = message)
 }
