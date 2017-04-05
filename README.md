@@ -1,4 +1,4 @@
-RJMCMCNucleosomes: Nucleosome Positioning
+Genome-Wide Nucleosome Positioning using High-Throughput Short-Read Data (MNase-Seq)
 ==============================================================
 
 [![Build Status](https://travis-ci.org/ArnaudDroitLab/RJMCMCNucleosomes.svg?branch=master)](https://travis-ci.org/ArnaudDroitLab/RJMCMCNucleosomes)
@@ -8,6 +8,16 @@ This package uses informative Multinomial-Dirichlet prior in a t-mixture with
 reversible jump estimation of nucleosome positions for genome-wide profiling.
 
 This package is in R with an optimized section in C++.
+
+
+## Bioconductor Package ##
+
+[![Bioconductor Time](http://bioconductor.org/shields/years-in-bioc/RJMCMCNucleosomes.svg)](http://bioconductor.org/packages/RJMCMCNucleosomes "Bioconductor status")
+
+*RJMCMCNucleosomes* is now an official package of [Bioconductor](http://bioconductor.org/). 
+The current release can be directly downloaded from their website:
+[Current release](http://bioconductor.org/packages/RJMCMCNucleosomes)
+
 
 ## Citing ##
 
