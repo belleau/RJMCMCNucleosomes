@@ -2,25 +2,14 @@
 % Please edit documentation in R/RJMCMCNucleosomes.R
 \docType{package}
 \name{RJMCMCNucleosomes-package}
-\alias{RJMCMCNucleosomes}
 \alias{RJMCMCNucleosomes-package}
+\alias{RJMCMCNucleosomes}
 \title{RJMCMCNucleosomes: Bayesian hierarchical model for genome-wide
 nucleosome positioning with high-throughput short-read data (MNase-Seq)}
 \description{
 This package does nucleosome positioning using informative
 Multinomial-Dirichlet prior in a t-mixture with reversible jump
 estimation of nucleosome positions for genome-wide profiling.
-}
-\author{
-Pascal Belleau,
-Rawane Samb,
-Astrid Deschênes,
-Khader Khadraoui,
-Lajmi Lakhal and
-Arnaud Droit
-
-Maintainer:
-Astrid Deschenes <astrid-louise.deschenes@crchudequebec.ulaval.ca>
 }
 \seealso{
 \itemize{
@@ -40,5 +29,15 @@ Astrid Deschenes <astrid-louise.deschenes@crchudequebec.ulaval.ca>
     the nucleosome positions and the read coverage.}
 }
 }
-\keyword{package}
+\author{
+Pascal Belleau,
+Rawane Samb,
+Astrid Deschênes,
+Khader Khadraoui,
+Lajmi Lakhal and
+Arnaud Droit
 
+Maintainer:
+Astrid Deschenes <adeschen@hotmail.com>
+}
+\keyword{package}

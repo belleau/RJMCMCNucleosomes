@@ -69,4 +69,3 @@ postResult
 \author{
 Pascal Belleau, Astrid Deschenes
 }
-

@@ -69,4 +69,3 @@ plotNucleosomes(nucleosomePositions = result$mu, seqName = "chr_SYNTHETIC",
 \author{
 Astrid Deschenes
 }
-

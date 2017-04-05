@@ -41,4 +41,3 @@ result <- RJMCMCNucleosomes:::mergeAllRDSFiles(c(file_1, file_2))
 Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
-

@@ -47,4 +47,3 @@ maxLength = 1000)
 \author{
 Pascal Belleau, Astrid Deschenes
 }
-

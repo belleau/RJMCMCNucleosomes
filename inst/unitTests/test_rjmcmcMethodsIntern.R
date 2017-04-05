@@ -40,8 +40,7 @@ test.validatePrepMergeParameters_reads_NA <- function() {
                         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("reads must be a GRanges")
     message <- paste0(" test.validatePrepMergeParameters_reads_NA() ",
-                      "- NA for reads did not ",
-                      "generated expected message.")
+                      "- NA for reads did not generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
@@ -137,8 +136,7 @@ test.validatePrepMergeParameters_resultRJMCMC_NA <- function() {
     exp <- paste0("resultRJMCMC must be an object of class",
                   "\'rjmcmcNucleosomes\' or \'rjmcmcNucleosomesMerge\'.")
     message <- paste0(" test.validatePrepMergeParameters_startPosReverseReads_not_number() ",
-                      "- NA resultRJMCMC did not ",
-                      "generated expected message.")
+                      "- NA resultRJMCMC did not generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
@@ -164,8 +162,7 @@ test.validatePrepMergeParameters_nbBase_string <- function() {
         chrLength = 1000000), error=conditionMessage)
     exp <- "extendingSize must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_nbBase_number() ",
-                      "- string nbBase did not ",
-                      "generated expected message.")
+                      "- string nbBase did not generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
@@ -707,8 +704,8 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_empty_vector <- funct
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when nucleosomesParameters is not numerical
-test.validatePlotNucleosomesParameters_nucleosomePositions_not_numerical <- function() {
+## Test the result when nucleosomePositions is not GRanges
+test.validatePlotNucleosomesParameters_nucleosomePositions_string <- function() {
     reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
                      ranges = IRanges(101:110, end = 111:120,
                                       names = head(letters, 10)),
@@ -719,14 +716,14 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_not_numerical <- func
         seqName = "chr1", xlab = "x", ylab = "y", names=c("test")),
         error=conditionMessage)
     exp <- "nucleosomePositions must be a \'GRanges\' or a \'GRangesList\'"
-    message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_not_numerical() ",
-                      "- Not numeric for nucleosomePositions did not ",
+    message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_string() ",
+                      "- String for nucleosomePositions did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when nucleosomesParameters is not a list of numerical
-test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical <- function() {
+## Test the result when nucleosomesParameters is not a GRanges
+test.validatePlotNucleosomesParameters_nucleosomePositions_not_GRanges <- function() {
     reads <- GRanges(seqnames = Rle(c("chr1"), c(10)),
                      ranges = IRanges(101:110, end = 111:120,
                                       names = head(letters, 10)),
@@ -737,8 +734,8 @@ test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical <-
         reads = reads, seqName = "chr1", xlab = "x", ylab = "y",
         names=c("test")), error=conditionMessage)
     exp <- "nucleosomePositions must be a \'GRanges\' or a \'GRangesList\'"
-    message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_list_not_numerical() ",
-                      "- Not list of numeric for nucleosomePositions did not ",
+    message <- paste0(" test.validatePlotNucleosomesParameters_nucleosomePositions_not_GRanges() ",
+                      "- Not GRanges for nucleosomePositions did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
@@ -752,10 +749,45 @@ test.validatePlotNucleosomesParameters_reads_null <- function() {
         error=conditionMessage)
     exp <- "reads must be an object of class \'GRanges\'"
     message <- paste0(" test.validatePlotNucleosomesParameters_reads_null() ",
-                      "- Not list of numeric for reads did not ",
+                      "- NULL reads did not ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
+
+## Test the result when reads is empty
+test.validatePlotNucleosomesParameters_reads_empty_GRanges <- function() {
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = data_002$mu, reads = GRanges(),
+        seqName = NULL, xlab = "x",
+        ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- "reads must be a non-empty GRanges"
+    message <- paste0(" test.validatePlotNucleosomesParameters_reads_empty_GRanges() ",
+                      "- Empty reads did not ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when seqName is null and GRanges complexe
+test.validatePlotNucleosomesParameters_seqName_null_with_complexe_GRanges <- function() {
+    reads <- GRanges(seqnames = Rle(c("chr1", "chr2"), c(8,2)),
+                     ranges = IRanges(101:110, end = 111:120,
+                                      names = head(letters, 10)),
+                     strand = Rle(strand(c("-", "+", "-", "+", "-")),
+                                  c(1, 2, 2, 3, 2)))
+    obs <- tryCatch(RJMCMCNucleosomes:::validatePlotNucleosomesParameters(
+        nucleosomePositions = data_002$mu, reads = reads,
+        seqName = NULL, xlab = "x",
+        ylab = "y", names=c("test")),
+        error=conditionMessage)
+    exp <- paste0("seqName must be the name of one of the chromosomes ",
+        "present in the GRanges when more than one chromosome is present")
+    message <- paste0(" test.validatePlotNucleosomesParameters_seqName_null_with_complexe_GRanges() ",
+                      "- Null seqName with complexe GRanges did not ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
 
 ## Test the result when reads is not GRanges
 test.validatePlotNucleosomesParameters_reads_not_GRanges <- function() {

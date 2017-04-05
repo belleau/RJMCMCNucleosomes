@@ -67,4 +67,3 @@ resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 Astrid Deschenes
 }
 \keyword{internal}
-

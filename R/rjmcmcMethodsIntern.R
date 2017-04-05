@@ -827,8 +827,10 @@ postMerge <- function(reads, resultRJMCMC, extendingSize,
             if(length(current) > 1) {
                 ## When more than one nucleosome present, use mean position
                 valCentral <- mean(start(resultRJMCMC$mu)[current])
-                a <- min(start(resultRJMCMC$mu)[current]) # - (74 + extendingSize)
-                b <- max(start(resultRJMCMC$mu)[current]) # + (74 - extendingSize)
+                # - (74 + extendingSize)
+                a <- min(start(resultRJMCMC$mu)[current])
+                # + (74 - extendingSize)
+                b <- max(start(resultRJMCMC$mu)[current])
                 ## A miminum number of reads is needed closed to the position
                 if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
                     segReads$yF <= (b - minLimit)]) >= minReads &

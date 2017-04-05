@@ -52,4 +52,3 @@ well-positioned nucleosomes, 30 fuzzy nucleosomes with variance of reads
 following a Normal distribution.
 }
 \keyword{datasets}
-

@@ -7,11 +7,11 @@ Description: This package does nucleosome positioning using informative
     Multinomial-Dirichlet prior in a t-mixture with reversible jump
     estimation of nucleosome positions for genome-wide profiling.
 Authors@R: c(person("Pascal", "Belleau",
-    email="pascal.belleau@crchuq.ulaval.ca", role=c("aut")),
+    email="pascal_belleau@hotmail.com", role=c("aut")),
     person("Rawane", "Samb",
     email="rawane.samb.1@ulaval.ca", role=c("aut")),
     person("Astrid", "Deschênes",
-    email="Astrid-Louise.Deschenes@crchudequebec.ulaval.ca",
+    email="adeschen@hotmail.com",
     role=c("cre","aut")),
     person("Khader", "Khadraoui",
     email="Khader.Khadraoui@mat.ulaval.ca", role=c("aut")),
@@ -46,5 +46,5 @@ Encoding: UTF-8
 License: Artistic-2.0
 VignetteBuilder: knitr
 biocViews: BiologicalQuestion, ChIPSeq, NucleosomePositioning,
-    Software, StatisticalMethod, Bayesian
-RoxygenNote: 5.0.1
+    Software, StatisticalMethod, Bayesian, Sequencing, Coverage
+RoxygenNote: 6.0.1

@@ -45,4 +45,3 @@ class(result)
 \author{
 Pascal Belleau, Astrid Deschenes
 }
-

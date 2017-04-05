@@ -69,4 +69,3 @@ xlab = "position", ylab = "coverage", names = c("test"))
 Astrid Deschenes, Pascal Belleau
 }
 \keyword{internal}
-

@@ -90,4 +90,3 @@ runCHR(p=1, seg=seg, niter=1000, kmax=330,lambda=3,
 Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
-
