@@ -31,7 +31,7 @@ test.print_rjmcmcNucleosomesBeforeAndAfterPostTreatment_returned_value <- functi
                     minInterval = 146, maxInterval = 292, minReads = 5, vSeed = 222,
                     nbCores = 1, saveAsRDS = FALSE)
 
-    resultPrint <- print(postResult)
+    resultPrint <- print(result)
 
     message <- paste0("test.print_rjmcmcNucleosomesBeforeAndAfterPostTreatment_returned_value() ",
                            "- print method did not returned expected value")
