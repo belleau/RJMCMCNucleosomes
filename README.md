@@ -41,8 +41,7 @@ To use this current _RJMCMCNucleosomes_ version, the use of the Rcpp package is 
 [Lajmi Lakhal-Chaieb](https://www.researchgate.net/profile/Lajmi_Lakhal-Chaieb "Lajmi Lakhal-Chaieb")
 and [Arnaud Droit](http://ca.linkedin.com/in/drarnaud "Arnaud Droit").
 
-See [AD Lab](http://compbio.ulaval.ca/ 
-"AD Lab") website.
+See [AD Lab](http://compbio.ulaval.ca/ "AD Lab") website.
 
 
 ## Maintainer ##
