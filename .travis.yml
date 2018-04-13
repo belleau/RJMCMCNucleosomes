@@ -22,8 +22,9 @@ addons:
     packages:
       - libgsl2
       - gsl-bin
-      - libgsl0-dev
-      - libgsl0ldbl
+      
+#      - libgsl0-dev
+#      - libgsl0ldbl
 
 r_github_packages:
    - Bioconductor-mirror/BiocStyle
