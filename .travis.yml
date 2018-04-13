@@ -1,14 +1,14 @@
 language: r
-sudo: required
+#sudo: required
 
 # R version
 r: bioc-devel
 
 # Package caching only makes sense for the release versions.
-cache: packages
+#cache: packages
 
 # Packages from Bioconductor needed
-bioc_required: true
+#bioc_required: true
 
 # Be strict when checking package
 warnings_are_errors: true
