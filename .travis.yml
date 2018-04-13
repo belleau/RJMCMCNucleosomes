@@ -21,7 +21,8 @@ addons:
   apt:
     packages:
       - libgsl0-dev
-
+      - libgsl0ldbl
+ 
 #      - gsl-bin
       
 #      - libgsl0-dev
