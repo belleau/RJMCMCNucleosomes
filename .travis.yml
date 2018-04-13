@@ -1,3 +1,4 @@
+
 language: r
 #sudo: required
 
@@ -20,21 +21,27 @@ r_check_args: "--no-build-vignettes --no-manual --timings"
 addons:
   apt:
     packages:
-      - libgsl0-dev
-      - libgsl0ldbl
+      - gsl-bin
+      - libgsl-dev
  
 #      - gsl-bin
       
 #      - libgsl0-dev
 #      - libgsl0ldbl
 
-r_github_packages:
-   - Bioconductor-mirror/BiocStyle
+#r_github_packages:
+#   - Bioconductor-mirror/BiocStyle
 
+bioc_packages:
+  - BiocStyle
+  - BiocCheck
 # Package dependencies from CRAN not in DESCRIPTION file
-r_binary_packages:
-   - covr
-
+#r_binary_packages:
+#   - covr
+   
+r_packages:
+  - covr
+  
 # To compile C++ code
 before_script:
   - Rscript -e 'library(Rcpp); Rcpp::compileAttributes()'
