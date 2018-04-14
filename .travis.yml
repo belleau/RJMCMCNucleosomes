@@ -17,12 +17,16 @@ warnings_are_errors: true
 r_build_args: "--no-manual --no-resave-data --keep-empty-dirs"
 r_check_args: "--no-build-vignettes --no-manual --timings"
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install gsl-bin libgsl0-dev libgsl0ldbl
+
 # Package dependencies installed using apt-get
-addons:
-  apt:
-    packages:
-      - gsl-bin
-      - libgsl-dev
+#addons:
+#  apt:
+#    packages:
+#      - gsl-bin
+#      - libgsl-dev
  
 #      - gsl-bin
       
